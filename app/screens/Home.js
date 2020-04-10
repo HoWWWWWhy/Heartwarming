@@ -1,14 +1,29 @@
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text} from 'react-native';
+import MenuButton from '../components/MenuButton';
 import TabNavigation from '../navigation/TabNavigation';
 
 const Home = ({navigation}) => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to TabNavigation"
-        onPress={() => navigation.navigate(TabNavigation)}></Button>
+      <MenuButton
+        text="Setting"
+        onPress={() => navigation.navigate(TabNavigation)}
+        bgColor="red"
+        textColor="white"
+      />
+      <MenuButton
+        text="Add Words"
+        onPress={() => navigation.navigate(TabNavigation)}
+        bgColor="yellow"
+        textColor="black"
+      />
+      <MenuButton
+        text="View"
+        onPress={() => navigation.navigate(TabNavigation)}
+        bgColor="green"
+        textColor="white"
+      />
     </View>
   );
 };
