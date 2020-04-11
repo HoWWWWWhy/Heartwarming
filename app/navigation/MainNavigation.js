@@ -6,6 +6,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
+import Add from '../screens/Add';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,15 @@ const MainNavigation = () => {
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            name="Add"
+            component={Add}
+            options={{
+              gestureEnabled: true,
+              gestureResponseDistance: 'horizontal',
+              gestureDirection: 'horizontal',
+            }}
+          />
           <Stack.Screen
             name="TabNavigation"
             component={TabNavigation}

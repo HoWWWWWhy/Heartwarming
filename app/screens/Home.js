@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text} from 'react-native';
 import MenuButton from '../components/MenuButton';
 import TabNavigation from '../navigation/TabNavigation';
+import Add from '../screens/Add';
 
 const Home = ({navigation}) => {
   return (
@@ -14,7 +15,7 @@ const Home = ({navigation}) => {
       />
       <MenuButton
         text="Add Words"
-        onPress={() => navigation.navigate(TabNavigation)}
+        onPress={() => navigation.navigate(Add)}
         bgColor="yellow"
         textColor="black"
       />
