@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Platform, View, Text} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
@@ -17,13 +17,43 @@ const Add = ({navigation}) => {
   const [source, setSource] = useState('');
   const categoryList = ['Movie', 'Lyrics'];
   const [selectedCategory, setSelectedCategory] = useState(categoryList[0]);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('@storage_Key');
+        if (data !== null) {
+          // value previously stored
+          console.log('there is data');
+          setMovies(JSON.parse(data));
+        }
+      } catch (e) {
+        // error reading value
+        console.log(e);
+      }
+    };
+
+    getData();
+
+    //console.log('old:', movies);
+  }, []);
 
   const storeData = async () => {
+    const data = {
+      contents,
+      prepos,
+      source,
+    };
+    console.log('data:', data);
+    movies.push(data);
+    console.log('movies:', movies);
     try {
-      await AsyncStorage.setItem('@storage_Key', 'stored value');
+      await AsyncStorage.setItem('@storage_Key', JSON.stringify(movies));
       navigation.navigate(Home);
     } catch (e) {
       // saving error
+      console.log(e);
     }
   };
 

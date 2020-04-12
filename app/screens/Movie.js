@@ -3,15 +3,20 @@ import {View, Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Movie = ({navigation}) => {
-  const [note, setNote] = useState('');
+  const [contents, setContents] = useState('');
+  const [prepos, setPrepos] = useState('');
+  const [source, setSource] = useState('');
+
   useEffect(() => {
     const getData = async () => {
       try {
-        const value = await AsyncStorage.getItem('@storage_Key');
-        if (value !== null) {
+        const data = await AsyncStorage.getItem('@storage_Key');
+        if (data !== null) {
           // value previously stored
-          console.log(value);
-          setNote(value);
+          console.log('movie:', JSON.parse(data));
+          //setContents(JSON.parse(data)['contents']);
+          //setPrepos(JSON.parse(data)['prepos']);
+          //setSource(JSON.parse(data)['source']);
         }
       } catch (e) {
         // error reading value
@@ -22,8 +27,10 @@ const Movie = ({navigation}) => {
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Movie Screen</Text>
-      <Text>{note}</Text>
+      <Text>{contents}</Text>
+      <Text>
+        {prepos} {source}
+      </Text>
     </View>
   );
 };
