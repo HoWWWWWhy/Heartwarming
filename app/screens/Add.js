@@ -16,17 +16,22 @@ const Add = ({navigation}) => {
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
   const categoryList = ['Movie', 'Lyrics'];
-  const [selectedCategory, setSelectedCategory] = useState(categoryList[0]);
+  const [category, setCategory] = useState(categoryList[0]);
   const [movies, setMovies] = useState([]);
+  const [lyrics, setLyrics] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await AsyncStorage.getItem('@storage_Key');
-        if (data !== null) {
+        const movie_data = await AsyncStorage.getItem('@Movie');
+        if (movie_data !== null) {
           // value previously stored
-          console.log('there is data');
-          setMovies(JSON.parse(data));
+          setMovies(JSON.parse(movie_data));
+        }
+        const lyrics_data = await AsyncStorage.getItem('@Lyrics');
+        if (lyrics_data !== null) {
+          // value previously stored
+          setLyrics(JSON.parse(lyrics_data));
         }
       } catch (e) {
         // error reading value
@@ -40,16 +45,29 @@ const Add = ({navigation}) => {
   }, []);
 
   const storeData = async () => {
-    const data = {
+    const new_data = {
       contents,
       prepos,
       source,
     };
-    console.log('data:', data);
-    movies.push(data);
-    console.log('movies:', movies);
+
+    console.log('data:', new_data);
+
     try {
-      await AsyncStorage.setItem('@storage_Key', JSON.stringify(movies));
+      switch (category) {
+        case 'Movie':
+          movies.push(new_data);
+          await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+          console.log('movies:', movies);
+          break;
+        case 'Lyrics':
+          lyrics.push(new_data);
+          await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+          console.log('lyrics:', lyrics);
+          break;
+        default:
+      }
+
       navigation.navigate(Home);
     } catch (e) {
       // saving error
@@ -90,11 +108,9 @@ const Add = ({navigation}) => {
       />
       <Text style={styles.textTitle}>Select</Text>
       <Picker
-        selectedValue={selectedCategory}
+        selectedValue={category}
         style={styles.picker}
-        onValueChange={(itemValue, itemIndex) =>
-          setSelectedCategory(itemValue)
-        }>
+        onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
         {categoryList.map(item => (
           <Picker.Item key={item} label={item} value={item} />
         ))}
