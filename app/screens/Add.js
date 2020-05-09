@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {StyleSheet, Platform, View, Text} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
+
 import Home from './Home';
+import Store from '../store';
 
 const Add = ({navigation}) => {
   const defaultContents =
@@ -17,32 +19,11 @@ const Add = ({navigation}) => {
   const [source, setSource] = useState('');
   const categoryList = ['Movie', 'Lyrics'];
   const [category, setCategory] = useState(categoryList[0]);
-  const [movies, setMovies] = useState([]);
-  const [lyrics, setLyrics] = useState([]);
+  //const [movies, setMovies] = useState([]);
+  //const [lyrics, setLyrics] = useState([]);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const movie_data = await AsyncStorage.getItem('@Movie');
-        if (movie_data !== null) {
-          // value previously stored
-          setMovies(JSON.parse(movie_data));
-        }
-        const lyrics_data = await AsyncStorage.getItem('@Lyrics');
-        if (lyrics_data !== null) {
-          // value previously stored
-          setLyrics(JSON.parse(lyrics_data));
-        }
-      } catch (e) {
-        // error reading value
-        console.log(e);
-      }
-    };
-
-    getData();
-
-    //console.log('old:', movies);
-  }, []);
+  const {movies, setMovies} = useContext(Store);
+  const {lyrics, setLyrics} = useContext(Store);
 
   const storeData = async () => {
     const new_data = {
@@ -58,11 +39,13 @@ const Add = ({navigation}) => {
         case 'Movie':
           movies.push(new_data);
           await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+          setMovies(movies);
           console.log('movies:', movies);
           break;
         case 'Lyrics':
           lyrics.push(new_data);
           await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+          setLyrics(lyrics);
           console.log('lyrics:', lyrics);
           break;
         default:

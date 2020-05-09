@@ -42,6 +42,8 @@ const MainNavigation = () => {
   const providerValues = {
     movies,
     lyrics,
+    setMovies,
+    setLyrics,
   };
   return (
     <>

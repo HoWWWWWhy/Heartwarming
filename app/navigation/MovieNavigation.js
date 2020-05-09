@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 const MovieNavigation = ({navigation}) => {
   return (
     <>
-      <Stack.Navigator>
+      <Stack.Navigator headerMode="none">
         <Stack.Screen
           name="Movie"
           component={Movie}
