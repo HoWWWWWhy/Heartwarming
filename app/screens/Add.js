@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StyleSheet, Platform, View, Text} from 'react-native';
+import {
+  StyleSheet,
+  Platform,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
@@ -7,6 +14,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import Home from './Home';
 import Store from '../store';
+const DismissKeyboard = ({children}) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 const Add = ({navigation}) => {
   const defaultContents =
@@ -70,45 +82,54 @@ const Add = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.textTitle}>Saying...</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder={defaultContents}
-        multiline
-        editable
-        onChangeText={text => setContents(text)}
-      />
-      <TouchableOpacity onPress={changeList}>
-        <Text style={styles.textTitle}>{prepos}</Text>
-      </TouchableOpacity>
-      <TextInput
-        style={styles.textInput}
-        placeholder={defaultSource}
-        multiline
-        editable
-        onChangeText={text => setSource(text)}
-      />
-      <Text style={styles.textTitle}>Select</Text>
-      <Picker
-        selectedValue={category}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-        {categoryList.map(item => (
-          <Picker.Item key={item} label={item} value={item} />
-        ))}
-      </Picker>
-      <TouchableOpacity style={styles.addButton} onPress={storeData}>
-        <Text>추가하기</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <Text style={styles.textTitle}>Saying...</Text>
+
+        <TextInput
+          style={styles.textInput}
+          placeholder={defaultContents}
+          multiline
+          editable
+          returnKeyLabel="done"
+          onChangeText={text => setContents(text)}
+        />
+        <TouchableOpacity onPress={changeList}>
+          <Text style={styles.textTitle}>{prepos}</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.textInput}
+          placeholder={defaultSource}
+          multiline
+          editable
+          onChangeText={text => setSource(text)}
+        />
+        <Text style={styles.textTitle}>Select</Text>
+        <Picker
+          selectedValue={category}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
+          {categoryList.map(item => (
+            <Picker.Item key={item} label={item} value={item} />
+          ))}
+        </Picker>
+        <TouchableOpacity style={styles.addButton} onPress={storeData}>
+          <Text>추가하기</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 50,
-    marginTop: 50,
+    marginHorizontal: 0,
+    marginTop: 0,
+    height: constants.height,
+    width: constants.width,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 50,
   },
   textTitle: {
     fontSize: 14,

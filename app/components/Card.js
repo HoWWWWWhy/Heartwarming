@@ -6,8 +6,9 @@ const Card = ({contents, prepos, source}) => {
   return (
     <Container>
       <Text>{contents}</Text>
-      <Text>{prepos}</Text>
-      <Text>{source}</Text>
+      <Text>
+        {prepos}. {source}
+      </Text>
     </Container>
   );
 };
@@ -22,6 +23,7 @@ const Text = styled.Text`
   font-weight: bold;
   text-align: center;
   font-size: 15px;
+  margin-top: 15px;
 `;
 
 export default Card;
