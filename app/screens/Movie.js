@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import Card from '../components/Card';
+import FloatingActionButton from '../components/FloatingActionButton';
+import Add from '../screens/Add';
 
 const Movie = ({route, navigation}) => {
   const {movies, setMovies} = useContext(Store);
@@ -83,6 +85,12 @@ const Movie = ({route, navigation}) => {
     }
   };
 
+  const onCreate = () => {
+    navigation.navigate('Add');
+  };
+
+  const onUpdate = () => {};
+
   const onDelete = () => {
     //Alert.alert('delete:' + itemId + JSON.stringify(movies[itemId]));
     if (movies.length > 0) {
@@ -121,15 +129,13 @@ const Movie = ({route, navigation}) => {
             <Icon name="chevron-right" size={40} color={nextButtonColor} />
           </TouchableOpacity>
         </View>
-        {movies.length > 0 ? (
-          <View style={styles.deleteButton}>
-            <TouchableOpacity onPress={onDelete}>
-              <Icon name="delete" size={30} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View />
-        )}
+        <View style={styles.menuButton}>
+          <FloatingActionButton
+            onCreate={onCreate}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+          />
+        </View>
       </ImageBackground>
     </View>
   );
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    flex: 1,
+    flex: 9,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -161,6 +167,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     right: 30,
     bottom: 30,
+  },
+  menuButton: {
+    flex: 1,
+    bottom: 20,
   },
 });
 

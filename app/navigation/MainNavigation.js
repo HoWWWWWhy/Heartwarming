@@ -64,6 +64,7 @@ const MainNavigation = () => {
               name="TabNavigation"
               component={TabNavigation}
               options={{
+                title: 'View',
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
