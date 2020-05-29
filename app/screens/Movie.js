@@ -86,7 +86,7 @@ const Movie = ({route, navigation}) => {
   };
 
   const onCreate = () => {
-    navigation.navigate('Add');
+    navigation.navigate('Add', {itemId: itemId});
   };
 
   const onUpdate = () => {};
@@ -157,20 +157,10 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  deleteButton: {
-    backgroundColor: 'white',
-    borderRadius: 50,
-    position: 'absolute',
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 30,
-  },
   menuButton: {
     flex: 1,
     bottom: 20,
+    left: 150,
   },
 });
 

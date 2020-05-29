@@ -30,11 +30,11 @@ const FloatingActionButton = props => {
         scale: animation,
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -50],
+          outputRange: [0, -60],
         }),
         translateY: animation.interpolate({
-          inputRange: [0, 2],
-          outputRange: [0, -50],
+          inputRange: [0, 1],
+          outputRange: [0, 20],
         }),
       },
     ],
@@ -43,9 +43,13 @@ const FloatingActionButton = props => {
     transform: [
       {
         scale: animation,
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -45],
+        }),
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -50],
+          outputRange: [0, -35],
         }),
       },
     ],
@@ -56,11 +60,11 @@ const FloatingActionButton = props => {
         scale: animation,
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 50],
+          outputRange: [0, 10],
         }),
         translateY: animation.interpolate({
-          inputRange: [0, 2],
-          outputRange: [0, -50],
+          inputRange: [0, 1],
+          outputRange: [0, -55],
         }),
       },
     ],

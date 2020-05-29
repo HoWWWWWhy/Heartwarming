@@ -50,7 +50,13 @@ const MainNavigation = () => {
       <Store.Provider value={providerValues}>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                headerShown: false,
+              }}
+            />
             <Stack.Screen
               name="Add"
               component={Add}

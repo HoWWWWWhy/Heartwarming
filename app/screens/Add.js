@@ -20,7 +20,7 @@ const DismissKeyboard = ({children}) => (
   </TouchableWithoutFeedback>
 );
 
-const Add = ({navigation}) => {
+const Add = ({navigation, route}) => {
   const defaultContents =
     'If someone is nice to you but rude to the waiter, they are not a nice person.';
   const defaultSource = 'The Waiter Rule';
@@ -34,8 +34,18 @@ const Add = ({navigation}) => {
   //const [movies, setMovies] = useState([]);
   //const [lyrics, setLyrics] = useState([]);
 
+  const [insertFlag, setInsertFlag] = useState(false);
+
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
+
+  useEffect(() => {
+    if (typeof route.params !== 'undefined') {
+      setInsertFlag(true);
+    } else {
+      console.log('No Params');
+    }
+  }, []);
 
   const storeData = async () => {
     const new_data = {
@@ -49,13 +59,25 @@ const Add = ({navigation}) => {
     try {
       switch (category) {
         case 'Movie':
-          movies.push(new_data);
+          if (insertFlag) {
+            const {itemId} = route.params;
+            movies.splice(itemId, 0, new_data);
+          } else {
+            movies.push(new_data);
+          }
+
           await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
           setMovies(movies);
           console.log('movies:', movies);
           break;
         case 'Lyrics':
-          lyrics.push(new_data);
+          if (insertFlag) {
+            const {itemId} = route.params;
+            lyrics.splice(itemId, 0, new_data);
+          } else {
+            lyrics.push(new_data);
+          }
+
           await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
           setLyrics(lyrics);
           console.log('lyrics:', lyrics);
@@ -114,7 +136,7 @@ const Add = ({navigation}) => {
           ))}
         </Picker>
         <TouchableOpacity style={styles.addButton} onPress={storeData}>
-          <Text>추가하기</Text>
+          <Text style={styles.textButton}>추가하기</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -144,9 +166,18 @@ const styles = StyleSheet.create({
     height: 50,
   },
   addButton: {
-    backgroundColor: '#fab1a0',
+    backgroundColor: '#34495e',
     alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    borderRadius: 5,
     padding: 10,
+    marginTop: 30,
+  },
+  textButton: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
