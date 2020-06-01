@@ -9,7 +9,7 @@ const Home = ({navigation}) => {
     <View style={styles.container}>
       <MenuButton
         text="Setting"
-        onPress={() => navigation.navigate(TabNavigation)}
+        //onPress={() => navigation.navigate()}
         bgColor="#74b9ff"
         textColor="white"
       />

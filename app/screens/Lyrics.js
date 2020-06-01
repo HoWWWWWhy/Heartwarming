@@ -6,6 +6,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import Card from '../components/Card';
+import FloatingActionButton from '../components/FloatingActionButton';
+import Add from '../screens/Add';
+import Update from '../screens/Update';
 
 const Lyrics = ({route, navigation}) => {
   const {lyrics, setLyrics} = useContext(Store);
@@ -27,7 +30,6 @@ const Lyrics = ({route, navigation}) => {
     //console.log('useEffect', itemId);
     //console.log(Object.values(lyrics));
     if (lyrics.length > 0) {
-      //console.log(lyrics.length, itemId);
       setContents(lyrics[itemId].contents);
       setPrepos(lyrics[itemId].prepos);
       setSource(lyrics[itemId].source);
@@ -55,6 +57,7 @@ const Lyrics = ({route, navigation}) => {
       setNextButtonColor(buttonColor.inactive);
     }
   }, [itemId, Object.values(lyrics)]);
+
   const setPrevItemId = () => {
     let prevId = itemId - 1;
     if (prevId < 0) {
@@ -81,6 +84,15 @@ const Lyrics = ({route, navigation}) => {
       console.log(e);
     }
   };
+
+  const onCreate = () => {
+    navigation.navigate('Add', {itemId: itemId});
+  };
+
+  const onUpdate = () => {
+    navigation.navigate('Update', {itemId: itemId, screenName: 'Lyrics'});
+  };
+
   const onDelete = () => {
     //Alert.alert('delete:' + itemId + JSON.stringify(lyrics[itemId]));
     if (lyrics.length > 0) {
@@ -97,6 +109,7 @@ const Lyrics = ({route, navigation}) => {
       }
     }
   };
+  
   return (
     <View style={styles.container}>
       <ImageBackground source={bgImage} style={styles.image}>
@@ -119,15 +132,13 @@ const Lyrics = ({route, navigation}) => {
             <Icon name="chevron-right" size={40} color={nextButtonColor} />
           </TouchableOpacity>
         </View>
-        {lyrics.length > 0 ? (
-          <View style={styles.deleteButton}>
-            <TouchableOpacity onPress={onDelete}>
-              <Icon name="delete" size={30} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View />
-        )}
+        <View style={styles.menuButton}>
+          <FloatingActionButton
+            onCreate={onCreate}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+          />
+        </View>
       </ImageBackground>
     </View>
   );
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    flex: 1,
+    flex: 9,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -149,16 +160,10 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  deleteButton: {
-    backgroundColor: 'white',
-    borderRadius: 50,
-    position: 'absolute',
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 30,
+  menuButton: {
+    flex: 1,
+    bottom: 20,
+    left: 150,
   },
 });
 

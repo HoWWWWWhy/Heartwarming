@@ -8,6 +8,7 @@ import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
 import Add from '../screens/Add';
+import Update from '../screens/Update';
 
 const Movie = ({route, navigation}) => {
   const {movies, setMovies} = useContext(Store);
@@ -29,7 +30,6 @@ const Movie = ({route, navigation}) => {
     //console.log('useEffect', itemId);
     //console.log(Object.values(movies));
     if (movies.length > 0) {
-      //console.log(movies.length, itemId);
       setContents(movies[itemId].contents);
       setPrepos(movies[itemId].prepos);
       setSource(movies[itemId].source);
@@ -89,7 +89,9 @@ const Movie = ({route, navigation}) => {
     navigation.navigate('Add', {itemId: itemId});
   };
 
-  const onUpdate = () => {};
+  const onUpdate = () => {
+    navigation.navigate('Update', {itemId: itemId, screenName: 'Movie'});
+  };
 
   const onDelete = () => {
     //Alert.alert('delete:' + itemId + JSON.stringify(movies[itemId]));
@@ -119,6 +121,7 @@ const Movie = ({route, navigation}) => {
             }>
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
+		  
           <Card contents={contents} prepos={prepos} source={source} />
 
           <TouchableOpacity

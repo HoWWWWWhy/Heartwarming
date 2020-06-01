@@ -9,6 +9,7 @@ import Store from '../store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
 import Add from '../screens/Add';
+import Update from '../screens/Update';
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,15 @@ const MainNavigation = () => {
             <Stack.Screen
               name="Add"
               component={Add}
+              options={{
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+              }}
+            />
+            <Stack.Screen
+              name="Update"
+              component={Update}
               options={{
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',

@@ -21,10 +21,7 @@ const DismissKeyboard = ({children}) => (
   </TouchableWithoutFeedback>
 );
 
-const Add = ({navigation, route}) => {
-  const defaultContents =
-    'If someone is nice to you but rude to the waiter, they are not a nice person.';
-  const defaultSource = 'The Waiter Rule';
+const Update = ({navigation, route}) => {
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in'];
   const [preposIndex, setProposIndex] = useState(1);
@@ -32,19 +29,41 @@ const Add = ({navigation, route}) => {
   const [source, setSource] = useState('');
   const categoryList = ['Movie', 'Lyrics'];
   const [category, setCategory] = useState(categoryList[0]);
-  //const [movies, setMovies] = useState([]);
-  //const [lyrics, setLyrics] = useState([]);
-
-  const [insertFlag, setInsertFlag] = useState(false);
 
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
+  const {itemId, screenName} = route.params;
 
   useEffect(() => {
-    if (typeof route.params !== 'undefined') {
-      setInsertFlag(true);
-    } else {
-      console.log('No Params');
+    setCategory(screenName);
+    switch (screenName) {
+      case 'Movie':
+        setContents(movies[itemId].contents);
+        if (
+          preposList.indexOf(movies[itemId].prepos) % preposList.length >
+          preposList.length - 2
+        ) {
+          setProposIndex(0);
+        } else {
+          setProposIndex(preposList.indexOf(movies[itemId].prepos) + 1);
+        }
+        setPrepos(movies[itemId].prepos);
+        setSource(movies[itemId].source);
+        break;
+      case 'Lyrics':
+        setContents(lyrics[itemId].contents);
+        if (
+          preposList.indexOf(lyrics[itemId].prepos) % preposList.length >
+          preposList.length - 2
+        ) {
+          setProposIndex(0);
+        } else {
+          setProposIndex(preposList.indexOf(lyrics[itemId].prepos) + 1);
+        }
+        setPrepos(lyrics[itemId].prepos);
+        setSource(lyrics[itemId].source);
+        break;
+      default:
     }
   }, []);
 
@@ -56,32 +75,51 @@ const Add = ({navigation, route}) => {
     };
 
     console.log('data:', new_data);
-
     try {
       switch (category) {
         case 'Movie':
-          if (insertFlag) {
-            const {itemId} = route.params;
-            movies.splice(itemId, 0, new_data);
-          } else {
-            movies.push(new_data);
-          }
+          if (screenName === category) {
+            movies.splice(itemId, 1, new_data);
 
-          await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-          setMovies(movies);
-          console.log('movies:', movies);
+            await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+            setMovies(movies);
+            console.log('movies:', movies);
+          } else {
+            switch (screenName) {
+              case 'Lyrics':
+                lyrics.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+                setLyrics(lyrics);
+
+                movies.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+                setMovies(movies);
+                break;
+              default:
+            }
+          }
           break;
         case 'Lyrics':
-          if (insertFlag) {
-            const {itemId} = route.params;
-            lyrics.splice(itemId, 0, new_data);
-          } else {
-            lyrics.push(new_data);
-          }
+          if (screenName === category) {
+            lyrics.splice(itemId, 1, new_data);
 
-          await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-          setLyrics(lyrics);
-          console.log('lyrics:', lyrics);
+            await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+            setLyrics(lyrics);
+            console.log('lyrics:', lyrics);
+          } else {
+            switch (screenName) {
+              case 'Movie':
+                movies.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+                setMovies(movies);
+
+                lyrics.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(lyrics));
+                setLyrics(lyrics);
+                break;
+              default:
+            }
+          }
           break;
         default:
       }
@@ -108,10 +146,9 @@ const Add = ({navigation, route}) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <Text style={styles.textTitle}>Saying...</Text>
-
         <TextInput
           style={styles.textInput}
-          placeholder={defaultContents}
+          value={contents}
           multiline
           editable
           returnKeyLabel="done"
@@ -122,7 +159,7 @@ const Add = ({navigation, route}) => {
         </TouchableOpacity>
         <TextInput
           style={styles.textInput}
-          placeholder={defaultSource}
+          value={source}
           multiline
           editable
           onChangeText={text => setSource(text)}
@@ -136,8 +173,8 @@ const Add = ({navigation, route}) => {
             <Picker.Item key={item} label={item} value={item} />
           ))}
         </Picker>
-        <TouchableOpacity style={styles.addButton} onPress={storeData}>
-          <Text style={styles.textButton}>추가하기</Text>
+        <TouchableOpacity style={styles.updateButton} onPress={storeData}>
+          <Text style={styles.textButton}>수정하기</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -166,7 +203,7 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
   },
-  addButton: {
+  updateButton: {
     backgroundColor: '#34495e',
     alignItems: 'center',
     justifyContent: 'center',
@@ -182,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Add;
+export default Update;
