@@ -30,23 +30,27 @@ const Add = ({navigation, route}) => {
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
-  const categoryList = ['Movie', 'Lyrics'];
+  const categoryList = ['Movie', 'Lyrics', 'Book'];
   const [category, setCategory] = useState(categoryList[0]);
-  //const [movies, setMovies] = useState([]);
-  //const [lyrics, setLyrics] = useState([]);
 
   const [insertFlag, setInsertFlag] = useState(false);
+  const [itemId, setItemId] = useState(0);
+  const [screenName, setScreenName] = useState('');
 
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
+  const {books, setBooks} = useContext(Store);
 
   useEffect(() => {
     if (typeof route.params !== 'undefined') {
       setInsertFlag(true);
+      setItemId(route.params.itemId);
+      setScreenName(route.params.screenName);
+      setCategory(route.params.screenName);
     } else {
       console.log('No Params');
     }
-  }, []);
+  }, [category]);
 
   const storeData = async () => {
     const new_data = {
@@ -61,28 +65,37 @@ const Add = ({navigation, route}) => {
       switch (category) {
         case 'Movie':
           if (insertFlag) {
-            const {itemId} = route.params;
             movies.splice(itemId, 0, new_data);
           } else {
             movies.push(new_data);
           }
-
           await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
           setMovies(movies);
           console.log('movies:', movies);
           break;
+
         case 'Lyrics':
           if (insertFlag) {
-            const {itemId} = route.params;
             lyrics.splice(itemId, 0, new_data);
           } else {
             lyrics.push(new_data);
           }
-
           await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
           setLyrics(lyrics);
           console.log('lyrics:', lyrics);
           break;
+
+        case 'Book':
+          if (insertFlag) {
+            books.splice(itemId, 0, new_data);
+          } else {
+            books.push(new_data);
+          }
+          await AsyncStorage.setItem('@Book', JSON.stringify(books));
+          setBooks(books);
+          console.log('books:', books);
+          break;
+
         default:
       }
 
@@ -105,7 +118,7 @@ const Add = ({navigation, route}) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <DismissKeyboard>
       <View style={styles.container}>
         <Text style={styles.textTitle}>Saying...</Text>
 
@@ -130,6 +143,7 @@ const Add = ({navigation, route}) => {
         <Text style={styles.textTitle}>Select</Text>
         <Picker
           selectedValue={category}
+          enabled={insertFlag ? false : true}
           style={styles.picker}
           onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
           {categoryList.map(item => (
@@ -140,7 +154,7 @@ const Add = ({navigation, route}) => {
           <Text style={styles.textButton}>추가하기</Text>
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </DismissKeyboard>
   );
 };
 

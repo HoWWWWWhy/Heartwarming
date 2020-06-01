@@ -16,6 +16,7 @@ const Stack = createStackNavigator();
 const MainNavigation = () => {
   const [movies, setMovies] = useState([]);
   const [lyrics, setLyrics] = useState([]);
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -32,6 +33,12 @@ const MainNavigation = () => {
           console.log('lyrics_data:', lyrics_data);
           setLyrics(JSON.parse(lyrics_data));
         }
+        const books_data = await AsyncStorage.getItem('@Book');
+        if (books_data !== null) {
+          // value previously stored
+          console.log('books_data:', books_data);
+          setBooks(JSON.parse(books_data));
+        }
       } catch (e) {
         // error reading value
         console.log('error:', e);
@@ -43,8 +50,10 @@ const MainNavigation = () => {
   const providerValues = {
     movies,
     lyrics,
+    books,
     setMovies,
     setLyrics,
+    setBooks,
   };
   return (
     <>

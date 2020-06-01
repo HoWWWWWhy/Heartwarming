@@ -7,8 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
-import Add from '../screens/Add';
-import Update from '../screens/Update';
 
 const Lyrics = ({route, navigation}) => {
   const {lyrics, setLyrics} = useContext(Store);
@@ -86,7 +84,7 @@ const Lyrics = ({route, navigation}) => {
   };
 
   const onCreate = () => {
-    navigation.navigate('Add', {itemId: itemId});
+    navigation.navigate('Add', {itemId: itemId, screenName: 'Lyrics'});
   };
 
   const onUpdate = () => {
@@ -109,7 +107,7 @@ const Lyrics = ({route, navigation}) => {
       }
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <ImageBackground source={bgImage} style={styles.image}>

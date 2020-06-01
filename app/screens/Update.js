@@ -27,11 +27,13 @@ const Update = ({navigation, route}) => {
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
-  const categoryList = ['Movie', 'Lyrics'];
+  const categoryList = ['Movie', 'Lyrics', 'Book'];
   const [category, setCategory] = useState(categoryList[0]);
 
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
+  const {books, setBooks} = useContext(Store);
+
   const {itemId, screenName} = route.params;
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const Update = ({navigation, route}) => {
         setPrepos(movies[itemId].prepos);
         setSource(movies[itemId].source);
         break;
+
       case 'Lyrics':
         setContents(lyrics[itemId].contents);
         if (
@@ -62,6 +65,20 @@ const Update = ({navigation, route}) => {
         }
         setPrepos(lyrics[itemId].prepos);
         setSource(lyrics[itemId].source);
+        break;
+
+      case 'Book':
+        setContents(books[itemId].contents);
+        if (
+          preposList.indexOf(books[itemId].prepos) % preposList.length >
+          preposList.length - 2
+        ) {
+          setProposIndex(0);
+        } else {
+          setProposIndex(preposList.indexOf(books[itemId].prepos) + 1);
+        }
+        setPrepos(books[itemId].prepos);
+        setSource(books[itemId].source);
         break;
       default:
     }
@@ -95,6 +112,15 @@ const Update = ({navigation, route}) => {
                 await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
                 setMovies(movies);
                 break;
+              case 'Book':
+                books.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Book', JSON.stringify(books));
+                setBooks(books);
+
+                movies.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+                setMovies(movies);
+                break;
               default:
             }
           }
@@ -116,6 +142,46 @@ const Update = ({navigation, route}) => {
                 lyrics.push(new_data); //add to current list
                 await AsyncStorage.setItem('@Movie', JSON.stringify(lyrics));
                 setLyrics(lyrics);
+                break;
+              case 'Book':
+                books.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Book', JSON.stringify(books));
+                setBooks(books);
+
+                lyrics.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(lyrics));
+                setLyrics(lyrics);
+                break;
+              default:
+            }
+          }
+          break;
+        case 'Book':
+          if (screenName === category) {
+            books.splice(itemId, 1, new_data);
+
+            await AsyncStorage.setItem('@Book', JSON.stringify(books));
+            setBooks(books);
+            console.log('books:', books);
+          } else {
+            switch (screenName) {
+              case 'Movie':
+                movies.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+                setMovies(movies);
+
+                books.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Book', JSON.stringify(books));
+                setBooks(books);
+                break;
+              case 'Lyrics':
+                lyrics.splice(itemId, 1); //delete from previous list
+                await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+                setLyrics(lyrics);
+
+                books.push(new_data); //add to current list
+                await AsyncStorage.setItem('@Book', JSON.stringify(books));
+                setBooks(books);
                 break;
               default:
             }
@@ -143,7 +209,7 @@ const Update = ({navigation, route}) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <DismissKeyboard>
       <View style={styles.container}>
         <Text style={styles.textTitle}>Saying...</Text>
         <TextInput
@@ -177,7 +243,7 @@ const Update = ({navigation, route}) => {
           <Text style={styles.textButton}>수정하기</Text>
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </DismissKeyboard>
   );
 };
 

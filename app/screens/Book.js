@@ -8,11 +8,11 @@ import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
 
-const Movie = ({route, navigation}) => {
-  const {movies, setMovies} = useContext(Store);
+const Book = ({route, navigation}) => {
+  const {books, setBooks} = useContext(Store);
   const {itemId} = route.params;
 
-  const bgImage = require('../assets/sky-823624_640.jpg');
+  const bgImage = require('../assets/maldives-2171627_640.jpg');
   const buttonColor = {active: 'black', inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
@@ -26,11 +26,11 @@ const Movie = ({route, navigation}) => {
 
   useEffect(() => {
     //console.log('useEffect', itemId);
-    //console.log(Object.values(movies));
-    if (movies.length > 0) {
-      setContents(movies[itemId].contents);
-      setPrepos(movies[itemId].prepos);
-      setSource(movies[itemId].source);
+    //console.log(Object.values(books));
+    if (books.length > 0) {
+      setContents(books[itemId].contents);
+      setPrepos(books[itemId].prepos);
+      setSource(books[itemId].source);
       if (itemId === 0) {
         setPrevButtonDisable(true);
         setPrevButtonColor(buttonColor.inactive);
@@ -38,7 +38,7 @@ const Movie = ({route, navigation}) => {
         setPrevButtonDisable(false);
         setPrevButtonColor(buttonColor.active);
       }
-      if (itemId === movies.length - 1) {
+      if (itemId === books.length - 1) {
         setNextButtonDisable(true);
         setNextButtonColor(buttonColor.inactive);
       } else {
@@ -54,7 +54,7 @@ const Movie = ({route, navigation}) => {
       setNextButtonDisable(true);
       setNextButtonColor(buttonColor.inactive);
     }
-  }, [itemId, Object.values(movies)]);
+  }, [itemId, Object.values(books)]);
 
   const setPrevItemId = () => {
     let prevId = itemId - 1;
@@ -66,17 +66,17 @@ const Movie = ({route, navigation}) => {
 
   const setNextItemId = () => {
     let nextId = itemId + 1;
-    if (movies.length === 0) {
+    if (books.length === 0) {
       nextId = 0;
-    } else if (nextId > movies.length - 1) {
-      nextId = movies.length - 1;
+    } else if (nextId > books.length - 1) {
+      nextId = books.length - 1;
     }
     return nextId;
   };
 
   const storeData = async data => {
     try {
-      await AsyncStorage.setItem('@Movie', JSON.stringify(data));
+      await AsyncStorage.setItem('@Book', JSON.stringify(data));
     } catch (e) {
       // saving error
       console.log(e);
@@ -84,26 +84,26 @@ const Movie = ({route, navigation}) => {
   };
 
   const onCreate = () => {
-    navigation.navigate('Add', {itemId: itemId, screenName: 'Movie'});
+    navigation.navigate('Add', {itemId: itemId, screenName: 'Book'});
   };
 
   const onUpdate = () => {
-    navigation.navigate('Update', {itemId: itemId, screenName: 'Movie'});
+    navigation.navigate('Update', {itemId: itemId, screenName: 'Book'});
   };
 
   const onDelete = () => {
-    //Alert.alert('delete:' + itemId + JSON.stringify(movies[itemId]));
-    if (movies.length > 0) {
-      movies.splice(itemId, 1);
-      //console.log(JSON.stringify(movies));
-      storeData(movies);
-      setMovies(movies);
-      if (movies.length === itemId && movies.length > 0) {
+    //Alert.alert('delete:' + itemId + JSON.stringify(books[itemId]));
+    if (books.length > 0) {
+      books.splice(itemId, 1);
+      //console.log(JSON.stringify(books));
+      storeData(books);
+      setBooks(books);
+      if (books.length === itemId && books.length > 0) {
         //맨 끝 아이템을 삭제한 경우
-        navigation.navigate('Movie', {itemId: itemId - 1});
+        navigation.navigate('Book', {itemId: itemId - 1});
       } else {
         //console.log('same id');
-        navigation.navigate('Movie', {itemId: itemId});
+        navigation.navigate('Book', {itemId: itemId});
       }
     }
   };
@@ -115,7 +115,7 @@ const Movie = ({route, navigation}) => {
           <TouchableOpacity
             disabled={prevButtonDisable}
             onPress={() =>
-              navigation.navigate('Movie', {itemId: setPrevItemId()})
+              navigation.navigate('Book', {itemId: setPrevItemId()})
             }>
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
@@ -125,7 +125,7 @@ const Movie = ({route, navigation}) => {
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>
-              navigation.navigate('Movie', {itemId: setNextItemId()})
+              navigation.navigate('Book', {itemId: setNextItemId()})
             }>
             <Icon name="chevron-right" size={40} color={nextButtonColor} />
           </TouchableOpacity>
@@ -165,4 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Movie;
+export default Book;
