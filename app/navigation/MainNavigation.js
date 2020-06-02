@@ -71,6 +71,7 @@ const MainNavigation = () => {
               name="Add"
               component={Add}
               options={{
+                title: '추가하기',
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
@@ -80,6 +81,7 @@ const MainNavigation = () => {
               name="Update"
               component={Update}
               options={{
+                title: '수정하기',
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
@@ -90,9 +92,10 @@ const MainNavigation = () => {
               component={TabNavigation}
               options={{
                 title: 'View',
+                headerShown: false,
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',
-                gestureDirection: 'horizontal',
+                gestureDirection: 'vertical',
               }}
             />
           </Stack.Navigator>

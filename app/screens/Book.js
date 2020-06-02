@@ -135,6 +135,8 @@ const Book = ({route, navigation}) => {
             onCreate={onCreate}
             onUpdate={onUpdate}
             onDelete={onDelete}
+            updateDisabled={books.length > 0 ? false : true}
+            deleteDisabled={books.length > 0 ? false : true}
           />
         </View>
       </ImageBackground>

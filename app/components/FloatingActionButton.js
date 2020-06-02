@@ -78,16 +78,26 @@ const FloatingActionButton = props => {
           <Icon name="add" size={30} color="#01a3a4" />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={props.onUpdate}>
+      <TouchableWithoutFeedback
+        disabled={props.updateDisabled}
+        onPress={props.onUpdate}>
         <Animated.View
           style={[styles.button, styles.secondary, updateAnimatedStyle]}>
-          <Icon name="create" size={30} color="#01a3a4" />
+          <Icon
+            name="create"
+            size={30}
+            color={props.updateDisabled ? '#c8d6e5' : '#01a3a4'}
+          />
         </Animated.View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={props.onDelete}>
         <Animated.View
           style={[styles.button, styles.secondary, deleteAnimatedStyle]}>
-          <Icon name="delete" size={30} color="#01a3a4" />
+          <Icon
+            name="delete"
+            size={30}
+            color={props.deleteDisabled ? '#c8d6e5' : '#01a3a4'}
+          />
         </Animated.View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={toggleMenu}>

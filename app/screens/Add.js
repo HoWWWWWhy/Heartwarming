@@ -48,7 +48,7 @@ const Add = ({navigation, route}) => {
       setScreenName(route.params.screenName);
       setCategory(route.params.screenName);
     } else {
-      console.log('No Params');
+      //console.log('No Params');
     }
   }, [category]);
 

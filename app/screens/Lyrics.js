@@ -135,6 +135,8 @@ const Lyrics = ({route, navigation}) => {
             onCreate={onCreate}
             onUpdate={onUpdate}
             onDelete={onDelete}
+            updateDisabled={lyrics.length > 0 ? false : true}
+            deleteDisabled={lyrics.length > 0 ? false : true}
           />
         </View>
       </ImageBackground>

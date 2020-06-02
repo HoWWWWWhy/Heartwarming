@@ -135,6 +135,8 @@ const Movie = ({route, navigation}) => {
             onCreate={onCreate}
             onUpdate={onUpdate}
             onDelete={onDelete}
+            updateDisabled={movies.length > 0 ? false : true}
+            deleteDisabled={movies.length > 0 ? false : true}
           />
         </View>
       </ImageBackground>
