@@ -120,7 +120,7 @@ const Add = ({navigation, route}) => {
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text style={styles.textTitle}>Saying...</Text>
+        <Text style={styles.textTitle}>Phrase</Text>
 
         <TextInput
           style={styles.textInput}
