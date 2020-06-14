@@ -92,7 +92,6 @@ const Lyrics = ({route, navigation}) => {
   };
 
   const onDelete = () => {
-    //Alert.alert('delete:' + itemId + JSON.stringify(lyrics[itemId]));
     if (lyrics.length > 0) {
       lyrics.splice(itemId, 1);
       //console.log(JSON.stringify(lyrics));
@@ -102,7 +101,6 @@ const Lyrics = ({route, navigation}) => {
         //맨 끝 아이템을 삭제한 경우
         navigation.navigate('Lyrics', {itemId: itemId - 1});
       } else {
-        //console.log('same id');
         navigation.navigate('Lyrics', {itemId: itemId});
       }
     }

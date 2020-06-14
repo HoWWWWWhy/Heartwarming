@@ -92,7 +92,6 @@ const Movie = ({route, navigation}) => {
   };
 
   const onDelete = () => {
-    //Alert.alert('delete:' + itemId + JSON.stringify(movies[itemId]));
     if (movies.length > 0) {
       movies.splice(itemId, 1);
       //console.log(JSON.stringify(movies));
@@ -102,7 +101,6 @@ const Movie = ({route, navigation}) => {
         //맨 끝 아이템을 삭제한 경우
         navigation.navigate('Movie', {itemId: itemId - 1});
       } else {
-        //console.log('same id');
         navigation.navigate('Movie', {itemId: itemId});
       }
     }

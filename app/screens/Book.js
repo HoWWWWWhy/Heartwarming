@@ -92,7 +92,6 @@ const Book = ({route, navigation}) => {
   };
 
   const onDelete = () => {
-    //Alert.alert('delete:' + itemId + JSON.stringify(books[itemId]));
     if (books.length > 0) {
       books.splice(itemId, 1);
       //console.log(JSON.stringify(books));
@@ -102,7 +101,6 @@ const Book = ({route, navigation}) => {
         //맨 끝 아이템을 삭제한 경우
         navigation.navigate('Book', {itemId: itemId - 1});
       } else {
-        //console.log('same id');
         navigation.navigate('Book', {itemId: itemId});
       }
     }

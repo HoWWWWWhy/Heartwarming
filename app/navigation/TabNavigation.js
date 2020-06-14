@@ -1,13 +1,16 @@
 import React from 'react';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-//import Movie from '../screens/Movie';
 import MovieNavigation from './MovieNavigation';
 import LyricsNavigation from './LyricsNavigation';
 import BookNavigation from './BookNavigation';
 import NavIcon from '../components/NavIcon';
+import {TapGestureHandler} from 'react-native-gesture-handler';
 
 const Tab = createMaterialTopTabNavigator();
+const TabList = [MovieNavigation, LyricsNavigation, BookNavigation];
+const TabNames = ['Movie', 'Lyrics', 'Book'];
+const TabIcons = ['movie', 'library-music', 'library-books'];
 
 const TabNavigation = () => {
   return (
@@ -17,33 +20,18 @@ const TabNavigation = () => {
         showIcon: true,
         labelStyle: {fontSize: 12},
       }}>
-      <Tab.Screen
-        name="Movie"
-        component={MovieNavigation}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <NavIcon focused={focused} name="movie" size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Lyrics"
-        component={LyricsNavigation}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <NavIcon focused={focused} name="library-music" size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Book"
-        component={BookNavigation}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <NavIcon focused={focused} name="library-books" size={26} />
-          ),
-        }}
-      />
+      {TabList.map((tab, i) => (
+        <Tab.Screen
+          key={TabNames[i]}
+          name={TabNames[i]}
+          component={tab}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <NavIcon focused={focused} name={TabIcons[i]} size={26} />
+            ),
+          }}
+        />
+      ))}
     </Tab.Navigator>
   );
 };

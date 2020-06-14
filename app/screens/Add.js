@@ -47,8 +47,6 @@ const Add = ({navigation, route}) => {
       setItemId(route.params.itemId);
       setScreenName(route.params.screenName);
       setCategory(route.params.screenName);
-    } else {
-      //console.log('No Params');
     }
   }, [category]);
 
@@ -107,14 +105,12 @@ const Add = ({navigation, route}) => {
   };
 
   const changeList = () => {
-    //console.log(preposIndex);
     setProposIndex(prevIndex => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
       setProposIndex(0);
     }
 
     setPrepos(preposList[preposIndex]);
-    //console.log(preposIndex);
   };
 
   return (

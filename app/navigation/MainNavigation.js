@@ -9,6 +9,7 @@ import Store from '../store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
 import Add from '../screens/Add';
+import Setting from '../screens/Setting';
 import Update from '../screens/Update';
 
 const Stack = createStackNavigator();
@@ -65,6 +66,16 @@ const MainNavigation = () => {
               component={Home}
               options={{
                 headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Setting"
+              component={Setting}
+              options={{
+                title: '설정하기',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
               }}
             />
             <Stack.Screen
