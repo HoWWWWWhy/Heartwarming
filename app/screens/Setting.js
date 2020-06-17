@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import constants from '../constants';
 import Home from './Home';
+import Store from '../store';
 
 const Setting = ({navigation}) => {
   /*
@@ -10,11 +11,10 @@ const Setting = ({navigation}) => {
     console.log('go to home');
     //navigation.navigate(Home);
   }, []);
-  */
-  //const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [movieCheckBox, setMovieCheckBox] = useState(true);
-  const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
-  const [bookCheckBox, setBookCheckBox] = useState(true);
+*/
+  const {movieCheckBox, setMovieCheckBox} = useContext(Store);
+  const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
+  const {bookCheckBox, setBookCheckBox} = useContext(Store);
 
   const storeData = async () => {
     navigation.navigate(Home);

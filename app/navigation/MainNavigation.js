@@ -19,6 +19,10 @@ const MainNavigation = () => {
   const [lyrics, setLyrics] = useState([]);
   const [books, setBooks] = useState([]);
 
+  const [movieCheckBox, setMovieCheckBox] = useState(true);
+  const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
+  const [bookCheckBox, setBookCheckBox] = useState(true);
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -55,7 +59,14 @@ const MainNavigation = () => {
     setMovies,
     setLyrics,
     setBooks,
+    movieCheckBox,
+    lyricsCheckBox,
+    bookCheckBox,
+    setMovieCheckBox,
+    setLyricsCheckBox,
+    setBookCheckBox,
   };
+
   return (
     <>
       <Store.Provider value={providerValues}>
