@@ -23,7 +23,7 @@ const DismissKeyboard = ({children}) => (
 
 const Update = ({navigation, route}) => {
   const [contents, setContents] = useState('');
-  const preposList = ['By', 'From', 'in'];
+  const preposList = ['By', 'From', 'in', ''];
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');

@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import constants from '../constants';
 import Home from './Home';
@@ -17,6 +18,10 @@ const Setting = ({navigation}) => {
   const {bookCheckBox, setBookCheckBox} = useContext(Store);
 
   const storeData = async () => {
+    await AsyncStorage.setItem(
+      '@CheckBoxState',
+      JSON.stringify([movieCheckBox, lyricsCheckBox, bookCheckBox]),
+    );
     navigation.navigate(Home);
   };
 
@@ -60,7 +65,7 @@ const Setting = ({navigation}) => {
       </View>
 
       <TouchableOpacity style={styles.setButton} onPress={storeData}>
-        <Text style={styles.textButton}>저장</Text>
+        <Text style={styles.textButton}>저장하기</Text>
       </TouchableOpacity>
     </View>
   );

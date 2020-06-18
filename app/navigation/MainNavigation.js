@@ -26,6 +26,14 @@ const MainNavigation = () => {
   useEffect(() => {
     const getData = async () => {
       try {
+        const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
+        console.log(checkbox_states);
+        if (checkbox_states !== null) {
+          setMovieCheckBox(JSON.parse(checkbox_states)[0]);
+          setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
+          setBookCheckBox(JSON.parse(checkbox_states)[2]);
+        }
+
         const movie_data = await AsyncStorage.getItem('@Movie');
         if (movie_data !== null) {
           // value previously stored

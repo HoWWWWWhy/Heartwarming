@@ -7,7 +7,7 @@ const Card = ({contents, prepos, source}) => {
     <Container>
       <Text>{contents}</Text>
       <Text>
-        {prepos}. {source}
+        {prepos} {source}
       </Text>
     </Container>
   );
