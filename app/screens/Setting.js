@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import constants from '../constants';
@@ -7,34 +7,46 @@ import Home from './Home';
 import Store from '../store';
 
 const Setting = ({navigation}) => {
-  /*
-  useEffect(() => {
-    console.log('go to home');
-    //navigation.navigate(Home);
-  }, []);
-*/
   const {movieCheckBox, setMovieCheckBox} = useContext(Store);
   const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
   const {bookCheckBox, setBookCheckBox} = useContext(Store);
 
+  const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
+  const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
+  const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
+
   const storeData = async () => {
-    await AsyncStorage.setItem(
-      '@CheckBoxState',
-      JSON.stringify([movieCheckBox, lyricsCheckBox, bookCheckBox]),
-    );
-    navigation.navigate(Home);
+    if (thisMovieCheckBox | thisLyricsCheckBox | thisBookCheckBox) {
+      await AsyncStorage.setItem(
+        '@CheckBoxState',
+        JSON.stringify([
+          thisMovieCheckBox,
+          thisLyricsCheckBox,
+          thisBookCheckBox,
+        ]),
+      );
+      setMovieCheckBox(thisMovieCheckBox);
+      setLyricsCheckBox(thisLyricsCheckBox);
+      setBookCheckBox(thisBookCheckBox);
+
+      navigation.navigate('Home');
+    } else {
+      Alert.alert('알림', '최소 한 개의 카테고리를 선택해 주세요.');
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.checkboxContainer}>
-        <Text style={styles.menuText}>Show Category</Text>
+        <Text style={styles.menuText}>탭 표시 설정</Text>
         <View style={styles.checkbox}>
           <CheckBox
             disabled={false}
-            value={movieCheckBox}
+            value={thisMovieCheckBox}
             onValueChange={() =>
-              movieCheckBox ? setMovieCheckBox(false) : setMovieCheckBox(true)
+              thisMovieCheckBox
+                ? setThisMovieCheckBox(false)
+                : setThisMovieCheckBox(true)
             }
           />
           <Text style={styles.checkboxText}>Movie</Text>
@@ -42,11 +54,11 @@ const Setting = ({navigation}) => {
         <View style={styles.checkbox}>
           <CheckBox
             disabled={false}
-            value={lyricsCheckBox}
+            value={thisLyricsCheckBox}
             onValueChange={() =>
-              lyricsCheckBox
-                ? setLyricsCheckBox(false)
-                : setLyricsCheckBox(true)
+              thisLyricsCheckBox
+                ? setThisLyricsCheckBox(false)
+                : setThisLyricsCheckBox(true)
             }
           />
           <Text style={styles.checkboxText}>Lyrics</Text>
@@ -54,16 +66,24 @@ const Setting = ({navigation}) => {
         <View style={styles.checkbox}>
           <CheckBox
             disabled={false}
-            value={bookCheckBox}
+            value={thisBookCheckBox}
             onValueChange={() =>
-              bookCheckBox ? setBookCheckBox(false) : setBookCheckBox(true)
+              thisBookCheckBox
+                ? setThisBookCheckBox(false)
+                : setThisBookCheckBox(true)
             }
           />
           <Text style={styles.checkboxText}>Book</Text>
         </View>
         <View style={styles.container} />
       </View>
-
+      <View style={styles.helpContainer}>
+        <Text style={styles.menuText}>도움말</Text>
+        <Text style={styles.helpText}>
+          {`[View]에서는 화면의 맨 위쪽 부분을 살짝 위에서 아래로 
+쓸어내려주시면 메뉴 화면으로 갈 수 있습니다.`}
+        </Text>
+      </View>
       <TouchableOpacity style={styles.setButton} onPress={storeData}>
         <Text style={styles.textButton}>저장하기</Text>
       </TouchableOpacity>
@@ -83,10 +103,17 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 18,
+    marginBottom: 10,
+  },
+  helpContainer: {
+    marginBottom: 20,
+  },
+  helpText: {
+    fontSize: 14,
   },
   checkboxContainer: {
     marginTop: 20,
-    height: 150,
+    marginBottom: 20,
   },
   checkbox: {
     flexDirection: 'row',

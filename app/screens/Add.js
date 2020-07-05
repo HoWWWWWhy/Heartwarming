@@ -23,8 +23,10 @@ const DismissKeyboard = ({children}) => (
 
 const Add = ({navigation, route}) => {
   const defaultContents =
-    'If someone is nice to you but rude to the waiter, they are not a nice person.';
-  const defaultSource = 'The Waiter Rule';
+    '하지만 우린 나아가야 한다.\n의심을 인생철학으로 선택하는 것은,\n운송수단으로 "정지"를 선택하는 것과 비슷하다.';
+  //'If someone is nice to you but rude to the waiter, \nthey are not a nice person.';
+  const defaultSource = '얀 마텔 <파이 이야기>';
+  //'The Waiter Rule';
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in', ''];
   const [preposIndex, setProposIndex] = useState(1);
@@ -57,7 +59,7 @@ const Add = ({navigation, route}) => {
       source,
     };
 
-    console.log('data:', new_data);
+    //console.log('data:', new_data);
 
     try {
       switch (category) {
@@ -69,7 +71,7 @@ const Add = ({navigation, route}) => {
           }
           await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
           setMovies(movies);
-          console.log('movies:', movies);
+          //console.log('movies:', movies);
           break;
 
         case 'Lyrics':
@@ -80,7 +82,7 @@ const Add = ({navigation, route}) => {
           }
           await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
           setLyrics(lyrics);
-          console.log('lyrics:', lyrics);
+          //console.log('lyrics:', lyrics);
           break;
 
         case 'Book':
@@ -91,13 +93,13 @@ const Add = ({navigation, route}) => {
           }
           await AsyncStorage.setItem('@Book', JSON.stringify(books));
           setBooks(books);
-          console.log('books:', books);
+          //console.log('books:', books);
           break;
 
         default:
       }
 
-      navigation.navigate(Home);
+      navigation.navigate('Home');
     } catch (e) {
       // saving error
       console.log(e);
@@ -116,8 +118,7 @@ const Add = ({navigation, route}) => {
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text style={styles.textTitle}>Phrase</Text>
-
+        <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
         <TextInput
           style={styles.textInput}
           placeholder={defaultContents}
@@ -126,9 +127,14 @@ const Add = ({navigation, route}) => {
           returnKeyLabel="done"
           onChangeText={text => setContents(text)}
         />
-        <TouchableOpacity onPress={changeList}>
-          <Text style={styles.textTitle}>{prepos}</Text>
-        </TouchableOpacity>
+        <View style={styles.preposContainer}>
+          <TouchableOpacity onPress={changeList}>
+            <Text style={[styles.textTitle, styles.textPrepos]}>{prepos}</Text>
+          </TouchableOpacity>
+          <Text style={styles.textComment}>
+            {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
+          </Text>
+        </View>
         <TextInput
           style={styles.textInput}
           placeholder={defaultSource}
@@ -136,7 +142,7 @@ const Add = ({navigation, route}) => {
           editable
           onChangeText={text => setSource(text)}
         />
-        <Text style={styles.textTitle}>Select</Text>
+        <Text style={styles.textTitle}>카테고리</Text>
         <Picker
           selectedValue={category}
           enabled={insertFlag ? false : true}
@@ -164,7 +170,17 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     paddingTop: 50,
   },
+  preposContainer: {
+    flexDirection: 'row',
+  },
   textTitle: {
+    fontSize: 14,
+    color: 'black',
+  },
+  textPrepos: {
+    width: 50,
+  },
+  textComment: {
     fontSize: 14,
     color: 'gray',
   },

@@ -91,7 +91,7 @@ const Update = ({navigation, route}) => {
       source,
     };
 
-    console.log('data:', new_data);
+    //console.log('data:', new_data);
     try {
       switch (category) {
         case 'Movie':
@@ -100,7 +100,7 @@ const Update = ({navigation, route}) => {
 
             await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
             setMovies(movies);
-            console.log('movies:', movies);
+            //console.log('movies:', movies);
           } else {
             switch (screenName) {
               case 'Lyrics':
@@ -131,7 +131,7 @@ const Update = ({navigation, route}) => {
 
             await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
             setLyrics(lyrics);
-            console.log('lyrics:', lyrics);
+            //console.log('lyrics:', lyrics);
           } else {
             switch (screenName) {
               case 'Movie':
@@ -140,7 +140,7 @@ const Update = ({navigation, route}) => {
                 setMovies(movies);
 
                 lyrics.push(new_data); //add to current list
-                await AsyncStorage.setItem('@Movie', JSON.stringify(lyrics));
+                await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
                 setLyrics(lyrics);
                 break;
               case 'Book':
@@ -149,7 +149,7 @@ const Update = ({navigation, route}) => {
                 setBooks(books);
 
                 lyrics.push(new_data); //add to current list
-                await AsyncStorage.setItem('@Movie', JSON.stringify(lyrics));
+                await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
                 setLyrics(lyrics);
                 break;
               default:
@@ -162,7 +162,7 @@ const Update = ({navigation, route}) => {
 
             await AsyncStorage.setItem('@Book', JSON.stringify(books));
             setBooks(books);
-            console.log('books:', books);
+            //console.log('books:', books);
           } else {
             switch (screenName) {
               case 'Movie':
@@ -190,7 +190,7 @@ const Update = ({navigation, route}) => {
         default:
       }
 
-      navigation.navigate(Home);
+      navigation.navigate('Home');
     } catch (e) {
       // saving error
       console.log(e);
@@ -211,7 +211,7 @@ const Update = ({navigation, route}) => {
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text style={styles.textTitle}>Saying...</Text>
+        <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
         <TextInput
           style={styles.textInput}
           value={contents}
@@ -220,9 +220,14 @@ const Update = ({navigation, route}) => {
           returnKeyLabel="done"
           onChangeText={text => setContents(text)}
         />
-        <TouchableOpacity onPress={changeList}>
-          <Text style={styles.textTitle}>{prepos}</Text>
-        </TouchableOpacity>
+        <View style={styles.preposContainer}>
+          <TouchableOpacity onPress={changeList}>
+            <Text style={[styles.textTitle, styles.textPrepos]}>{prepos}</Text>
+          </TouchableOpacity>
+          <Text style={styles.textComment}>
+            {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
+          </Text>
+        </View>
         <TextInput
           style={styles.textInput}
           value={source}
@@ -230,7 +235,7 @@ const Update = ({navigation, route}) => {
           editable
           onChangeText={text => setSource(text)}
         />
-        <Text style={styles.textTitle}>Select</Text>
+        <Text style={styles.textTitle}>카테고리</Text>
         <Picker
           selectedValue={category}
           style={styles.picker}
@@ -257,7 +262,17 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     paddingTop: 50,
   },
+  preposContainer: {
+    flexDirection: 'row',
+  },
   textTitle: {
+    fontSize: 14,
+    color: 'black',
+  },
+  textPrepos: {
+    width: 50,
+  },
+  textComment: {
     fontSize: 14,
     color: 'gray',
   },

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -27,7 +27,7 @@ const MainNavigation = () => {
     const getData = async () => {
       try {
         const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
-        console.log(checkbox_states);
+        //console.log(checkbox_states);
         if (checkbox_states !== null) {
           setMovieCheckBox(JSON.parse(checkbox_states)[0]);
           setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
@@ -37,19 +37,19 @@ const MainNavigation = () => {
         const movie_data = await AsyncStorage.getItem('@Movie');
         if (movie_data !== null) {
           // value previously stored
-          console.log('movie_data:', movie_data);
+          //console.log('movie_data:', movie_data);
           setMovies(JSON.parse(movie_data));
         }
         const lyrics_data = await AsyncStorage.getItem('@Lyrics');
         if (lyrics_data !== null) {
           // value previously stored
-          console.log('lyrics_data:', lyrics_data);
+          //console.log('lyrics_data:', lyrics_data);
           setLyrics(JSON.parse(lyrics_data));
         }
         const books_data = await AsyncStorage.getItem('@Book');
         if (books_data !== null) {
           // value previously stored
-          console.log('books_data:', books_data);
+          //console.log('books_data:', books_data);
           setBooks(JSON.parse(books_data));
         }
       } catch (e) {
