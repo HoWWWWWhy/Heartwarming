@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import constants from '../constants';
 
@@ -6,9 +6,14 @@ const Card = ({contents, prepos, source}) => {
   return (
     <Container>
       <Text>{contents}</Text>
-      <Text>
-        {prepos} {source}
-      </Text>
+
+      {prepos.length > 0 ? (
+        <Text>
+          {prepos} {source}
+        </Text>
+      ) : (
+        <Text>{source}</Text>
+      )}
     </Container>
   );
 };

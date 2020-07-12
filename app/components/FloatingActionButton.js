@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import constants from '../constants';
 
 const FloatingActionButton = props => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,11 +31,11 @@ const FloatingActionButton = props => {
         scale: animation,
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -60],
+          outputRange: [0, -65],
         }),
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 20],
+          outputRange: [0, 15],
         }),
       },
     ],
@@ -45,11 +46,11 @@ const FloatingActionButton = props => {
         scale: animation,
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -45],
+          outputRange: [0, -46],
         }),
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -35],
+          outputRange: [0, -36],
         }),
       },
     ],
@@ -60,11 +61,11 @@ const FloatingActionButton = props => {
         scale: animation,
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 10],
+          outputRange: [0, 8],
         }),
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -55],
+          outputRange: [0, -50],
         }),
       },
     ],
@@ -115,7 +116,8 @@ const FloatingActionButton = props => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    width: Math.round(constants.width / 2.0) - 20,
   },
   button: {
     position: 'absolute',

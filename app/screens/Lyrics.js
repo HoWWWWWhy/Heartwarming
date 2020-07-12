@@ -1,12 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Clipboard from '@react-native-community/clipboard';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
+import constants from '../constants';
 
 const Lyrics = ({route, navigation}) => {
   const {lyrics, setLyrics} = useContext(Store);
@@ -23,6 +25,8 @@ const Lyrics = ({route, navigation}) => {
   const [prevButtonColor, setPrevButtonColor] = useState(buttonColor.active);
   const [nextButtonDisable, setNextButtonDisable] = useState(false);
   const [nextButtonColor, setNextButtonColor] = useState(buttonColor.active);
+
+  const [copiedText, setCopiedText] = useState('');
 
   useEffect(() => {
     //console.log('useEffect', itemId);
@@ -83,6 +87,26 @@ const Lyrics = ({route, navigation}) => {
     }
   };
 
+  const copyToClipboard = () => {
+    prepos.length > 0
+      ? Clipboard.setString(
+          `${contents}
+  
+${prepos} ${source}`,
+        )
+      : Clipboard.setString(
+          `${contents}
+  
+${source}`,
+        );
+    fetchCopiedText();
+  };
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setCopiedText(text);
+  };
+
   const onCreate = () => {
     navigation.navigate('Add', {itemId: itemId, screenName: 'Lyrics'});
   };
@@ -128,7 +152,14 @@ const Lyrics = ({route, navigation}) => {
             <Icon name="chevron-right" size={40} color={nextButtonColor} />
           </TouchableOpacity>
         </View>
-        <View style={styles.menuButton}>
+        <View style={styles.buttonContainer}>
+          <View style={styles.copyButtonContainer}>
+            <TouchableOpacity onPress={copyToClipboard}>
+              <View style={styles.copyButton}>
+                <Icon name="content-copy" size={30} color={'black'} />
+              </View>
+            </TouchableOpacity>
+          </View>        
           <FloatingActionButton
             onCreate={onCreate}
             onUpdate={onUpdate}
@@ -158,10 +189,23 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  menuButton: {
+  buttonContainer: {
     flex: 1,
     bottom: 20,
-    left: 150,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  copyButtonContainer: {
+    alignItems: 'flex-start',
+    width: Math.round(constants.width / 2.0) - 20,
+  },
+  copyButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

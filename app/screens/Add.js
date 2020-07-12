@@ -28,7 +28,7 @@ const Add = ({navigation, route}) => {
   const defaultSource = '얀 마텔 <파이 이야기>';
   //'The Waiter Rule';
   const [contents, setContents] = useState('');
-  const preposList = ['By', 'From', 'in', ''];
+  const preposList = ['By', 'From', 'in', '-', ''];
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
