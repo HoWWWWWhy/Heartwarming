@@ -76,7 +76,7 @@ const FloatingActionButton = props => {
       <TouchableWithoutFeedback onPress={props.onCreate}>
         <Animated.View
           style={[styles.button, styles.secondary, addAnimatedStyle]}>
-          <Icon name="add" size={30} color="#01a3a4" />
+          <Icon name="add" size={30} color="#10ac84" />
         </Animated.View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -87,7 +87,7 @@ const FloatingActionButton = props => {
           <Icon
             name="create"
             size={30}
-            color={props.updateDisabled ? '#c8d6e5' : '#01a3a4'}
+            color={props.updateDisabled ? '#c8d6e5' : '#10ac84'}
           />
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -97,7 +97,7 @@ const FloatingActionButton = props => {
           <Icon
             name="delete"
             size={30}
-            color={props.deleteDisabled ? '#c8d6e5' : '#01a3a4'}
+            color={props.deleteDisabled ? '#c8d6e5' : '#10ac84'}
           />
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menu: {
-    backgroundColor: '#01a3a4',
+    backgroundColor: '#10ac84',
   },
   secondary: {
     width: 48,

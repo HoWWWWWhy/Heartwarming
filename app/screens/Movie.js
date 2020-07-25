@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, ImageBackground} from 'react-native';
+import {StyleSheet, View, ImageBackground, Share} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-community/clipboard';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -107,6 +107,32 @@ ${source}`,
     setCopiedText(text);
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          prepos.length > 0
+            ? `${contents}
+    
+${prepos} ${source}`
+            : `${contents}
+
+${source}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   const onCreate = () => {
     navigation.navigate('Add', {itemId: itemId, screenName: 'Movie'});
   };
@@ -153,13 +179,19 @@ ${source}`,
           </TouchableOpacity>
         </View>
         <View style={styles.buttonContainer}>
-          <View style={styles.copyButtonContainer}>
+          <View style={styles.leftButtonContainer}>
             <TouchableOpacity onPress={copyToClipboard}>
-              <View style={styles.copyButton}>
-                <Icon name="content-copy" size={30} color={'black'} />
+              <View style={[styles.leftButtons, styles.copyButton]}>
+                <Icon name="content-copy" size={30} color={'white'} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onShare}>
+              <View style={[styles.leftButtons, styles.shareButton]}>
+                <Icon name="share" size={30} color={'white'} />
               </View>
             </TouchableOpacity>
           </View>
+
           <FloatingActionButton
             onCreate={onCreate}
             onUpdate={onUpdate}
@@ -195,17 +227,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  copyButtonContainer: {
+  leftButtonContainer: {
+    flexDirection: 'row',
     alignItems: 'flex-start',
     width: Math.round(constants.width / 2.0) - 20,
   },
-  copyButton: {
+  leftButtons: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 5,
+  },
+  copyButton: {
+    backgroundColor: '#7f8fa6',
+  },
+  shareButton: {
+    backgroundColor: '#40739e',
   },
 });
 
