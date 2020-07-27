@@ -8,7 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import constants from '../constants';
 
-const FloatingActionButton = props => {
+const FloatingActionButton = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const animation = useRef(new Animated.Value(0)).current;
@@ -29,10 +29,14 @@ const FloatingActionButton = props => {
     transform: [
       {
         scale: animation,
+      },
+      {
         translateX: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, -65],
         }),
+      },
+      {
         translateY: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 15],
@@ -40,14 +44,19 @@ const FloatingActionButton = props => {
       },
     ],
   };
+
   const updateAnimatedStyle = {
     transform: [
       {
         scale: animation,
+      },
+      {
         translateX: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, -46],
         }),
+      },
+      {
         translateY: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, -36],
@@ -55,14 +64,19 @@ const FloatingActionButton = props => {
       },
     ],
   };
+
   const deleteAnimatedStyle = {
     transform: [
       {
         scale: animation,
+      },
+      {
         translateX: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 8],
         }),
+      },
+      {
         translateY: animation.interpolate({
           inputRange: [0, 1],
           outputRange: [0, -50],
@@ -70,7 +84,6 @@ const FloatingActionButton = props => {
       },
     ],
   };
-
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={props.onCreate}>

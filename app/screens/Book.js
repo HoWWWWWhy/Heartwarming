@@ -78,7 +78,7 @@ const Book = ({route, navigation}) => {
     return nextId;
   };
 
-  const storeData = async data => {
+  const storeData = async (data) => {
     try {
       await AsyncStorage.setItem('@Book', JSON.stringify(data));
     } catch (e) {
@@ -191,7 +191,6 @@ ${source}`,
               </View>
             </TouchableOpacity>
           </View>
-
           <FloatingActionButton
             onCreate={onCreate}
             onUpdate={onUpdate}

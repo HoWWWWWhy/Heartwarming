@@ -11,6 +11,7 @@ import TabNavigation from './TabNavigation';
 import Add from '../screens/Add';
 import Setting from '../screens/Setting';
 import Update from '../screens/Update';
+import SettingTabScreen from '../screens/SettingTabScreen';
 
 const Stack = createStackNavigator();
 
@@ -92,6 +93,16 @@ const MainNavigation = () => {
               component={Setting}
               options={{
                 title: '설정하기',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+              }}
+            />
+            <Stack.Screen
+              name="SettingTabScreen"
+              component={SettingTabScreen}
+              options={{
+                title: '배경 설정',
                 gestureEnabled: true,
                 gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',

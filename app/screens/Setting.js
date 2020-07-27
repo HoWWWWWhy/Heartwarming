@@ -49,7 +49,15 @@ const Setting = ({navigation}) => {
                 : setThisMovieCheckBox(true)
             }
           />
-          <Text style={styles.checkboxText}>Movie</Text>
+          {/*<Text style={styles.checkboxText}>Movie</Text>*/}
+          <View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('SettingTabScreen', {screenName: 'Movie'})
+              }>
+              <Text style={styles.checkboxText}>Movie</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.checkbox}>
           <CheckBox
