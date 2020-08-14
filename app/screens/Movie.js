@@ -12,10 +12,12 @@ import constants from '../constants';
 
 const Movie = ({route, navigation}) => {
   const {movies, setMovies} = useContext(Store);
+  const {movieSetting, setMovieSetting} = useContext(Store);
+
   const {itemId} = route.params;
 
   const bgImage = require('../assets/sky-823624_640.jpg');
-  const buttonColor = {active: 'black', inactive: 'darkgrey'};
+  const buttonColor = {active: movieSetting.textColor, inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
   const [prepos, setPrepos] = useState('No Contents');
@@ -156,9 +158,9 @@ ${source}`,
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <ImageBackground source={bgImage} style={styles.image}>
+  const renderInnerContainer = () => {
+    return (
+      <>
         <View style={styles.innerContainer}>
           <TouchableOpacity
             disabled={prevButtonDisable}
@@ -168,8 +170,12 @@ ${source}`,
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
 
-          <Card contents={contents} prepos={prepos} source={source} />
-
+          <Card
+            contents={contents}
+            prepos={prepos}
+            source={source}
+            textColor={movieSetting.textColor}
+          />
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>
@@ -199,7 +205,21 @@ ${source}`,
             deleteDisabled={movies.length > 0 ? false : true}
           />
         </View>
-      </ImageBackground>
+      </>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {movieSetting.useBgImage ? (
+        <ImageBackground source={bgImage} style={styles.image}>
+          {renderInnerContainer()}
+        </ImageBackground>
+      ) : (
+        <View style={{flex: 1, backgroundColor: movieSetting.bgColor}}>
+          {renderInnerContainer()}
+        </View>
+      )}
     </View>
   );
 };

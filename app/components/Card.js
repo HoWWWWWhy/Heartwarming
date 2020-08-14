@@ -2,17 +2,17 @@ import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import constants from '../constants';
 
-const Card = ({contents, prepos, source}) => {
+const Card = ({contents, prepos, source, textColor = 'black'}) => {
   return (
     <Container>
-      <Text>{contents}</Text>
+      <Text textColor={textColor}>{contents}</Text>
 
       {prepos.length > 0 ? (
-        <Text>
+        <Text textColor={textColor}>
           {prepos} {source}
         </Text>
       ) : (
-        <Text>{source}</Text>
+        <Text textColor={textColor}>{source}</Text>
       )}
     </Container>
   );
@@ -24,7 +24,7 @@ const Container = styled.View`
 `;
 
 const Text = styled.Text`
-  color: black;
+  color: ${(props) => (props.textColor ? props.textColor : 'black')};
   font-weight: bold;
   text-align: center;
   font-size: 15px;

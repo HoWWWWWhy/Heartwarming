@@ -12,10 +12,11 @@ import constants from '../constants';
 
 const Book = ({route, navigation}) => {
   const {books, setBooks} = useContext(Store);
+  const {bookSetting, setBookSetting} = useContext(Store);
   const {itemId} = route.params;
 
   const bgImage = require('../assets/maldives-2171627_640.jpg');
-  const buttonColor = {active: 'black', inactive: 'darkgrey'};
+  const buttonColor = {active: bookSetting.textColor, inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
   const [prepos, setPrepos] = useState('No Contents');
@@ -156,9 +157,9 @@ ${source}`,
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <ImageBackground source={bgImage} style={styles.image}>
+  const renderInnerContainer = () => {
+    return (
+      <>
         <View style={styles.innerContainer}>
           <TouchableOpacity
             disabled={prevButtonDisable}
@@ -168,8 +169,12 @@ ${source}`,
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
 
-          <Card contents={contents} prepos={prepos} source={source} />
-
+          <Card
+            contents={contents}
+            prepos={prepos}
+            source={source}
+            textColor={bookSetting.textColor}
+          />
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>
@@ -199,7 +204,21 @@ ${source}`,
             deleteDisabled={books.length > 0 ? false : true}
           />
         </View>
-      </ImageBackground>
+      </>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {bookSetting.useBgImage ? (
+        <ImageBackground source={bgImage} style={styles.image}>
+          {renderInnerContainer()}
+        </ImageBackground>
+      ) : (
+        <View style={{flex: 1, backgroundColor: bookSetting.bgColor}}>
+          {renderInnerContainer()}
+        </View>
+      )}
     </View>
   );
 };
