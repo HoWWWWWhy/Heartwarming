@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   Linking,
+  PixelRatio,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
@@ -204,8 +205,9 @@ const Setting = ({navigation}) => {
         <View style={styles.innerContainer}>
           <Text style={styles.menuText}>도움말</Text>
           <Text style={styles.helpText}>
-            {`[View]에서는 화면의 맨 위쪽 부분을 살짝 위에서 아래로 
-쓸어내려주시면 메뉴 화면으로 갈 수 있습니다.`}
+            {`[View] 에서는 화면의 맨 위쪽 부분을 살짝 
+위에서 아래로 쓸어내려주시면 메뉴 화면으로 
+갈 수 있습니다.`}
           </Text>
         </View>
         <View style={styles.innerContainer}>
@@ -277,7 +279,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 80,
     height: 30,
-    margin: 3,
+    marginVertical: 3,
+    marginLeft: 3,
+    marginRight: 5,
   },
   checkboxText: {
     fontSize: 16,

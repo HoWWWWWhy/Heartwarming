@@ -243,8 +243,6 @@ const SettingTabScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>현재 탭: {screenName}</Text>
-
       <View style={styles.switchContainer}>
         <Text style={styles.text}>배경이미지 사용하기</Text>
         {renderSwitch(screenName)}

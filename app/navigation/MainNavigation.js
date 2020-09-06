@@ -152,12 +152,12 @@ const MainNavigation = () => {
               <Stack.Screen
                 name="SettingTabScreen"
                 component={SettingTabScreen}
-                options={{
-                  title: '배경 설정',
+                options={({route}) => ({
+                  title: '배경 설정 [ ' + route.params.screenName + ' ]',
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',
-                }}
+                })}
               />
 
               <Stack.Screen

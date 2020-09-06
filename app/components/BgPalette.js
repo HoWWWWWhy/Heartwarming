@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import Store from '../store';
+import constants from '../constants';
 
 const BgPalette = ({setting, selected}) => {
   const paletteColors = [
@@ -55,9 +56,15 @@ const styles = StyleSheet.create({
   },
   palette: {
     width: 50,
+    //width: Math.round((constants.width * 0.8) / 6 - constants.width * 0.01),
     height: 50,
+    //height: Math.round((constants.width * 0.8) / 6 - constants.width * 0.01),
     margin: 5,
+    //margin: Math.round(constants.width * 0.01),
     borderRadius: 25,
+    // borderRadius: Math.round(
+    //   ((constants.width * 0.8) / 6 - constants.width * 0.01) / 2,
+    // ),
     borderColor: 'red',
   },
 });
