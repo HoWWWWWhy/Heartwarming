@@ -1,7 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import Store from '../store';
-import constants from '../constants';
+import React from 'react';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 
 const BgPalette = ({setting, selected}) => {
   const paletteColors = [
@@ -23,24 +21,26 @@ const BgPalette = ({setting, selected}) => {
 
   return (
     <View style={styles.paletteContainer}>
-      {paletteColors.map((color) => (
-        <TouchableOpacity
-          key={color}
-          onPress={() =>
-            setting((prevState) => ({
-              ...prevState,
-              bgColor: color,
-            }))
-          }>
-          <View
-            style={[
-              styles.palette,
-              {backgroundColor: color},
-              {borderWidth: selected === color ? SEL_BORDER_WIDTH : 0},
-            ]}
-          />
-        </TouchableOpacity>
-      ))}
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        {paletteColors.map((color) => (
+          <TouchableOpacity
+            key={color}
+            onPress={() =>
+              setting((prevState) => ({
+                ...prevState,
+                bgColor: color,
+              }))
+            }>
+            <View
+              style={[
+                styles.palette,
+                {backgroundColor: color},
+                {borderWidth: selected === color ? SEL_BORDER_WIDTH : 0},
+              ]}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -55,16 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   palette: {
-    width: 50,
-    //width: Math.round((constants.width * 0.8) / 6 - constants.width * 0.01),
-    height: 50,
-    //height: Math.round((constants.width * 0.8) / 6 - constants.width * 0.01),
+    width: 40,
+    height: 40,
     margin: 5,
-    //margin: Math.round(constants.width * 0.01),
-    borderRadius: 25,
-    // borderRadius: Math.round(
-    //   ((constants.width * 0.8) / 6 - constants.width * 0.01) / 2,
-    // ),
+    borderRadius: 20,
     borderColor: 'red',
   },
 });

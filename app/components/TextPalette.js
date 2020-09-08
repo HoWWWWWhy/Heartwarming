@@ -1,6 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import Store from '../store';
+import React from 'react';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 
 const TextPalette = ({setting, selected}) => {
   const paletteColors = [
@@ -22,24 +21,26 @@ const TextPalette = ({setting, selected}) => {
 
   return (
     <View style={styles.paletteContainer}>
-      {paletteColors.map((color) => (
-        <TouchableOpacity
-          key={color}
-          onPress={() =>
-            setting((prevState) => ({
-              ...prevState,
-              textColor: color,
-            }))
-          }>
-          <View
-            style={[
-              styles.palette,
-              {backgroundColor: color},
-              {borderWidth: selected === color ? SEL_BORDER_WIDTH : 0},
-            ]}
-          />
-        </TouchableOpacity>
-      ))}
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        {paletteColors.map((color) => (
+          <TouchableOpacity
+            key={color}
+            onPress={() =>
+              setting((prevState) => ({
+                ...prevState,
+                textColor: color,
+              }))
+            }>
+            <View
+              style={[
+                styles.palette,
+                {backgroundColor: color},
+                {borderWidth: selected === color ? SEL_BORDER_WIDTH : 0},
+              ]}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -54,10 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   palette: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     margin: 5,
-    borderRadius: 25,
+    borderRadius: 20,
     borderColor: 'red',
   },
 });

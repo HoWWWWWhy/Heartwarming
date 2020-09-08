@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Switch} from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
+
 import Store from '../store';
 import TempStore from '../temp_store';
 
@@ -268,7 +270,8 @@ const SettingTabScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingVertical: 16,
     //backgroundColor: 'yellow',
   },
   text: {
@@ -276,7 +279,7 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 5,
     paddingTop: 5,
     alignContent: 'center',
     //backgroundColor: 'red',
@@ -292,15 +295,15 @@ const styles = StyleSheet.create({
   },
   bgPaletteContainer: {
     //backgroundColor: 'red',
-    marginVertical: 10,
+    marginVertical: 5,
   },
   textPaletteContainer: {
     //backgroundColor: 'grey',
-    marginVertical: 10,
+    marginVertical: 5,
   },
   previewContainer: {
     //backgroundColor: 'blue',
-    marginVertical: 10,
+    marginVertical: 5,
   },
 
   previewBox: {
