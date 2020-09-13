@@ -1,6 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Switch} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  Image,
+  Animated,
+} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import TempStore from '../temp_store';
@@ -17,6 +26,8 @@ const SettingTabScreen = ({route}) => {
   const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
   const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
+
+  const pickImageButton = require('../assets/maldives-2171627_640.jpg');
 
   useEffect(() => {
     switch (screenName) {
@@ -69,6 +80,16 @@ const SettingTabScreen = ({route}) => {
     }
   };
 
+  const onPickImage = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then((image) => {
+      console.log(image);
+    });
+  };
+
   const renderSwitch = (screen_name) => {
     switch (screen_name) {
       case 'Movie':
@@ -81,7 +102,9 @@ const SettingTabScreen = ({route}) => {
               value={thisMovieSetting.useBgImage}
               style={styles.toggleSwitch}
             />
-            <Text>{thisMovieSetting.useBgImage ? 'on' : 'off'}</Text>
+            <Text style={styles.text}>
+              {thisMovieSetting.useBgImage ? 'on' : 'off'}
+            </Text>
           </>
         );
 
@@ -110,6 +133,51 @@ const SettingTabScreen = ({route}) => {
               style={styles.toggleSwitch}
             />
             <Text>{thisBookSetting.useBgImage ? 'on' : 'off'}</Text>
+          </>
+        );
+
+      default:
+    }
+  };
+
+  const renderPickImageButton = (screen_name) => {
+    switch (screen_name) {
+      case 'Movie':
+        return (
+          <>
+            {thisMovieSetting.useBgImage ? (
+              <TouchableOpacity onPress={onPickImage}>
+                <View style={styles.pickImageButton}>
+                  <Icon name="picture-in-picture" size={30} color={'red'} />
+                </View>
+              </TouchableOpacity>
+            ) : null}
+          </>
+        );
+
+      case 'Lyrics':
+        return (
+          <>
+            {thisLyricsSetting.useBgImage ? (
+              <TouchableOpacity>
+                <View style={styles.pickImageButton}>
+                  <Icon name="picture-in-picture" size={30} color={'red'} />
+                </View>
+              </TouchableOpacity>
+            ) : null}
+          </>
+        );
+
+      case 'Book':
+        return (
+          <>
+            {thisBookSetting.useBgImage ? (
+              <TouchableOpacity>
+                <View style={styles.pickImageButton}>
+                  <Icon name="picture-in-picture" size={30} color={'red'} />
+                </View>
+              </TouchableOpacity>
+            ) : null}
           </>
         );
 
@@ -248,6 +316,7 @@ const SettingTabScreen = ({route}) => {
       <View style={styles.switchContainer}>
         <Text style={styles.text}>배경이미지 사용하기</Text>
         {renderSwitch(screenName)}
+        {renderPickImageButton(screenName)}
       </View>
       <View style={styles.paletteContainer}>
         <View style={styles.bgPaletteContainer}>
@@ -276,23 +345,25 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    textAlignVertical: 'center',
   },
   switchContainer: {
+    flex: 1,
     flexDirection: 'row',
     marginVertical: 5,
-    paddingTop: 5,
-    alignContent: 'center',
-    //backgroundColor: 'red',
+    backgroundColor: 'red',
+    alignItems: 'center',
+  },
+  paletteContainer: {
+    flex: 9,
+    backgroundColor: 'skyblue',
   },
   toggleSwitch: {
     marginHorizontal: 5,
     transform: [{scaleX: 1.0}, {scaleY: 1.0}],
     //backgroundColor: 'yellow',
   },
-  paletteContainer: {
-    flex: 1,
-    //backgroundColor: 'skyblue',
-  },
+
   bgPaletteContainer: {
     //backgroundColor: 'red',
     marginVertical: 5,
@@ -307,7 +378,7 @@ const styles = StyleSheet.create({
   },
 
   previewBox: {
-    height: 80,
+    //height: 250,
     marginVertical: 5,
     paddingTop: 15,
     alignItems: 'center',
@@ -316,6 +387,15 @@ const styles = StyleSheet.create({
   previewText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  pickImageButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    marginLeft: 30,
   },
 });
 
