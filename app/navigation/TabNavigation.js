@@ -39,9 +39,10 @@ const TabNavigation = () => {
       tabBarOptions={{
         showIcon: true,
         labelStyle: {fontSize: 12},
+        tabStyle: {height: 60},
       }}>
       {TabInfo.map(
-        tabObj =>
+        (tabObj) =>
           tabObj.checked && (
             <Tab.Screen
               key={tabObj.name}
@@ -49,7 +50,7 @@ const TabNavigation = () => {
               component={tabObj.tab}
               options={{
                 tabBarIcon: ({focused}) => (
-                  <NavIcon focused={focused} name={tabObj.icon} size={26} />
+                  <NavIcon focused={focused} name={tabObj.icon} size={25} />
                 ),
               }}
             />

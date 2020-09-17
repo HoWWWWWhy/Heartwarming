@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   palette: {
-    width: 40,
-    height: 40,
+    width: 38,
+    height: 38,
     margin: 5,
-    borderRadius: 20,
+    borderRadius: 19,
     borderColor: 'red',
   },
 });

@@ -6,7 +6,9 @@ import {
   Switch,
   TouchableOpacity,
   Image,
+  ImageBackground,
   Animated,
+  StatusBar,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -28,6 +30,7 @@ const SettingTabScreen = ({route}) => {
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   const pickImageButton = require('../assets/maldives-2171627_640.jpg');
+  const bgImage = require('../assets/sky-823624_640.jpg');
 
   useEffect(() => {
     switch (screenName) {
@@ -248,7 +251,20 @@ const SettingTabScreen = ({route}) => {
   const renderPreviewBox = (screen_name) => {
     switch (screen_name) {
       case 'Movie':
-        return (
+        return thisMovieSetting.useBgImage ? (
+          <ImageBackground
+            source={bgImage}
+            style={[styles.previewBox, styles.previewBgImage]}>
+            <Text
+              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
+              인생은 속도가 아니라 방향이다.
+            </Text>
+            <Text
+              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
+              by 괴테
+            </Text>
+          </ImageBackground>
+        ) : (
           <View
             style={[
               styles.previewBox,
@@ -341,6 +357,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 25,
     paddingVertical: 16,
+    backgroundColor: '#dfe6e9',
     //backgroundColor: 'yellow',
   },
   text: {
@@ -356,7 +373,7 @@ const styles = StyleSheet.create({
   },
   paletteContainer: {
     flex: 9,
-    backgroundColor: 'skyblue',
+    //backgroundColor: 'skyblue',
   },
   toggleSwitch: {
     marginHorizontal: 5,
@@ -378,14 +395,19 @@ const styles = StyleSheet.create({
   },
 
   previewBox: {
-    //height: 250,
+    width: 200,
+    height: Math.round(
+      (200 * (constants.height - StatusBar.currentHeight - 60)) /
+        constants.width,
+    ),
     marginVertical: 5,
-    paddingTop: 15,
+    //paddingTop: 15,
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
   },
   previewText: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   pickImageButton: {
@@ -396,6 +418,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 20,
     marginLeft: 30,
+  },
+  previewBgImage: {
+    resizeMode: 'cover',
   },
 });
 
