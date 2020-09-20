@@ -66,7 +66,6 @@ const Setting = ({navigation}) => {
         );
 
         if (Object.keys(thisMovieSetting).length > 0) {
-          console.log(thisMovieSetting);
           await AsyncStorage.setItem(
             '@MovieSetting',
             JSON.stringify(thisMovieSetting),

@@ -10,7 +10,7 @@ import {
   StatusBar,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Store from '../store';
 import TempStore from '../temp_store';
@@ -28,31 +28,69 @@ const SettingTabScreen = ({route}) => {
   const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
-  const pickImageButton = require('../assets/maldives-2171627_640.jpg');
+  const animation = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     switch (screenName) {
       case 'Movie':
         if (Object.keys(thisMovieSetting).length === 0) {
           setThisMovieSetting(movieSetting);
+          if (movieSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
+        } else {
+          if (thisMovieSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
         }
         break;
 
       case 'Lyrics':
         if (Object.keys(thisLyricsSetting).length === 0) {
           setThisLyricsSetting(lyricsSetting);
+          if (lyricsSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
+        } else {
+          if (thisLyricsSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
         }
         break;
 
       case 'Book':
         if (Object.keys(thisBookSetting).length === 0) {
           setThisBookSetting(bookSetting);
+          if (bookSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
+        } else {
+          if (thisBookSetting.useBgImage) {
+            pickImageButtonFadeIn();
+          }
         }
         break;
 
       default:
     }
   }, []);
+
+  const pickImageButtonFadeIn = () => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+    //console.log('fadeIn');
+  };
+  const pickImageButtonFadeOut = () => {
+    Animated.timing(animation, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+    //console.log('fadeOut');
+  };
 
   const toggleSwitch = (screen_name) => {
     switch (screen_name) {
@@ -61,6 +99,11 @@ const SettingTabScreen = ({route}) => {
           ...prevState,
           useBgImage: !prevState.useBgImage,
         }));
+        if (!thisMovieSetting.useBgImage) {
+          pickImageButtonFadeIn();
+        } else {
+          pickImageButtonFadeOut();
+        }
         break;
 
       case 'Lyrics':
@@ -68,6 +111,11 @@ const SettingTabScreen = ({route}) => {
           ...prevState,
           useBgImage: !prevState.useBgImage,
         }));
+        if (!thisLyricsSetting.useBgImage) {
+          pickImageButtonFadeIn();
+        } else {
+          pickImageButtonFadeOut();
+        }
         break;
 
       case 'Book':
@@ -75,6 +123,11 @@ const SettingTabScreen = ({route}) => {
           ...prevState,
           useBgImage: !prevState.useBgImage,
         }));
+        if (!thisBookSetting.useBgImage) {
+          pickImageButtonFadeIn();
+        } else {
+          pickImageButtonFadeOut();
+        }
         break;
 
       default:
@@ -129,9 +182,6 @@ const SettingTabScreen = ({route}) => {
               value={thisMovieSetting.useBgImage}
               style={styles.toggleSwitch}
             />
-            <Text style={styles.text}>
-              {thisMovieSetting.useBgImage ? 'on' : 'off'}
-            </Text>
           </>
         );
 
@@ -145,7 +195,6 @@ const SettingTabScreen = ({route}) => {
               value={thisLyricsSetting.useBgImage}
               style={styles.toggleSwitch}
             />
-            <Text>{thisLyricsSetting.useBgImage ? 'on' : 'off'}</Text>
           </>
         );
 
@@ -159,7 +208,6 @@ const SettingTabScreen = ({route}) => {
               value={thisBookSetting.useBgImage}
               style={styles.toggleSwitch}
             />
-            <Text>{thisBookSetting.useBgImage ? 'on' : 'off'}</Text>
           </>
         );
 
@@ -168,48 +216,17 @@ const SettingTabScreen = ({route}) => {
   };
 
   const renderPickImageButton = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        return (
-          <>
-            {thisMovieSetting.useBgImage ? (
-              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
-                <View style={styles.pickImageButton}>
-                  <Icon name="picture-in-picture" size={30} color={'red'} />
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </>
-        );
-
-      case 'Lyrics':
-        return (
-          <>
-            {thisLyricsSetting.useBgImage ? (
-              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
-                <View style={styles.pickImageButton}>
-                  <Icon name="picture-in-picture" size={30} color={'red'} />
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </>
-        );
-
-      case 'Book':
-        return (
-          <>
-            {thisBookSetting.useBgImage ? (
-              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
-                <View style={styles.pickImageButton}>
-                  <Icon name="picture-in-picture" size={30} color={'red'} />
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </>
-        );
-
-      default:
-    }
+    return (
+      <>
+        <TouchableOpacity onPress={() => onPickImage(screen_name)}>
+          <Animated.View style={[{opacity: animation}]}>
+            <View style={styles.pickImageButton}>
+              <Icon name="image" size={30} color={'#487eb0'} />
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </>
+    );
   };
 
   const renderBgPalette = (screen_name) => {
@@ -467,13 +484,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   pickImageButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'black',
+    //width: 40,
+    //height: 40,
+    //backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-    marginLeft: 30,
+    //borderRadius: 20,
+    marginLeft: 14,
   },
   previewBgImage: {
     resizeMode: 'cover',
