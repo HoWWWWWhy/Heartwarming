@@ -15,7 +15,6 @@ const Book = ({route, navigation}) => {
   const {bookSetting, setBookSetting} = useContext(Store);
   const {itemId} = route.params;
 
-  const bgImage = require('../assets/maldives-2171627_640.jpg');
   const buttonColor = {active: bookSetting.textColor, inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
@@ -211,7 +210,7 @@ ${source}`,
   return (
     <View style={styles.container}>
       {bookSetting.useBgImage ? (
-        <ImageBackground source={bgImage} style={styles.image}>
+        <ImageBackground source={bookSetting.bgImage} style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

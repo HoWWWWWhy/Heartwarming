@@ -15,7 +15,6 @@ const Lyrics = ({route, navigation}) => {
   const {lyricsSetting, setLyricsSetting} = useContext(Store);
   const {itemId} = route.params;
 
-  const bgImage = require('../assets/kite-1666816_640.jpg');
   const buttonColor = {active: lyricsSetting.textColor, inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
@@ -211,7 +210,7 @@ ${source}`,
   return (
     <View style={styles.container}>
       {lyricsSetting.useBgImage ? (
-        <ImageBackground source={bgImage} style={styles.image}>
+        <ImageBackground source={lyricsSetting.bgImage} style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

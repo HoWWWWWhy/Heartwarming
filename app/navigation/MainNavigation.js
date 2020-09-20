@@ -25,20 +25,27 @@ const MainNavigation = () => {
   const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
   const [bookCheckBox, setBookCheckBox] = useState(true);
 
+  const defaultMovieBgImage = require('../assets/sky-823624_640.jpg');
+  const defaultLyricsBgImage = require('../assets/kite-1666816_640.jpg');
+  const defaultBookBgImage = require('../assets/maldives-2171627_640.jpg');
+
   const [movieSetting, setMovieSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
+    bgImage: defaultMovieBgImage,
   });
   const [lyricsSetting, setLyricsSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
+    bgImage: defaultLyricsBgImage,
   });
   const [bookSetting, setBookSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
+    bgImage: defaultBookBgImage,
   });
 
   //각 탭의 상세 설정을 위한 임시 세팅 저장소
@@ -59,15 +66,27 @@ const MainNavigation = () => {
 
         const movie_setting = await AsyncStorage.getItem('@MovieSetting');
         if (movie_setting !== null) {
-          setMovieSetting(JSON.parse(movie_setting));
+          let parsed_movie_setting = JSON.parse(movie_setting);
+          if (!parsed_movie_setting.hasOwnProperty('bgImage')) {
+            parsed_movie_setting.bgImage = defaultMovieBgImage;
+          }
+          setMovieSetting(parsed_movie_setting);
         }
         const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
         if (lyrics_setting !== null) {
-          setLyricsSetting(JSON.parse(lyrics_setting));
+          let parsed_lyrics_setting = JSON.parse(lyrics_setting);
+          if (!parsed_lyrics_setting.hasOwnProperty('bgImage')) {
+            parsed_lyrics_setting.bgImage = defaultLyricsBgImage;
+          }
+          setLyricsSetting(parsed_lyrics_setting);
         }
         const book_setting = await AsyncStorage.getItem('@BookSetting');
         if (book_setting !== null) {
-          setBookSetting(JSON.parse(book_setting));
+          let parsed_book_setting = JSON.parse(book_setting);
+          if (!parsed_book_setting.hasOwnProperty('bgImage')) {
+            parsed_book_setting.bgImage = defaultBookBgImage;
+          }
+          setBookSetting(parsed_book_setting);
         }
 
         const movie_data = await AsyncStorage.getItem('@Movie');

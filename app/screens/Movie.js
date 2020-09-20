@@ -16,7 +16,6 @@ const Movie = ({route, navigation}) => {
 
   const {itemId} = route.params;
 
-  const bgImage = require('../assets/sky-823624_640.jpg');
   const buttonColor = {active: movieSetting.textColor, inactive: 'darkgrey'};
 
   const [contents, setContents] = useState('');
@@ -212,7 +211,7 @@ ${source}`,
   return (
     <View style={styles.container}>
       {movieSetting.useBgImage ? (
-        <ImageBackground source={bgImage} style={styles.image}>
+        <ImageBackground source={movieSetting.bgImage} style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

@@ -7,7 +7,6 @@ import {
   Alert,
   ScrollView,
   Linking,
-  PixelRatio,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
@@ -67,6 +66,7 @@ const Setting = ({navigation}) => {
         );
 
         if (Object.keys(thisMovieSetting).length > 0) {
+          console.log(thisMovieSetting);
           await AsyncStorage.setItem(
             '@MovieSetting',
             JSON.stringify(thisMovieSetting),

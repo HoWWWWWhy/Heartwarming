@@ -5,7 +5,6 @@ import {
   Text,
   Switch,
   TouchableOpacity,
-  Image,
   ImageBackground,
   Animated,
   StatusBar,
@@ -30,7 +29,6 @@ const SettingTabScreen = ({route}) => {
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   const pickImageButton = require('../assets/maldives-2171627_640.jpg');
-  const bgImage = require('../assets/sky-823624_640.jpg');
 
   useEffect(() => {
     switch (screenName) {
@@ -83,14 +81,40 @@ const SettingTabScreen = ({route}) => {
     }
   };
 
-  const onPickImage = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-    }).then((image) => {
-      console.log(image);
-    });
+  const onPickImage = async (screen_name) => {
+    try {
+      const image = await ImagePicker.openPicker({
+        width: constants.width,
+        height: constants.height - StatusBar.currentHeight - 60,
+        cropping: true,
+      });
+      switch (screen_name) {
+        case 'Movie':
+          setThisMovieSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+        case 'Lyrics':
+          setThisLyricsSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+
+        case 'Book':
+          setThisBookSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+
+        default:
+      }
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
   };
 
   const renderSwitch = (screen_name) => {
@@ -101,7 +125,7 @@ const SettingTabScreen = ({route}) => {
             <Switch
               trackColor={{false: '#767577', true: '#6ab04c'}}
               thumbColor={thisMovieSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screenName)}
+              onValueChange={() => toggleSwitch(screen_name)}
               value={thisMovieSetting.useBgImage}
               style={styles.toggleSwitch}
             />
@@ -117,7 +141,7 @@ const SettingTabScreen = ({route}) => {
             <Switch
               trackColor={{false: '#767577', true: '#6ab04c'}}
               thumbColor={thisLyricsSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screenName)}
+              onValueChange={() => toggleSwitch(screen_name)}
               value={thisLyricsSetting.useBgImage}
               style={styles.toggleSwitch}
             />
@@ -131,7 +155,7 @@ const SettingTabScreen = ({route}) => {
             <Switch
               trackColor={{false: '#767577', true: '#6ab04c'}}
               thumbColor={thisBookSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screenName)}
+              onValueChange={() => toggleSwitch(screen_name)}
               value={thisBookSetting.useBgImage}
               style={styles.toggleSwitch}
             />
@@ -149,7 +173,7 @@ const SettingTabScreen = ({route}) => {
         return (
           <>
             {thisMovieSetting.useBgImage ? (
-              <TouchableOpacity onPress={onPickImage}>
+              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
                 <View style={styles.pickImageButton}>
                   <Icon name="picture-in-picture" size={30} color={'red'} />
                 </View>
@@ -162,7 +186,7 @@ const SettingTabScreen = ({route}) => {
         return (
           <>
             {thisLyricsSetting.useBgImage ? (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
                 <View style={styles.pickImageButton}>
                   <Icon name="picture-in-picture" size={30} color={'red'} />
                 </View>
@@ -175,7 +199,7 @@ const SettingTabScreen = ({route}) => {
         return (
           <>
             {thisBookSetting.useBgImage ? (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => onPickImage(screen_name)}>
                 <View style={styles.pickImageButton}>
                   <Icon name="picture-in-picture" size={30} color={'red'} />
                 </View>
@@ -253,7 +277,7 @@ const SettingTabScreen = ({route}) => {
       case 'Movie':
         return thisMovieSetting.useBgImage ? (
           <ImageBackground
-            source={bgImage}
+            source={thisMovieSetting.bgImage}
             style={[styles.previewBox, styles.previewBgImage]}>
             <Text
               style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
@@ -282,7 +306,26 @@ const SettingTabScreen = ({route}) => {
         );
 
       case 'Lyrics':
-        return (
+        return thisLyricsSetting.useBgImage ? (
+          <ImageBackground
+            source={thisLyricsSetting.bgImage}
+            style={[styles.previewBox, styles.previewBgImage]}>
+            <Text
+              style={[
+                styles.previewText,
+                {color: thisLyricsSetting.textColor},
+              ]}>
+              인생은 속도가 아니라 방향이다.
+            </Text>
+            <Text
+              style={[
+                styles.previewText,
+                {color: thisLyricsSetting.textColor},
+              ]}>
+              by 괴테
+            </Text>
+          </ImageBackground>
+        ) : (
           <View
             style={[
               styles.previewBox,
@@ -306,7 +349,20 @@ const SettingTabScreen = ({route}) => {
         );
 
       case 'Book':
-        return (
+        return thisBookSetting.useBgImage ? (
+          <ImageBackground
+            source={thisBookSetting.bgImage}
+            style={[styles.previewBox, styles.previewBgImage]}>
+            <Text
+              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
+              인생은 속도가 아니라 방향이다.
+            </Text>
+            <Text
+              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
+              by 괴테
+            </Text>
+          </ImageBackground>
+        ) : (
           <View
             style={[
               styles.previewBox,
@@ -356,7 +412,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 25,
-    paddingVertical: 16,
+    paddingVertical: 5,
     backgroundColor: '#dfe6e9',
     //backgroundColor: 'yellow',
   },
@@ -368,7 +424,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginVertical: 5,
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     alignItems: 'center',
   },
   paletteContainer: {
