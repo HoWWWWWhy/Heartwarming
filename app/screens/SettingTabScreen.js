@@ -229,6 +229,20 @@ const SettingTabScreen = ({route}) => {
     );
   };
 
+  const renderCameraButton = (screen_name) => {
+    return (
+      <>
+        <TouchableOpacity onPress={() => onPickImage(screen_name)}>
+          <Animated.View style={[{opacity: animation}]}>
+            <View style={styles.pickImageButton}>
+              <Icon name="camera-retro" size={30} color={'#487eb0'} />
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   const renderBgPalette = (screen_name) => {
     switch (screen_name) {
       case 'Movie':
@@ -295,7 +309,11 @@ const SettingTabScreen = ({route}) => {
         return thisMovieSetting.useBgImage ? (
           <ImageBackground
             source={thisMovieSetting.bgImage}
-            style={[styles.previewBox, styles.previewBgImage]}>
+            style={[
+              styles.previewBox,
+              styles.previewBgImage,
+              styles.previewHeight,
+            ]}>
             <Text
               style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
               인생은 속도가 아니라 방향이다.
@@ -326,7 +344,11 @@ const SettingTabScreen = ({route}) => {
         return thisLyricsSetting.useBgImage ? (
           <ImageBackground
             source={thisLyricsSetting.bgImage}
-            style={[styles.previewBox, styles.previewBgImage]}>
+            style={[
+              styles.previewBox,
+              styles.previewBgImage,
+              styles.previewHeight,
+            ]}>
             <Text
               style={[
                 styles.previewText,
@@ -369,7 +391,11 @@ const SettingTabScreen = ({route}) => {
         return thisBookSetting.useBgImage ? (
           <ImageBackground
             source={thisBookSetting.bgImage}
-            style={[styles.previewBox, styles.previewBgImage]}>
+            style={[
+              styles.previewBox,
+              styles.previewBgImage,
+              styles.previewHeight,
+            ]}>
             <Text
               style={[styles.previewText, {color: thisBookSetting.textColor}]}>
               인생은 속도가 아니라 방향이다.
@@ -405,7 +431,6 @@ const SettingTabScreen = ({route}) => {
       <View style={styles.switchContainer}>
         <Text style={styles.text}>배경이미지 사용하기</Text>
         {renderSwitch(screenName)}
-        {renderPickImageButton(screenName)}
       </View>
       <View style={styles.paletteContainer}>
         <View style={styles.bgPaletteContainer}>
@@ -418,7 +443,13 @@ const SettingTabScreen = ({route}) => {
         </View>
         <View style={styles.previewContainer}>
           <Text style={styles.text}>미리보기 (preview)</Text>
-          {renderPreviewBox(screenName)}
+          <View style={styles.previewImageContainer}>
+            {renderPreviewBox(screenName)}
+            <View style={[styles.previewImageController, styles.previewHeight]}>
+              {renderPickImageButton(screenName)}
+              {renderCameraButton(screenName)}
+            </View>
+          </View>
         </View>
       </View>
     </View>
@@ -466,31 +497,44 @@ const styles = StyleSheet.create({
     //backgroundColor: 'blue',
     marginVertical: 5,
   },
-
+  previewImageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    //backgroundColor: 'green',
+  },
   previewBox: {
     width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  previewImageController: {
+    //backgroundColor: 'yellow',
+    width: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  previewHeight: {
     height: Math.round(
       (200 * (constants.height - StatusBar.currentHeight - 60)) /
         constants.width,
     ),
     marginVertical: 5,
-    //paddingTop: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
   },
   previewText: {
     fontSize: 14,
     fontWeight: 'bold',
   },
   pickImageButton: {
-    //width: 40,
-    //height: 40,
-    //backgroundColor: 'black',
+    width: 60,
+    height: 60,
+    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
-    //borderRadius: 20,
-    marginLeft: 14,
+    borderRadius: 30,
   },
   previewBgImage: {
     resizeMode: 'cover',
