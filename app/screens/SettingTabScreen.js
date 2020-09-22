@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Animated,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,6 +19,8 @@ import TempStore from '../temp_store';
 import BgPalette from '../components/BgPalette';
 import TextPalette from '../components/TextPalette';
 import constants from '../constants';
+
+const TAB_NAVIGATION_BAR_HEIGHT = 60;
 
 const SettingTabScreen = ({route}) => {
   const {screenName} = route.params;
@@ -138,9 +141,52 @@ const SettingTabScreen = ({route}) => {
     try {
       const image = await ImagePicker.openPicker({
         width: constants.width,
-        height: constants.height - StatusBar.currentHeight - 60,
+        height:
+          constants.height -
+          StatusBar.currentHeight -
+          TAB_NAVIGATION_BAR_HEIGHT,
         cropping: true,
       });
+      switch (screen_name) {
+        case 'Movie':
+          setThisMovieSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+        case 'Lyrics':
+          setThisLyricsSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+
+        case 'Book':
+          setThisBookSetting((prevState) => ({
+            ...prevState,
+            bgImage: {uri: image.path},
+          }));
+          break;
+
+        default:
+      }
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+  };
+
+  const onTakePhoto = async (screen_name) => {
+    try {
+      const image = await ImagePicker.openCamera({
+        width: constants.width,
+        height:
+          constants.height -
+          StatusBar.currentHeight -
+          TAB_NAVIGATION_BAR_HEIGHT,
+        cropping: true,
+      });
+
       switch (screen_name) {
         case 'Movie':
           setThisMovieSetting((prevState) => ({
@@ -220,7 +266,7 @@ const SettingTabScreen = ({route}) => {
       <>
         <TouchableOpacity onPress={() => onPickImage(screen_name)}>
           <Animated.View style={[{opacity: animation}]}>
-            <View style={styles.pickImageButton}>
+            <View style={styles.imageControlButton}>
               <Icon name="image" size={30} color={'#487eb0'} />
             </View>
           </Animated.View>
@@ -232,10 +278,10 @@ const SettingTabScreen = ({route}) => {
   const renderCameraButton = (screen_name) => {
     return (
       <>
-        <TouchableOpacity onPress={() => onPickImage(screen_name)}>
+        <TouchableOpacity onPress={() => onTakePhoto(screen_name)}>
           <Animated.View style={[{opacity: animation}]}>
-            <View style={styles.pickImageButton}>
-              <Icon name="camera-retro" size={30} color={'#487eb0'} />
+            <View style={styles.imageControlButton}>
+              <Icon name="camera-retro" size={30} color={'#686de0'} />
             </View>
           </Animated.View>
         </TouchableOpacity>
@@ -327,6 +373,7 @@ const SettingTabScreen = ({route}) => {
           <View
             style={[
               styles.previewBox,
+              styles.previewHeight,
               {backgroundColor: thisMovieSetting.bgColor},
             ]}>
             <Text
@@ -368,6 +415,7 @@ const SettingTabScreen = ({route}) => {
           <View
             style={[
               styles.previewBox,
+              styles.previewHeight,
               {backgroundColor: thisLyricsSetting.bgColor},
             ]}>
             <Text
@@ -409,6 +457,7 @@ const SettingTabScreen = ({route}) => {
           <View
             style={[
               styles.previewBox,
+              styles.previewHeight,
               {backgroundColor: thisBookSetting.bgColor},
             ]}>
             <Text
@@ -428,30 +477,35 @@ const SettingTabScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.switchContainer}>
-        <Text style={styles.text}>배경이미지 사용하기</Text>
-        {renderSwitch(screenName)}
-      </View>
-      <View style={styles.paletteContainer}>
-        <View style={styles.bgPaletteContainer}>
-          <Text style={styles.text}>Select Background Color</Text>
-          {renderBgPalette(screenName)}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.switchContainer}>
+          <Text style={styles.text}>배경이미지 사용하기</Text>
+          {renderSwitch(screenName)}
         </View>
-        <View style={styles.textPaletteContainer}>
-          <Text style={styles.text}>Select Text Color</Text>
-          {renderTextPalette(screenName)}
-        </View>
-        <View style={styles.previewContainer}>
-          <Text style={styles.text}>미리보기 (preview)</Text>
-          <View style={styles.previewImageContainer}>
-            {renderPreviewBox(screenName)}
-            <View style={[styles.previewImageController, styles.previewHeight]}>
-              {renderPickImageButton(screenName)}
-              {renderCameraButton(screenName)}
+        <View style={styles.paletteContainer}>
+          <View style={styles.bgPaletteContainer}>
+            <Text style={styles.text}>Select Background Color</Text>
+            {renderBgPalette(screenName)}
+          </View>
+          <View style={styles.textPaletteContainer}>
+            <Text style={styles.text}>Select Text Color</Text>
+            {renderTextPalette(screenName)}
+          </View>
+          <View style={styles.previewContainer}>
+            <Text style={styles.text}>미리보기 (preview)</Text>
+            <View style={styles.previewImageContainer}>
+              {renderPreviewBox(screenName)}
+              <View
+                style={[styles.previewImageController, styles.previewHeight]}>
+                {renderPickImageButton(screenName)}
+                {renderCameraButton(screenName)}
+                {renderPickImageButton(screenName)}
+                {renderCameraButton(screenName)}
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -512,14 +566,17 @@ const styles = StyleSheet.create({
   },
   previewImageController: {
     //backgroundColor: 'yellow',
-    width: 120,
+    width: 80,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
   },
   previewHeight: {
     height: Math.round(
-      (200 * (constants.height - StatusBar.currentHeight - 60)) /
+      (200 *
+        (constants.height -
+          StatusBar.currentHeight -
+          TAB_NAVIGATION_BAR_HEIGHT)) /
         constants.width,
     ),
     marginVertical: 5,
@@ -528,13 +585,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  pickImageButton: {
+  imageControlButton: {
     width: 60,
     height: 60,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
+    margin: 3,
   },
   previewBgImage: {
     resizeMode: 'cover',

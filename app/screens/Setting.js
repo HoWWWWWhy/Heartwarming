@@ -116,7 +116,9 @@ const Setting = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}>
         <View style={styles.innerContainer}>
           <Text style={styles.menuText}>탭 표시 설정</Text>
           <View style={styles.eachCheckboxContainer}>
