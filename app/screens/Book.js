@@ -210,7 +210,10 @@ ${source}`,
   return (
     <View style={styles.container}>
       {bookSetting.useBgImage ? (
-        <ImageBackground source={bookSetting.bgImage} style={styles.image}>
+        <ImageBackground
+          source={bookSetting.bgImage}
+          blurRadius={bookSetting.bgImageBlur}
+          style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

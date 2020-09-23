@@ -34,18 +34,21 @@ const MainNavigation = () => {
     bgColor: 'white',
     textColor: 'black',
     bgImage: defaultMovieBgImage,
+    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
   const [lyricsSetting, setLyricsSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
     bgImage: defaultLyricsBgImage,
+    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
   const [bookSetting, setBookSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
     bgImage: defaultBookBgImage,
+    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
 
   //각 탭의 상세 설정을 위한 임시 세팅 저장소
@@ -70,6 +73,9 @@ const MainNavigation = () => {
           if (!parsed_movie_setting.hasOwnProperty('bgImage')) {
             parsed_movie_setting.bgImage = defaultMovieBgImage;
           }
+          if (!parsed_movie_setting.hasOwnProperty('bgImageBlur')) {
+            parsed_movie_setting.bgImageBlur = 0;
+          }
           setMovieSetting(parsed_movie_setting);
         }
         const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
@@ -78,6 +84,9 @@ const MainNavigation = () => {
           if (!parsed_lyrics_setting.hasOwnProperty('bgImage')) {
             parsed_lyrics_setting.bgImage = defaultLyricsBgImage;
           }
+          if (!parsed_lyrics_setting.hasOwnProperty('bgImageBlur')) {
+            parsed_lyrics_setting.bgImageBlur = 0;
+          }
           setLyricsSetting(parsed_lyrics_setting);
         }
         const book_setting = await AsyncStorage.getItem('@BookSetting');
@@ -85,6 +94,9 @@ const MainNavigation = () => {
           let parsed_book_setting = JSON.parse(book_setting);
           if (!parsed_book_setting.hasOwnProperty('bgImage')) {
             parsed_book_setting.bgImage = defaultBookBgImage;
+          }
+          if (!parsed_book_setting.hasOwnProperty('bgImageBlur')) {
+            parsed_book_setting.bgImageBlur = 0;
           }
           setBookSetting(parsed_book_setting);
         }

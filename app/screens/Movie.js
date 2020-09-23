@@ -211,7 +211,10 @@ ${source}`,
   return (
     <View style={styles.container}>
       {movieSetting.useBgImage ? (
-        <ImageBackground source={movieSetting.bgImage} style={styles.image}>
+        <ImageBackground
+          source={movieSetting.bgImage}
+          blurRadius={movieSetting.bgImageBlur}
+          style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

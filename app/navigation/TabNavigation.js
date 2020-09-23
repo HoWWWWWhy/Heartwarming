@@ -36,6 +36,7 @@ const TabNavigation = () => {
   return (
     <Tab.Navigator
       tabBarPosition="bottom"
+      backBehavior="none"
       tabBarOptions={{
         showIcon: true,
         labelStyle: {fontSize: 12},

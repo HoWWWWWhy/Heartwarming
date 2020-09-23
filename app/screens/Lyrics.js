@@ -210,7 +210,10 @@ ${source}`,
   return (
     <View style={styles.container}>
       {lyricsSetting.useBgImage ? (
-        <ImageBackground source={lyricsSetting.bgImage} style={styles.image}>
+        <ImageBackground
+          source={lyricsSetting.bgImage}
+          blurRadius={lyricsSetting.bgImageBlur}
+          style={styles.image}>
           {renderInnerContainer()}
         </ImageBackground>
       ) : (

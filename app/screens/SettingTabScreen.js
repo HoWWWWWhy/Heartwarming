@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import TempStore from '../temp_store';
@@ -216,6 +217,35 @@ const SettingTabScreen = ({route}) => {
     }
   };
 
+  const onChangeBlur = async (screen_name) => {
+    switch (screen_name) {
+      case 'Movie':
+        setThisMovieSetting((prevState) => ({
+          ...prevState,
+          bgImageBlur:
+            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
+        }));
+        break;
+      case 'Lyrics':
+        setThisLyricsSetting((prevState) => ({
+          ...prevState,
+          bgImageBlur:
+            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
+        }));
+        break;
+
+      case 'Book':
+        setThisBookSetting((prevState) => ({
+          ...prevState,
+          bgImageBlur:
+            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
+        }));
+        break;
+
+      default:
+    }
+  };
+
   const renderSwitch = (screen_name) => {
     switch (screen_name) {
       case 'Movie':
@@ -289,6 +319,38 @@ const SettingTabScreen = ({route}) => {
     );
   };
 
+  const renderBlurEffectButton = (screen_name) => {
+    return (
+      <>
+        <TouchableOpacity onPress={() => onChangeBlur(screen_name)}>
+          <Animated.View style={[{opacity: animation}]}>
+            <View style={styles.imageControlButton}>
+              <MaterialIcons name="blur-on" size={30} color={'#487eb0'} />
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  const renderInitializeImageButton = (screen_name) => {
+    return (
+      <>
+        <TouchableOpacity onPress={() => onTakePhoto(screen_name)}>
+          <Animated.View style={[{opacity: animation}]}>
+            <View style={styles.imageControlButton}>
+              <MaterialIcons
+                name="settings-backup-restore"
+                size={30}
+                color={'#686de0'}
+              />
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   const renderBgPalette = (screen_name) => {
     switch (screen_name) {
       case 'Movie':
@@ -355,6 +417,7 @@ const SettingTabScreen = ({route}) => {
         return thisMovieSetting.useBgImage ? (
           <ImageBackground
             source={thisMovieSetting.bgImage}
+            blurRadius={thisMovieSetting.bgImageBlur}
             style={[
               styles.previewBox,
               styles.previewBgImage,
@@ -391,6 +454,7 @@ const SettingTabScreen = ({route}) => {
         return thisLyricsSetting.useBgImage ? (
           <ImageBackground
             source={thisLyricsSetting.bgImage}
+            blurRadius={thisLyricsSetting.bgImageBlur}
             style={[
               styles.previewBox,
               styles.previewBgImage,
@@ -439,6 +503,7 @@ const SettingTabScreen = ({route}) => {
         return thisBookSetting.useBgImage ? (
           <ImageBackground
             source={thisBookSetting.bgImage}
+            blurRadius={thisBookSetting.bgImageBlur}
             style={[
               styles.previewBox,
               styles.previewBgImage,
@@ -499,8 +564,8 @@ const SettingTabScreen = ({route}) => {
                 style={[styles.previewImageController, styles.previewHeight]}>
                 {renderPickImageButton(screenName)}
                 {renderCameraButton(screenName)}
-                {renderPickImageButton(screenName)}
-                {renderCameraButton(screenName)}
+                {renderBlurEffectButton(screenName)}
+                {renderInitializeImageButton(screenName)}
               </View>
             </View>
           </View>
@@ -565,8 +630,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   previewImageController: {
-    //backgroundColor: 'yellow',
-    width: 80,
+    //backgroundColor: 'white',
+    width: constants.width - 25 * 2 - 5 * 2 - 200 - 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
