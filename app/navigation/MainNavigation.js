@@ -14,6 +14,8 @@ import Setting from '../screens/Setting';
 import Update from '../screens/Update';
 import SettingTabScreen from '../screens/SettingTabScreen';
 
+import assets from '../default_assets';
+
 const Stack = createStackNavigator();
 
 const MainNavigation = () => {
@@ -25,29 +27,25 @@ const MainNavigation = () => {
   const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
   const [bookCheckBox, setBookCheckBox] = useState(true);
 
-  const defaultMovieBgImage = require('../assets/sky-823624_640.jpg');
-  const defaultLyricsBgImage = require('../assets/kite-1666816_640.jpg');
-  const defaultBookBgImage = require('../assets/maldives-2171627_640.jpg');
-
   const [movieSetting, setMovieSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
-    bgImage: defaultMovieBgImage,
+    bgImage: assets.defaultMovieBgImage,
     bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
   const [lyricsSetting, setLyricsSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
-    bgImage: defaultLyricsBgImage,
+    bgImage: assets.defaultLyricsBgImage,
     bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
   const [bookSetting, setBookSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
     textColor: 'black',
-    bgImage: defaultBookBgImage,
+    bgImage: assets.defaultBookBgImage,
     bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
 
@@ -71,7 +69,7 @@ const MainNavigation = () => {
         if (movie_setting !== null) {
           let parsed_movie_setting = JSON.parse(movie_setting);
           if (!parsed_movie_setting.hasOwnProperty('bgImage')) {
-            parsed_movie_setting.bgImage = defaultMovieBgImage;
+            parsed_movie_setting.bgImage = assets.defaultMovieBgImage;
           }
           if (!parsed_movie_setting.hasOwnProperty('bgImageBlur')) {
             parsed_movie_setting.bgImageBlur = 0;
@@ -82,7 +80,7 @@ const MainNavigation = () => {
         if (lyrics_setting !== null) {
           let parsed_lyrics_setting = JSON.parse(lyrics_setting);
           if (!parsed_lyrics_setting.hasOwnProperty('bgImage')) {
-            parsed_lyrics_setting.bgImage = defaultLyricsBgImage;
+            parsed_lyrics_setting.bgImage = assets.defaultLyricsBgImage;
           }
           if (!parsed_lyrics_setting.hasOwnProperty('bgImageBlur')) {
             parsed_lyrics_setting.bgImageBlur = 0;
@@ -93,7 +91,7 @@ const MainNavigation = () => {
         if (book_setting !== null) {
           let parsed_book_setting = JSON.parse(book_setting);
           if (!parsed_book_setting.hasOwnProperty('bgImage')) {
-            parsed_book_setting.bgImage = defaultBookBgImage;
+            parsed_book_setting.bgImage = assets.defaultBookBgImage;
           }
           if (!parsed_book_setting.hasOwnProperty('bgImageBlur')) {
             parsed_book_setting.bgImageBlur = 0;

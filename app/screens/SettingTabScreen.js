@@ -20,6 +20,7 @@ import TempStore from '../temp_store';
 import BgPalette from '../components/BgPalette';
 import TextPalette from '../components/TextPalette';
 import constants from '../constants';
+import assets from '../default_assets';
 
 const TAB_NAVIGATION_BAR_HEIGHT = 60;
 
@@ -153,12 +154,14 @@ const SettingTabScreen = ({route}) => {
           setThisMovieSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
         case 'Lyrics':
           setThisLyricsSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
 
@@ -166,6 +169,7 @@ const SettingTabScreen = ({route}) => {
           setThisBookSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
 
@@ -193,12 +197,14 @@ const SettingTabScreen = ({route}) => {
           setThisMovieSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
         case 'Lyrics':
           setThisLyricsSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
 
@@ -206,6 +212,7 @@ const SettingTabScreen = ({route}) => {
           setThisBookSetting((prevState) => ({
             ...prevState,
             bgImage: {uri: image.path},
+            bgImageBlur: 0,
           }));
           break;
 
@@ -239,6 +246,35 @@ const SettingTabScreen = ({route}) => {
           ...prevState,
           bgImageBlur:
             prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
+        }));
+        break;
+
+      default:
+    }
+  };
+
+  const onInitializeImage = async (screen_name) => {
+    switch (screen_name) {
+      case 'Movie':
+        setThisMovieSetting((prevState) => ({
+          ...prevState,
+          bgImage: assets.defaultMovieBgImage,
+          bgImageBlur: 0,
+        }));
+        break;
+      case 'Lyrics':
+        setThisLyricsSetting((prevState) => ({
+          ...prevState,
+          bgImage: assets.defaultLyricsBgImage,
+          bgImageBlur: 0,
+        }));
+        break;
+
+      case 'Book':
+        setThisBookSetting((prevState) => ({
+          ...prevState,
+          bgImage: assets.defaultBookBgImage,
+          bgImageBlur: 0,
         }));
         break;
 
@@ -336,7 +372,7 @@ const SettingTabScreen = ({route}) => {
   const renderInitializeImageButton = (screen_name) => {
     return (
       <>
-        <TouchableOpacity onPress={() => onTakePhoto(screen_name)}>
+        <TouchableOpacity onPress={() => onInitializeImage(screen_name)}>
           <Animated.View style={[{opacity: animation}]}>
             <View style={styles.imageControlButton}>
               <MaterialIcons
