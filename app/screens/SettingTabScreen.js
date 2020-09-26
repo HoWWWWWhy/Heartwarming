@@ -148,11 +148,14 @@ const SettingTabScreen = ({route}) => {
           StatusBar.currentHeight -
           TAB_NAVIGATION_BAR_HEIGHT,
         cropping: true,
+        // includeExif: true,
+        // includeBase64: true,
       });
       switch (screen_name) {
         case 'Movie':
           setThisMovieSetting((prevState) => ({
             ...prevState,
+            //bgImage: {uri: `data:${image.mime};base64,${image.data}`},
             bgImage: {uri: image.path},
             bgImageBlur: 0,
           }));
