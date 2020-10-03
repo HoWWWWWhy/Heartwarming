@@ -11,9 +11,11 @@ import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Home from './Home';
 import Store from '../store';
+import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
 
 const DismissKeyboard = ({children}) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -38,6 +40,9 @@ const Add = ({navigation, route}) => {
   const [insertFlag, setInsertFlag] = useState(false);
   const [itemId, setItemId] = useState(0);
   const [screenName, setScreenName] = useState('');
+
+  const [cameraOn, setCameraOn] = useState(false);
+  const [recogonizedText, setrecogonizedText] = useState(null);
 
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
@@ -107,7 +112,7 @@ const Add = ({navigation, route}) => {
   };
 
   const changeList = () => {
-    setProposIndex(prevIndex => prevIndex + 1);
+    setProposIndex((prevIndex) => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
       setProposIndex(0);
     }
@@ -115,17 +120,26 @@ const Add = ({navigation, route}) => {
     setPrepos(preposList[preposIndex]);
   };
 
+  const onOCRCapture = (recogonizedText) => {
+    const textBlocks = recogonizedText.textBlocks;
+    console.log('onCapture', textBlocks);
+    //this.setState({showCamera: false, showWordList: Helper.isNotNullAndUndefined(recogonizedText), recogonizedText: recogonizedText});
+  };
   return (
     <DismissKeyboard>
       <View style={styles.container}>
         <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
+        <TouchableOpacity onPress={() => setCameraOn(true)}>
+          <Icon name="camera-retro" size={30} color={'#686de0'} />
+          <Text>{cameraOn.toString()}</Text>
+        </TouchableOpacity>
         <TextInput
           style={styles.textInput}
           placeholder={defaultContents}
           multiline
           editable
           returnKeyLabel="done"
-          onChangeText={text => setContents(text)}
+          onChangeText={(text) => setContents(text)}
         />
         <View style={styles.preposContainer}>
           <TouchableOpacity onPress={changeList}>
@@ -140,7 +154,7 @@ const Add = ({navigation, route}) => {
           placeholder={defaultSource}
           multiline
           editable
-          onChangeText={text => setSource(text)}
+          onChangeText={(text) => setSource(text)}
         />
         <Text style={styles.textTitle}>카테고리</Text>
         <Picker
@@ -148,13 +162,27 @@ const Add = ({navigation, route}) => {
           enabled={insertFlag ? false : true}
           style={styles.picker}
           onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-          {categoryList.map(item => (
+          {categoryList.map((item) => (
             <Picker.Item key={item} label={item} value={item} />
           ))}
         </Picker>
         <TouchableOpacity style={styles.addButton} onPress={storeData}>
           <Text style={styles.textButton}>추가하기</Text>
         </TouchableOpacity>
+        {cameraOn && (
+          <OcrCamera
+            cameraType={RNCameraConstants.Type.back}
+            flashMode={RNCameraConstants.FlashMode.off}
+            autoFocus={RNCameraConstants.AutoFocus.on}
+            whiteBalance={RNCameraConstants.WhiteBalance.auto}
+            ratio={'4:3'}
+            quality={0.5}
+            imageWidth={800}
+            enabledOCR={true}
+            onCapture={(data, recogonizedText) => onOCRCapture(recogonizedText)}
+            onClose={() => setCameraOn(false)}
+          />
+        )}
       </View>
     </DismissKeyboard>
   );

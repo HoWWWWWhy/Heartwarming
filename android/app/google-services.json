@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "627845373979",
+    "firebase_url": "https://heartwarming-b5927.firebaseio.com",
+    "project_id": "heartwarming-b5927",
+    "storage_bucket": "heartwarming-b5927.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627845373979:android:791b9abfa18a6a994c58be",
+        "android_client_info": {
+          "package_name": "com.howwwwwhy.heartwarming"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627845373979-rpuujsd6ekj43o4jtu6evlr3t0fcumdl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxQ4p2T67BdRjU70HXZvfUKpBsscSA48Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627845373979-rpuujsd6ekj43o4jtu6evlr3t0fcumdl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
