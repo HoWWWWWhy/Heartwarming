@@ -2,9 +2,8 @@ import React, {useEffect, useState, useRef} from 'react';
 import {
   TouchableOpacity,
   View,
-  Image,
-  Platform,
   StyleSheet,
+  StatusBar,
   Text,
 } from 'react-native';
 
@@ -12,6 +11,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import {RNCamera} from 'react-native-camera';
+
+import constants from '../constants';
 
 export const RNCameraConstants = {
   ...RNCamera.Constants,
@@ -37,7 +38,6 @@ const OCR_Camera = ({
     recognizedText: null,
   });
 
-  const [recognizedWordList, setRecognizedWordList] = useState([]);
   const cameraRef = useRef(null);
 
   useEffect(() => {
@@ -93,13 +93,12 @@ const OCR_Camera = ({
 
   const textRecognized = (data) => {
     if (enabledOCR) {
-      console.log('onTextRecognized', data);
+      //console.log('onTextRecognized', data);
       if (data && data.textBlocks && data.textBlocks.length > 0) {
         setCameraSetting((prevState) => ({
           ...prevState,
           recognizedText: data,
         }));
-        getElementTextBlocks(data, 'LINE'); //"BLOCK", "LINE", "ELEMENT"
       } else {
         setCameraSetting((prevState) => ({
           ...prevState,
@@ -109,63 +108,29 @@ const OCR_Camera = ({
     }
   };
 
-  const getElementTextBlocks = (data, division_type) => {
-    let wordList = [];
-    const blockType_num = data.textBlocks.length;
-    console.log('-------------------------------------');
-    for (let i = 0; i < blockType_num; i++) {
-      let curTextBlock = data.textBlocks[i];
-      if (curTextBlock.type === 'block') {
-        if (division_type === 'BLOCK') {
-          wordList.push(curTextBlock.value);
-        } else {
-          let lineType_num = curTextBlock.components.length;
-          for (let j = 0; j < lineType_num; j++) {
-            let curLineBlock = curTextBlock.components[j];
-            if (curLineBlock.type === 'line') {
-              if (division_type === 'LINE') {
-                wordList.push(curLineBlock.value);
-              } else {
-                let elementType_num = curLineBlock.components.length;
-                for (let k = 0; k < elementType_num; k++) {
-                  let curElementBlock = curLineBlock.components[k];
-                  if (curElementBlock.type === 'element') {
-                    if (division_type === 'ELEMENT') {
-                      wordList.push(curElementBlock.value);
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    setRecognizedWordList(wordList);
-    //console.log(wordList);
-  };
-
   return (
     <View style={styles.container}>
-      <RNCamera
-        ref={cameraRef}
-        style={styles.cameraPreview}
-        type={cameraSetting.cameraType}
-        flashMode={cameraSetting.flashMode}
-        ratio={ratio}
-        captureAudio={false}
-        autoFocus={autoFocus}
-        whiteBalance={whiteBalance}
-        androidCameraPermissionOptions={{
-          title: 'Permission to use camera',
-          message: 'We need your permission to use your camera',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancel',
-        }}
-        onTextRecognized={
-          enabledOCR ? (data) => textRecognized(data) : undefined
-        }
-      />
+      <View style={styles.cameraContainer}>
+        <RNCamera
+          ref={cameraRef}
+          style={styles.cameraPreview}
+          type={cameraSetting.cameraType}
+          flashMode={cameraSetting.flashMode}
+          ratio={ratio}
+          captureAudio={false}
+          autoFocus={autoFocus}
+          whiteBalance={whiteBalance}
+          androidCameraPermissionOptions={{
+            title: 'Permission to use camera',
+            message: 'We need your permission to use your camera',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
+          }}
+          onTextRecognized={
+            enabledOCR ? (data) => textRecognized(data) : undefined
+          }
+        />
+      </View>
       <View style={styles.cameraControlContainer}>
         <Text>{enabledOCR}</Text>
         <TouchableOpacity
@@ -188,6 +153,8 @@ const OCR_Camera = ({
           style={styles.cameraControlButton}>
           <Icon name="circle-o" size={50} color={'black'} />
         </TouchableOpacity>
+        <View
+          style={[styles.cameraControlButton, {width: 70, height: 70}]}></View>
       </View>
       <TouchableOpacity
         style={styles.closeButton}
@@ -249,29 +216,36 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     left: 0,
-    right: 0,
     top: 0,
-    bottom: 0,
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
   },
-  cameraContainer: {},
+  cameraContainer: {
+    width: constants.width,
+    height: constants.height - StatusBar.currentHeight - 150,
+    borderColor: 'yellow',
+    borderWidth: 5,
+  },
   cameraPreview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   cameraControlContainer: {
-    flex: 0,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'green',
+    borderColor: 'red',
+    borderWidth: 5,
+    height: 100,
   },
   cameraControlButton: {
-    flex: 0,
-    //backgroundColor: '#f00',
-    paddingVertical: 15,
+    backgroundColor: 'red',
+    paddingVertical: 10,
     paddingHorizontal: 20,
     alignSelf: 'center',
-    margin: 20,
+    marginHorizontal: 20,
   },
   closeButton: {
     position: 'absolute',

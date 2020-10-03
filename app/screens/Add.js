@@ -11,7 +11,7 @@ import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Home from './Home';
 import Store from '../store';
@@ -42,7 +42,7 @@ const Add = ({navigation, route}) => {
   const [screenName, setScreenName] = useState('');
 
   const [cameraOn, setCameraOn] = useState(false);
-  const [recogonizedText, setrecogonizedText] = useState(null);
+  const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
@@ -120,22 +120,77 @@ const Add = ({navigation, route}) => {
     setPrepos(preposList[preposIndex]);
   };
 
-  const onOCRCapture = (recogonizedText) => {
-    const textBlocks = recogonizedText.textBlocks;
-    console.log('onCapture', textBlocks);
-    //this.setState({showCamera: false, showWordList: Helper.isNotNullAndUndefined(recogonizedText), recogonizedText: recogonizedText});
+  const onOCRCapture = (recogonized_text) => {
+    if (
+      recogonized_text &&
+      recogonized_text.textBlocks &&
+      recogonized_text.textBlocks.length > 0
+    ) {
+      //console.log('onCapture', recogonized_text.textBlocks);
+      getElementTextBlocks(recogonized_text, 'BLOCK'); //"BLOCK", "LINE", "ELEMENT"
+    }
+    setCameraOn(false);
+  };
+
+  const getElementTextBlocks = (data, division_type) => {
+    let wordList = [];
+    let contents = '';
+    const blockType_num = data.textBlocks.length;
+    //console.log('-------------------------------------');
+    for (let i = 0; i < blockType_num; i++) {
+      let curTextBlock = data.textBlocks[i];
+      if (curTextBlock.type === 'block') {
+        if (division_type === 'BLOCK') {
+          wordList.push(curTextBlock.value);
+        } else {
+          let lineType_num = curTextBlock.components.length;
+          for (let j = 0; j < lineType_num; j++) {
+            let curLineBlock = curTextBlock.components[j];
+            if (curLineBlock.type === 'line') {
+              if (division_type === 'LINE') {
+                wordList.push(curLineBlock.value);
+              } else {
+                let elementType_num = curLineBlock.components.length;
+                for (let k = 0; k < elementType_num; k++) {
+                  let curElementBlock = curLineBlock.components[k];
+                  if (curElementBlock.type === 'element') {
+                    if (division_type === 'ELEMENT') {
+                      wordList.push(curElementBlock.value);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    setRecognizedWordList(wordList);
+
+    wordList.map(
+      (word, idx) =>
+        (contents += idx === wordList.length - 1 ? word : word + '\n'),
+    );
+    //console.log(contents);
+    setContents(contents);
+    //console.log(wordList);
   };
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
-        <TouchableOpacity onPress={() => setCameraOn(true)}>
-          <Icon name="camera-retro" size={30} color={'#686de0'} />
-          <Text>{cameraOn.toString()}</Text>
-        </TouchableOpacity>
+        <View style={styles.contentsContainer}>
+          <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
+          <TouchableOpacity
+            onPress={() => setCameraOn(true)}
+            style={styles.cameraButton}>
+            <Icon name="photo-camera" size={20} color={'#34495e'} />
+          </TouchableOpacity>
+          <Text style={{fontSize: 10}}>(베타 버전)</Text>
+        </View>
         <TextInput
           style={styles.textInput}
           placeholder={defaultContents}
+          defaultValue={contents}
           multiline
           editable
           returnKeyLabel="done"
@@ -176,8 +231,8 @@ const Add = ({navigation, route}) => {
             autoFocus={RNCameraConstants.AutoFocus.on}
             whiteBalance={RNCameraConstants.WhiteBalance.auto}
             ratio={'4:3'}
-            quality={0.5}
-            imageWidth={800}
+            quality={0.8}
+            imageWidth={400}
             enabledOCR={true}
             onCapture={(data, recogonizedText) => onOCRCapture(recogonizedText)}
             onClose={() => setCameraOn(false)}
@@ -198,6 +253,16 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     paddingTop: 50,
   },
+  contentsContainer: {
+    flexDirection: 'row',
+  },
+  cameraButton: {
+    width: 20,
+    height: 20,
+    //backgroundColor: 'white',
+    marginHorizontal: 5,
+  },
+
   preposContainer: {
     flexDirection: 'row',
   },
