@@ -14,6 +14,7 @@ import Setting from '../screens/Setting';
 import Update from '../screens/Update';
 import SettingTabScreen from '../screens/SettingTabScreen';
 
+import constants from '../constants';
 import assets from '../default_assets';
 
 const Stack = createStackNavigator();
@@ -159,7 +160,7 @@ const MainNavigation = () => {
             setThisBookSetting,
           }}>
           <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName="Home">
               <Stack.Screen
                 name="Home"
                 component={Home}
@@ -175,6 +176,7 @@ const MainNavigation = () => {
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
                 }}
               />
 
@@ -186,6 +188,7 @@ const MainNavigation = () => {
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
                 })}
               />
 
@@ -197,6 +200,7 @@ const MainNavigation = () => {
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
                 }}
               />
               <Stack.Screen
@@ -207,6 +211,7 @@ const MainNavigation = () => {
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
                 }}
               />
               <Stack.Screen

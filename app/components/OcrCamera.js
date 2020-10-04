@@ -41,6 +41,7 @@ const OCR_Camera = ({
   const cameraRef = useRef(null);
 
   useEffect(() => {
+    //console.log(constants.width, constants.height);
     setCameraSetting({
       cameraType: enabledOCR ? RNCameraConstants.Type.back : cameraType,
       flashMode,
@@ -145,24 +146,24 @@ const OCR_Camera = ({
                 : 'flash-off'
             }
             size={50}
-            color={'black'}
+            color={'#FFC312'}
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={takePicture}
           style={styles.cameraControlButton}>
-          <Icon name="circle-o" size={50} color={'black'} />
+          <Icon name="circle-o" size={50} color={'#12CBC4'} />
         </TouchableOpacity>
-        <View
-          style={[styles.cameraControlButton, {width: 70, height: 70}]}></View>
+        {/* <View style={styles.cameraControlButton}></View> */}
+        <TouchableOpacity
+          style={[styles.cameraControlButton, styles.closeButton]}
+          onPress={() => {
+            onClose && onClose();
+          }}>
+          <MaterialIcons name={'close'} style={styles.closeButtonIcon} />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.closeButton}
-        onPress={() => {
-          onClose && onClose();
-        }}>
-        <MaterialIcons name={'close'} style={styles.closeButtonIcon} />
-      </TouchableOpacity>
+
       {cameraSetting.recognizedText !== null
         ? cameraSetting.recognizedText.textBlocks.map((block, idx) => (
             <View
@@ -170,11 +171,11 @@ const OCR_Camera = ({
               style={{
                 position: 'absolute',
                 top: block.bounds.origin.y,
-                left: block.bounds.origin.x,
+                left: 25 + block.bounds.origin.x,
                 width: block.bounds.size.width,
                 height: block.bounds.size.height,
                 borderStyle: 'solid',
-                borderWidth: 2,
+                borderWidth: 1,
                 borderColor: 'red',
               }}
             />
@@ -197,7 +198,7 @@ OCR_Camera.propTypes = {
   enabledOCR: PropTypes.bool,
   onClose: PropTypes.func,
 };
-
+/*
 OCR_Camera.defaultProps = {
   cameraType: RNCameraConstants.Type.back,
   flashMode: RNCameraConstants.FlashMode.off,
@@ -211,7 +212,7 @@ OCR_Camera.defaultProps = {
   enabledOCR: false,
   onClose: null,
 };
-
+*/
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
@@ -220,42 +221,50 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cameraContainer: {
+    flex: 1,
     width: constants.width,
-    height: constants.height - StatusBar.currentHeight - 150,
-    borderColor: 'yellow',
-    borderWidth: 5,
+    height:
+      constants.height -
+      StatusBar.currentHeight -
+      constants.STACK_HEADER_HEIGHT -
+      1.5 * constants.STACK_HEADER_HEIGHT,
+    //borderColor: 'yellow',
+    //borderWidth: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cameraPreview: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    width: constants.width - 50,
+    height:
+      constants.height -
+      StatusBar.currentHeight -
+      constants.STACK_HEADER_HEIGHT -
+      1.5 * constants.STACK_HEADER_HEIGHT,
   },
   cameraControlContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green',
-    borderColor: 'red',
-    borderWidth: 5,
-    height: 100,
+    width: constants.width,
+    height: 1.5 * constants.STACK_HEADER_HEIGHT,
+    //backgroundColor: 'green',
+    //borderColor: 'red',
+    //borderWidth: 5,
   },
   cameraControlButton: {
-    backgroundColor: 'red',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    marginHorizontal: 20,
+    flex: 1,
+    height: 60,
+    width: 60,
+    marginHorizontal: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    //backgroundColor: 'red',
   },
   closeButton: {
-    position: 'absolute',
     backgroundColor: '#aaaaaab0',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    top: 10,
-    left: 10,
+    borderRadius: 30,
   },
   closeButtonIcon: {
     fontSize: 40,

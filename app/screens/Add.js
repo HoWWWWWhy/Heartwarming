@@ -1,12 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {
   StyleSheet,
-  Platform,
   View,
   Text,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+
 import {Picker} from '@react-native-community/picker';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
@@ -185,7 +185,7 @@ const Add = ({navigation, route}) => {
             style={styles.cameraButton}>
             <Icon name="photo-camera" size={20} color={'#34495e'} />
           </TouchableOpacity>
-          <Text style={{fontSize: 10}}>(베타 버전)</Text>
+          <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
         </View>
         <TextInput
           style={styles.textInput}
@@ -232,7 +232,7 @@ const Add = ({navigation, route}) => {
             whiteBalance={RNCameraConstants.WhiteBalance.auto}
             ratio={'4:3'}
             quality={0.8}
-            imageWidth={400}
+            imageWidth={800}
             enabledOCR={true}
             onCapture={(data, recogonizedText) => onOCRCapture(recogonizedText)}
             onClose={() => setCameraOn(false)}
