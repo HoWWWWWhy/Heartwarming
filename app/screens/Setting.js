@@ -47,6 +47,7 @@ const Setting = ({navigation}) => {
 
   useEffect(() => {
     return () => {
+      console.log(thisMovieSetting);
       setThisMovieSetting({});
       setThisLyricsSetting({});
       setThisBookSetting({});

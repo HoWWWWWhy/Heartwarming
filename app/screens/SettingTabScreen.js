@@ -142,11 +142,12 @@ const SettingTabScreen = ({route}) => {
   const onPickImage = async (screen_name) => {
     try {
       const image = await ImagePicker.openPicker({
-        width: constants.width,
+        width: 2 * constants.width,
         height:
-          constants.height -
-          StatusBar.currentHeight -
-          TAB_NAVIGATION_BAR_HEIGHT,
+          2 *
+          (constants.height -
+            StatusBar.currentHeight -
+            TAB_NAVIGATION_BAR_HEIGHT),
         cropping: true,
         // includeExif: true,
         // includeBase64: true,
@@ -187,11 +188,12 @@ const SettingTabScreen = ({route}) => {
   const onTakePhoto = async (screen_name) => {
     try {
       const image = await ImagePicker.openCamera({
-        width: constants.width,
+        width: 2 * constants.width,
         height:
-          constants.height -
-          StatusBar.currentHeight -
-          TAB_NAVIGATION_BAR_HEIGHT,
+          2 *
+          (constants.height -
+            StatusBar.currentHeight -
+            TAB_NAVIGATION_BAR_HEIGHT),
         cropping: true,
       });
 
