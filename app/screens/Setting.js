@@ -47,7 +47,6 @@ const Setting = ({navigation}) => {
 
   useEffect(() => {
     return () => {
-      console.log(thisMovieSetting);
       setThisMovieSetting({});
       setThisLyricsSetting({});
       setThisBookSetting({});
@@ -65,7 +64,6 @@ const Setting = ({navigation}) => {
             thisBookCheckBox,
           ]),
         );
-
         if (Object.keys(thisMovieSetting).length > 0) {
           await AsyncStorage.setItem(
             '@MovieSetting',

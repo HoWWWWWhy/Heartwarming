@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -33,9 +34,15 @@ const SettingTabScreen = ({route}) => {
   const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
+  const [tempImage, setTempImage] = useState('');
+
   const animation = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
+    // console.log(RNFS.DocumentDirectoryPath);
+    // console.log(RNFS.CachesDirectoryPath);
+    // console.log(RNFS.TemporaryDirectoryPath);
+    // console.log(RNFS.ExternalDirectoryPath);
     switch (screenName) {
       case 'Movie':
         if (Object.keys(thisMovieSetting).length === 0) {
@@ -152,6 +159,15 @@ const SettingTabScreen = ({route}) => {
         // includeExif: true,
         // includeBase64: true,
       });
+
+      if (tempImage !== '') {
+        const deletedTempImage = await RNFS.unlink(
+          RNFS.ExternalDirectoryPath + '/Pictures/' + tempImage,
+        );
+      }
+
+      setTempImage(image.path.split('/').pop());
+
       switch (screen_name) {
         case 'Movie':
           setThisMovieSetting((prevState) => ({
@@ -196,6 +212,14 @@ const SettingTabScreen = ({route}) => {
             TAB_NAVIGATION_BAR_HEIGHT),
         cropping: true,
       });
+
+      if (tempImage !== '') {
+        const deletedTempImage = await RNFS.unlink(
+          RNFS.ExternalDirectoryPath + '/Pictures/' + tempImage,
+        );
+      }
+
+      setTempImage(image.path.split('/').pop());
 
       switch (screen_name) {
         case 'Movie':
