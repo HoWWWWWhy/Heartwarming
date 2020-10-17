@@ -9,9 +9,14 @@ import Store from '../store';
 import TempStore from '../temp_store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
+import MovieNavigation from './MovieNavigation';
+import LyricsNavigation from './LyricsNavigation';
+import BookNavigation from './BookNavigation';
+
 import Add from '../screens/Add';
 import Setting from '../screens/Setting';
 import Update from '../screens/Update';
+import EditCategory from '../screens/EditCategory';
 import SettingTabScreen from '../screens/SettingTabScreen';
 
 import constants from '../constants';
@@ -20,6 +25,12 @@ import assets from '../default_assets';
 const Stack = createStackNavigator();
 
 const MainNavigation = () => {
+  const [categories, setCategories] = useState([
+    {Movie: {icon: 'movie', navi: Object(MovieNavigation)}},
+    {Lyrics: {icon: 'library-music', navi: Object(LyricsNavigation)}},
+    {Book: {icon: 'library-books', navi: Object(BookNavigation)}},
+  ]);
+
   const [movies, setMovies] = useState([]);
   const [lyrics, setLyrics] = useState([]);
   const [books, setBooks] = useState([]);
@@ -127,6 +138,8 @@ const MainNavigation = () => {
   }, []);
 
   const providerValues = {
+    categories,
+    setCategories,
     movies,
     lyrics,
     books,
@@ -208,6 +221,17 @@ const MainNavigation = () => {
                 component={Update}
                 options={{
                   title: '수정하기',
+                  gestureEnabled: true,
+                  gestureResponseDistance: 'horizontal',
+                  gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                }}
+              />
+              <Stack.Screen
+                name="EditCategory"
+                component={EditCategory}
+                options={{
+                  title: '카테고리 편집',
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',

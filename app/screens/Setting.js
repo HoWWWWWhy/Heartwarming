@@ -119,6 +119,15 @@ const Setting = ({navigation}) => {
         showsVerticalScrollIndicator={false}
         style={styles.scrollView}>
         <View style={styles.innerContainer}>
+          <Text style={styles.menuText}>카테고리 편집</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('EditCategory', {screenName: 'EditCategory'})
+            }>
+            <Text>카테고리 편집</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.innerContainer}>
           <Text style={styles.menuText}>탭 표시 설정</Text>
           <View style={styles.eachCheckboxContainer}>
             <View style={styles.checkbox}>

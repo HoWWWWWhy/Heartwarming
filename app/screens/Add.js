@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     paddingTop: 50,
+    backgroundColor: '#dfe6e9',
   },
   contentsContainer: {
     flexDirection: 'row',

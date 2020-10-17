@@ -11,25 +11,26 @@ const Tab = createMaterialTopTabNavigator();
 
 const TabNavigation = () => {
   const {movieCheckBox, lyricsCheckBox, bookCheckBox} = useContext(Store);
-
+  const {categories, setCategories} = useContext(Store);
+  console.log(Object.values(categories[0])[0]['navi']);
   const TabInfo = [
     {
       checked: movieCheckBox,
       tab: MovieNavigation,
-      name: 'Movie',
-      icon: 'movie',
+      name: Object.keys(categories[0])[0],
+      icon: Object.values(categories[0])[0]['icon'],
     },
     {
       checked: lyricsCheckBox,
       tab: LyricsNavigation,
-      name: 'Lyrics',
-      icon: 'library-music',
+      name: Object.keys(categories[1])[0],
+      icon: Object.values(categories[1])[0]['icon'],
     },
     {
       checked: bookCheckBox,
       tab: BookNavigation,
-      name: 'Book',
-      icon: 'library-books',
+      name: Object.keys(categories[2])[0],
+      icon: Object.values(categories[2])[0]['icon'],
     },
   ];
 
