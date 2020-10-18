@@ -74,6 +74,7 @@ const Add = ({navigation, route}) => {
           } else {
             movies.push(new_data);
           }
+
           await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
           setMovies(movies);
           //console.log('movies:', movies);

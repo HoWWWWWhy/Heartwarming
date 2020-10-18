@@ -9,9 +9,6 @@ import Store from '../store';
 import TempStore from '../temp_store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
-import MovieNavigation from './MovieNavigation';
-import LyricsNavigation from './LyricsNavigation';
-import BookNavigation from './BookNavigation';
 
 import Add from '../screens/Add';
 import Setting from '../screens/Setting';
@@ -26,9 +23,9 @@ const Stack = createStackNavigator();
 
 const MainNavigation = () => {
   const [categories, setCategories] = useState([
-    {Movie: {icon: 'movie', navi: Object(MovieNavigation)}},
-    {Lyrics: {icon: 'library-music', navi: Object(LyricsNavigation)}},
-    {Book: {icon: 'library-books', navi: Object(BookNavigation)}},
+    {Movie: {icon: 'movie', data: []}},
+    {Lyrics: {icon: 'library-music', data: []}},
+    {Book: {icon: 'library-books', data: []}},
   ]);
 
   const [movies, setMovies] = useState([]);
@@ -114,20 +111,39 @@ const MainNavigation = () => {
         const movie_data = await AsyncStorage.getItem('@Movie');
         if (movie_data !== null) {
           // value previously stored
-          //console.log('movie_data:', movie_data);
-          setMovies(JSON.parse(movie_data));
+          console.log('movie_data:', movie_data);
+
+          let newData = categories;
+          const newIdx = newData.findIndex(
+            (category) => Object.keys(category)[0] === 'Movie',
+          );
+          newData[newIdx]['Movie']['data'] = JSON.parse(movie_data);
+          setCategories(newData);
+          //setMovies(JSON.parse(movie_data));
         }
         const lyrics_data = await AsyncStorage.getItem('@Lyrics');
         if (lyrics_data !== null) {
           // value previously stored
           //console.log('lyrics_data:', lyrics_data);
-          setLyrics(JSON.parse(lyrics_data));
+          let newData = categories;
+          const newIdx = newData.findIndex(
+            (category) => Object.keys(category)[0] === 'Lyrics',
+          );
+          newData[newIdx]['Lyrics']['data'] = JSON.parse(lyrics_data);
+          setCategories(newData);
+          //setLyrics(JSON.parse(lyrics_data));
         }
         const book_data = await AsyncStorage.getItem('@Book');
         if (book_data !== null) {
           // value previously stored
           //console.log('books_data:', books_data);
-          setBooks(JSON.parse(book_data));
+          let newData = categories;
+          const newIdx = newData.findIndex(
+            (category) => Object.keys(category)[0] === 'Book',
+          );
+          newData[newIdx]['Book']['data'] = JSON.parse(book_data);
+          setCategories(newData);
+          //setBooks(JSON.parse(book_data));
         }
       } catch (e) {
         // error reading value
