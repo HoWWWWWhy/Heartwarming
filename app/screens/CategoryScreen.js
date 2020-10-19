@@ -84,7 +84,7 @@ const CategoryScreen = ({route, navigation}) => {
     let nextId = itemId + 1;
     if (screenData.length === 0) {
       nextId = 0;
-    } else if (nextId > movies.length - 1) {
+    } else if (nextId > screenData.length - 1) {
       nextId = screenData.length - 1;
     }
     return nextId;

@@ -47,6 +47,7 @@ const Add = ({navigation, route}) => {
   const {movies, setMovies} = useContext(Store);
   const {lyrics, setLyrics} = useContext(Store);
   const {books, setBooks} = useContext(Store);
+  const {categories, setCategories} = useContext(Store);
 
   useEffect(() => {
     if (typeof route.params !== 'undefined') {
@@ -67,43 +68,59 @@ const Add = ({navigation, route}) => {
     //console.log('data:', new_data);
 
     try {
-      switch (category) {
-        case 'Movie':
-          if (insertFlag) {
-            movies.splice(itemId, 0, new_data);
-          } else {
-            movies.push(new_data);
-          }
+      console.log(categories);
+      let cur_data = [];
+      let newCategories = categories;
+      const newIdx = categories.findIndex(
+        (cur_category) => Object.keys(cur_category)[0] === category,
+      );
+      cur_data = newCategories[newIdx][category]['data'];
 
-          await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-          setMovies(movies);
-          //console.log('movies:', movies);
-          break;
-
-        case 'Lyrics':
-          if (insertFlag) {
-            lyrics.splice(itemId, 0, new_data);
-          } else {
-            lyrics.push(new_data);
-          }
-          await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-          setLyrics(lyrics);
-          //console.log('lyrics:', lyrics);
-          break;
-
-        case 'Book':
-          if (insertFlag) {
-            books.splice(itemId, 0, new_data);
-          } else {
-            books.push(new_data);
-          }
-          await AsyncStorage.setItem('@Book', JSON.stringify(books));
-          setBooks(books);
-          //console.log('books:', books);
-          break;
-
-        default:
+      if (insertFlag) {
+        cur_data.splice(itemId, 0, new_data);
+      } else {
+        cur_data.push(new_data);
       }
+      newCategories[newIdx][category]['data'] = cur_data;
+      await AsyncStorage.setItem('@Data', JSON.stringify(newCategories));
+      setCategories(newCategories);
+      // switch (category) {
+      //   case 'Movie':
+      //     if (insertFlag) {
+      //       movies.splice(itemId, 0, new_data);
+      //     } else {
+      //       movies.push(new_data);
+      //     }
+
+      //     await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
+      //     setMovies(movies);
+      //     //console.log('movies:', movies);
+      //     break;
+
+      //   case 'Lyrics':
+      //     if (insertFlag) {
+      //       lyrics.splice(itemId, 0, new_data);
+      //     } else {
+      //       lyrics.push(new_data);
+      //     }
+      //     await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
+      //     setLyrics(lyrics);
+      //     //console.log('lyrics:', lyrics);
+      //     break;
+
+      //   case 'Book':
+      //     if (insertFlag) {
+      //       books.splice(itemId, 0, new_data);
+      //     } else {
+      //       books.push(new_data);
+      //     }
+      //     await AsyncStorage.setItem('@Book', JSON.stringify(books));
+      //     setBooks(books);
+      //     //console.log('books:', books);
+      //     break;
+
+      //   default:
+      // }
 
       navigation.navigate('Home');
     } catch (e) {

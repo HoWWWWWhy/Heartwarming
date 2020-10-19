@@ -66,6 +66,11 @@ const MainNavigation = () => {
   useEffect(() => {
     const getData = async () => {
       try {
+        const all_data = await AsyncStorage.getItem('@Data');
+        if (all_data !== null) {
+          // value previously stored
+          console.log('all_data:', all_data);
+        }
         const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
         //console.log(checkbox_states);
         if (checkbox_states !== null) {
