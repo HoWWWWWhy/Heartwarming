@@ -18,6 +18,7 @@ import SettingTabScreen from '../screens/SettingTabScreen';
 
 import constants from '../constants';
 import assets from '../default_assets';
+import _ from 'lodash';
 
 const Stack = createStackNavigator();
 
@@ -66,11 +67,6 @@ const MainNavigation = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const all_data = await AsyncStorage.getItem('@Data');
-        if (all_data !== null) {
-          // value previously stored
-          console.log('all_data:', all_data);
-        }
         const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
         //console.log(checkbox_states);
         if (checkbox_states !== null) {
@@ -112,43 +108,50 @@ const MainNavigation = () => {
           }
           setBookSetting(parsed_book_setting);
         }
+        const all_data = await AsyncStorage.getItem('@Data');
+        if (all_data !== null) {
+          // value previously stored
+          console.log('all_data:', all_data);
+          setCategories(JSON.parse(all_data));
+          //await AsyncStorage.removeItem('@Data');
+        } else {
+          const movie_data = await AsyncStorage.getItem('@Movie');
+          if (movie_data !== null) {
+            // value previously stored
+            console.log('movie_data:', movie_data);
 
-        const movie_data = await AsyncStorage.getItem('@Movie');
-        if (movie_data !== null) {
-          // value previously stored
-          console.log('movie_data:', movie_data);
-
-          let newData = categories;
-          const newIdx = newData.findIndex(
-            (category) => Object.keys(category)[0] === 'Movie',
-          );
-          newData[newIdx]['Movie']['data'] = JSON.parse(movie_data);
-          setCategories(newData);
-          //setMovies(JSON.parse(movie_data));
-        }
-        const lyrics_data = await AsyncStorage.getItem('@Lyrics');
-        if (lyrics_data !== null) {
-          // value previously stored
-          //console.log('lyrics_data:', lyrics_data);
-          let newData = categories;
-          const newIdx = newData.findIndex(
-            (category) => Object.keys(category)[0] === 'Lyrics',
-          );
-          newData[newIdx]['Lyrics']['data'] = JSON.parse(lyrics_data);
-          setCategories(newData);
-          //setLyrics(JSON.parse(lyrics_data));
-        }
-        const book_data = await AsyncStorage.getItem('@Book');
-        if (book_data !== null) {
-          // value previously stored
-          //console.log('books_data:', books_data);
-          let newData = categories;
-          const newIdx = newData.findIndex(
-            (category) => Object.keys(category)[0] === 'Book',
-          );
-          newData[newIdx]['Book']['data'] = JSON.parse(book_data);
-          setCategories(newData);
-          //setBooks(JSON.parse(book_data));
+            let newData = _.cloneDeep(categories);
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Movie',
+            );
+            newData[newIdx]['Movie']['data'] = JSON.parse(movie_data);
+            setCategories(newData);
+            //setMovies(JSON.parse(movie_data));
+          }
+          const lyrics_data = await AsyncStorage.getItem('@Lyrics');
+          if (lyrics_data !== null) {
+            // value previously stored
+            console.log('lyrics_data:', lyrics_data);
+            let newData = _.cloneDeep(categories);
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Lyrics',
+            );
+            newData[newIdx]['Lyrics']['data'] = JSON.parse(lyrics_data);
+            setCategories(newData);
+            //setLyrics(JSON.parse(lyrics_data));
+          }
+          const book_data = await AsyncStorage.getItem('@Book');
+          if (book_data !== null) {
+            // value previously stored
+            console.log('book_data:', book_data);
+            let newData = _.cloneDeep(categories);
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Book',
+            );
+            newData[newIdx]['Book']['data'] = JSON.parse(book_data);
+            setCategories(newData);
+            //setBooks(JSON.parse(book_data));
+          }
         }
       } catch (e) {
         // error reading value

@@ -8,12 +8,12 @@ const Stack = createStackNavigator();
 
 const CategoryNavigation = ({route, navigation}) => {
   const {screenName} = route.params;
-  //console.log(screenName);
+  console.log('CategoryNavigation', screenName);
   return (
     <>
       <Stack.Navigator headerMode="none">
         <Stack.Screen
-          name={screenName}
+          name="CategoryScreen"
           component={CategoryScreen}
           initialParams={{itemId: 0, screenName}}
         />

@@ -9,6 +9,7 @@ import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
 import constants from '../constants';
+import _ from 'lodash';
 
 const CategoryScreen = ({route, navigation}) => {
   const {categories, setCategories} = useContext(Store);
@@ -20,7 +21,8 @@ const CategoryScreen = ({route, navigation}) => {
 
   const buttonColor = {active: movieSetting.textColor, inactive: 'darkgrey'};
 
-  const [screenData, setScreenData] = useState({});
+  const [categoryIdx, setCategoryIdx] = useState(-1);
+  //const [screenData, setScreenData] = useState(null);
   const [contents, setContents] = useState('');
   const [prepos, setPrepos] = useState('No Contents');
   const [source, setSource] = useState('');
@@ -33,44 +35,59 @@ const CategoryScreen = ({route, navigation}) => {
   const [copiedText, setCopiedText] = useState('');
 
   useEffect(() => {
-    //console.log('useEffect', itemId);
+    //console.log('useEffect', screenName, itemId);
     //console.log(Object.values(movies));
-    console.log('useEffect:', screenName, categories);
+    //console.log('useEffect:', screenName, categories);
 
-    const newIdx = categories.findIndex(
-      (category) => Object.keys(category)[0] === screenName,
-    );
-    setScreenData(categories[newIdx][screenName]['data']);
-    console.log('ScreenData', categories[newIdx][screenName]['data']);
-    if (screenData.length > 0) {
-      console.log('here');
-      setContents(screenData[itemId].contents);
-      setPrepos(screenData[itemId].prepos);
-      setSource(screenData[itemId].source);
-      if (itemId === 0) {
+    if (categoryIdx <= -1) {
+      const newIdx = categories.findIndex(
+        (category) => Object.keys(category)[0] === screenName,
+      );
+
+      setCategoryIdx(newIdx);
+    } else {
+      // console.log(
+      //   itemId,
+      //   categories,
+      //   categoryIdx,
+      //   categories[categoryIdx][screenName]['data'],
+      //   categories[categoryIdx][screenName]['data'].length,
+      // );
+      if (categories[categoryIdx][screenName]['data'].length > 0) {
+        setContents(
+          categories[categoryIdx][screenName]['data'][itemId]['contents'],
+        );
+        setPrepos(
+          categories[categoryIdx][screenName]['data'][itemId]['prepos'],
+        );
+        setSource(
+          categories[categoryIdx][screenName]['data'][itemId]['source'],
+        );
+        if (itemId === 0) {
+          setPrevButtonDisable(true);
+          setPrevButtonColor(buttonColor.inactive);
+        } else {
+          setPrevButtonDisable(false);
+          setPrevButtonColor(buttonColor.active);
+        }
+        if (itemId === categories[categoryIdx][screenName]['data'].length - 1) {
+          setNextButtonDisable(true);
+          setNextButtonColor(buttonColor.inactive);
+        } else {
+          setNextButtonDisable(false);
+          setNextButtonColor(buttonColor.active);
+        }
+      } else {
+        setContents('');
+        setPrepos('No Contents');
+        setSource('');
         setPrevButtonDisable(true);
         setPrevButtonColor(buttonColor.inactive);
-      } else {
-        setPrevButtonDisable(false);
-        setPrevButtonColor(buttonColor.active);
-      }
-      if (itemId === screenData.length - 1) {
         setNextButtonDisable(true);
         setNextButtonColor(buttonColor.inactive);
-      } else {
-        setNextButtonDisable(false);
-        setNextButtonColor(buttonColor.active);
       }
-    } else {
-      setContents('');
-      setPrepos('No Contents');
-      setSource('');
-      setPrevButtonDisable(true);
-      setPrevButtonColor(buttonColor.inactive);
-      setNextButtonDisable(true);
-      setNextButtonColor(buttonColor.inactive);
     }
-  }, [itemId, categories, screenData]);
+  }, [categoryIdx, itemId, categories]);
   //itemId, Object.values(movies)
   const setPrevItemId = () => {
     let prevId = itemId - 1;
@@ -82,17 +99,21 @@ const CategoryScreen = ({route, navigation}) => {
 
   const setNextItemId = () => {
     let nextId = itemId + 1;
-    if (screenData.length === 0) {
+    if (categories[categoryIdx][screenName]['data'].length === 0) {
       nextId = 0;
-    } else if (nextId > screenData.length - 1) {
-      nextId = screenData.length - 1;
+    } else if (
+      nextId >
+      categories[categoryIdx][screenName]['data'].length - 1
+    ) {
+      nextId = categories[categoryIdx][screenName]['data'].length - 1;
     }
     return nextId;
   };
 
   const storeData = async (data) => {
     try {
-      await AsyncStorage.setItem('@Movie', JSON.stringify(data));
+      console.log('storeData: ', data);
+      //await AsyncStorage.setItem('@Movie', JSON.stringify(data));
     } catch (e) {
       // saving error
       console.log(e);
@@ -154,16 +175,24 @@ ${source}`,
   };
 
   const onDelete = () => {
-    if (screenData.length > 0) {
-      screenData.splice(itemId, 1);
-      //console.log(JSON.stringify(movies));
-      storeData(screenData);
-      setMovies(screenData);
-      if (screenData.length === itemId && screenData.length > 0) {
+    let temp_data = _.cloneDeep(categories[categoryIdx][screenName]['data']);
+    let newData = _.cloneDeep(categories);
+
+    if (temp_data.length > 0) {
+      temp_data.splice(itemId, 1);
+      console.log(JSON.stringify(temp_data), screenName);
+
+      storeData(temp_data);
+      setCategories(newData);
+      newData[categoryIdx][screenName]['data'] = temp_data;
+
+      if (temp_data.length === itemId && temp_data.length > 0) {
         //맨 끝 아이템을 삭제한 경우
-        navigation.navigate(screenName, {itemId: itemId - 1});
+        console.log('delete last item');
+        navigation.navigate('CategoryScreen', {itemId: itemId - 1, screenName});
       } else {
-        navigation.navigate(screenName, {itemId: itemId});
+        console.log('navigate');
+        navigation.navigate('CategoryScreen', {itemId: itemId, screenName});
       }
     }
   };
@@ -175,7 +204,10 @@ ${source}`,
           <TouchableOpacity
             disabled={prevButtonDisable}
             onPress={() =>
-              navigation.navigate('Movie', {itemId: setPrevItemId()})
+              navigation.navigate('CategoryScreen', {
+                itemId: setPrevItemId(),
+                screenName,
+              })
             }>
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
@@ -189,7 +221,10 @@ ${source}`,
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>
-              navigation.navigate('Movie', {itemId: setNextItemId()})
+              navigation.navigate('CategoryScreen', {
+                itemId: setNextItemId(),
+                screenName,
+              })
             }>
             <Icon name="chevron-right" size={40} color={nextButtonColor} />
           </TouchableOpacity>
@@ -211,8 +246,18 @@ ${source}`,
             onCreate={onCreate}
             onUpdate={onUpdate}
             onDelete={onDelete}
-            updateDisabled={screenData.length > 0 ? false : true}
-            deleteDisabled={screenData.length > 0 ? false : true}
+            updateDisabled={
+              categoryIdx > -1 &&
+              categories[categoryIdx][screenName]['data'].length > 0
+                ? false
+                : true
+            }
+            deleteDisabled={
+              categoryIdx > -1 &&
+              categories[categoryIdx][screenName]['data'].length > 0
+                ? false
+                : true
+            }
           />
         </View>
       </>
