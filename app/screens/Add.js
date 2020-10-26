@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Home from './Home';
 import Store from '../store';
 import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
+import _ from 'lodash';
 
 const DismissKeyboard = ({children}) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -70,20 +71,20 @@ const Add = ({navigation, route}) => {
     try {
       console.log(categories);
       let cur_data = [];
-      let newCategories = categories;
+      let newData = _.cloneDeep(categories);
       const newIdx = categories.findIndex(
         (cur_category) => Object.keys(cur_category)[0] === category,
       );
-      cur_data = newCategories[newIdx][category]['data'];
+      cur_data = newData[newIdx][category]['data'];
 
       if (insertFlag) {
         cur_data.splice(itemId, 0, new_data);
       } else {
         cur_data.push(new_data);
       }
-      newCategories[newIdx][category]['data'] = cur_data;
-      await AsyncStorage.setItem('@Data', JSON.stringify(newCategories));
-      setCategories(newCategories);
+      newData[newIdx][category]['data'] = cur_data;
+      await AsyncStorage.setItem('@Data', JSON.stringify(newData));
+      setCategories(newData);
       // switch (category) {
       //   case 'Movie':
       //     if (insertFlag) {

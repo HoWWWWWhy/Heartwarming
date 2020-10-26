@@ -36,7 +36,6 @@ const CategoryScreen = ({route, navigation}) => {
 
   useEffect(() => {
     //console.log('useEffect', screenName, itemId);
-    //console.log(Object.values(movies));
     //console.log('useEffect:', screenName, categories);
 
     if (categoryIdx <= -1) {
@@ -46,13 +45,13 @@ const CategoryScreen = ({route, navigation}) => {
 
       setCategoryIdx(newIdx);
     } else {
-      // console.log(
-      //   itemId,
-      //   categories,
-      //   categoryIdx,
-      //   categories[categoryIdx][screenName]['data'],
-      //   categories[categoryIdx][screenName]['data'].length,
-      // );
+      console.log(
+        itemId,
+        categories,
+        categoryIdx,
+        categories[categoryIdx][screenName]['data'],
+        categories[categoryIdx][screenName]['data'].length,
+      );
       if (categories[categoryIdx][screenName]['data'].length > 0) {
         setContents(
           categories[categoryIdx][screenName]['data'][itemId]['contents'],
@@ -111,9 +110,11 @@ const CategoryScreen = ({route, navigation}) => {
   };
 
   const storeData = async (data) => {
+    let newData = _.cloneDeep(categories);
+    newData[categoryIdx][screenName]['data'] = data;
+
     try {
-      console.log('storeData: ', data);
-      //await AsyncStorage.setItem('@Movie', JSON.stringify(data));
+      await AsyncStorage.setItem('@Data', JSON.stringify(newData));
     } catch (e) {
       // saving error
       console.log(e);
@@ -175,23 +176,24 @@ ${source}`,
   };
 
   const onDelete = () => {
-    let temp_data = _.cloneDeep(categories[categoryIdx][screenName]['data']);
+    let cur_data = _.cloneDeep(categories[categoryIdx][screenName]['data']);
     let newData = _.cloneDeep(categories);
 
-    if (temp_data.length > 0) {
-      temp_data.splice(itemId, 1);
-      console.log(JSON.stringify(temp_data), screenName);
+    if (cur_data.length > 0) {
+      cur_data.splice(itemId, 1);
+      //console.log(JSON.stringify(cur_data), screenName);
 
-      storeData(temp_data);
+      storeData(cur_data);
+
+      newData[categoryIdx][screenName]['data'] = cur_data;
       setCategories(newData);
-      newData[categoryIdx][screenName]['data'] = temp_data;
 
-      if (temp_data.length === itemId && temp_data.length > 0) {
+      if (cur_data.length === itemId && cur_data.length > 0) {
         //맨 끝 아이템을 삭제한 경우
-        console.log('delete last item');
+        //console.log('delete last item');
         navigation.navigate('CategoryScreen', {itemId: itemId - 1, screenName});
       } else {
-        console.log('navigate');
+        //console.log('delete item');
         navigation.navigate('CategoryScreen', {itemId: itemId, screenName});
       }
     }

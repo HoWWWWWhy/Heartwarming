@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 
 const CategoryNavigation = ({route, navigation}) => {
   const {screenName} = route.params;
-  console.log('CategoryNavigation', screenName);
+  //console.log('CategoryNavigation', screenName);
   return (
     <>
       <Stack.Navigator headerMode="none">
