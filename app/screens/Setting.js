@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   Linking,
+  SectionList,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
@@ -18,6 +19,61 @@ import Store from '../store';
 import TempStore from '../temp_store';
 
 const Setting = ({navigation}) => {
+  const DATA = [
+    {
+      title: '기본 설정',
+      data: [
+        {
+          name: '카테고리 편집',
+          action: () => {
+            navigation.navigate('EditCategory', {
+              screenName: 'EditCategory',
+            });
+          },
+        },
+        {name: '탭 디자인 설정', action: () => console.log('탭 디자인 설정')},
+      ],
+    },
+    {
+      title: '데이터 관리',
+      data: [
+        {name: '내보내기', action: () => console.log('내보내기')},
+        {name: '가져오기', action: () => console.log('가져오기')},
+        {name: '초기화', action: () => console.log('초기화')},
+      ],
+    },
+    {
+      title: '정보',
+      data: [
+        {name: '도움말', action: () => console.log('도움말')},
+        {
+          name: '개발자 문의 및 제안하기',
+          action: () => {
+            onPressURL(URL_EMAIL);
+          },
+        },
+        {
+          name: 'Google Play 평가하기',
+          action: () => {
+            onPressURL(URL_GOOGLEPLAY);
+          },
+        },
+        {
+          name: '최신 버전 확인',
+          action: () => {
+            onPressURL(URL_GOOGLEPLAY);
+          },
+        },
+        {
+          name: '개인정보처리방침',
+          action: () => {
+            onPressURL(URL_PRIVACY);
+          },
+        },
+      ],
+    },
+  ];
+
   const {movieCheckBox, setMovieCheckBox} = useContext(Store);
   const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
   const {bookCheckBox, setBookCheckBox} = useContext(Store);
@@ -52,6 +108,14 @@ const Setting = ({navigation}) => {
       setThisBookSetting({});
     };
   }, []);
+
+  const Item = ({item}) => (
+    <View style={styles.sectionItemContainer}>
+      <TouchableOpacity onPress={item.action}>
+        <Text style={styles.sectionItemText}>{item.name}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   const storeData = async () => {
     if (thisMovieCheckBox | thisLyricsCheckBox | thisBookCheckBox) {
@@ -115,6 +179,16 @@ const Setting = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <SectionList
+        sections={DATA}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({item}) => <Item item={item} />}
+        renderSectionHeader={({section: {title}}) => (
+          <Text style={styles.sectionHeader}>{title}</Text>
+        )}
+      />
+
+      {/*
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.scrollView}>
@@ -239,7 +313,7 @@ const Setting = ({navigation}) => {
       </ScrollView>
       <TouchableOpacity style={styles.setButton} onPress={storeData}>
         <Text style={styles.textButton}>저장하기</Text>
-      </TouchableOpacity>
+              </TouchableOpacity>*/}
     </View>
   );
 };
@@ -247,11 +321,23 @@ const Setting = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //alignItems: 'center',
-    //justifyContent: 'center',
+  },
+  sectionHeader: {
+    fontSize: 16,
     backgroundColor: '#dfe6e9',
-    width: constants.width,
-    paddingHorizontal: 20,
+    color: '#34495e',
+    paddingLeft: 15,
+    paddingVertical: 5,
+  },
+  sectionItemContainer: {
+    backgroundColor: '#f1f2f6',
+    paddingVertical: 10,
+    paddingLeft: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dfe6e9',
+  },
+  sectionItemText: {
+    fontSize: 18,
   },
   scrollView: {
     //backgroundColor: 'pink',
