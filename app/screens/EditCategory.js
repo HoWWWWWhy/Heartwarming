@@ -12,9 +12,11 @@ import {
 import NavIcon from '../components/NavIcon';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Store from '../store';
 import constants from '../constants';
+import assets from '../default_assets';
 
 const EditCategory = ({navigation, route}) => {
   const {categories, setCategories} = useContext(Store);
@@ -29,6 +31,14 @@ const EditCategory = ({navigation, route}) => {
   const [categoryName, setCategoryName] = useState('');
   const [draggableData, setDraggableData] = useState(draggableList);
 
+  useEffect(() => {
+    console.log('EditCategory Mounted');
+    return () => {
+      //console.log('cleanup');
+      storeData(categories);
+    };
+  }, [categories]);
+
   const renderItem = ({item, index, drag, isActive}) => {
     return (
       <View
@@ -36,6 +46,7 @@ const EditCategory = ({navigation, route}) => {
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
+          paddingHorizontal: 14,
           borderBottomWidth: 1,
           borderBottomColor: '#c8d6e5',
           backgroundColor: '#f1f2f6',
@@ -47,7 +58,6 @@ const EditCategory = ({navigation, route}) => {
             color: '#34495e',
             fontSize: 24,
             textAlignVertical: 'center',
-            paddingLeft: 16,
             //backgroundColor: 'green',
           }}>
           {item.label}
@@ -116,7 +126,17 @@ const EditCategory = ({navigation, route}) => {
 
   const addCategory = () => {
     let newCategory = {};
-    newCategory[categoryName] = {icon: 'person'};
+    newCategory[categoryName] = {
+      data: [],
+      icon: 'person',
+      setting: {
+        useBgImage: true,
+        bgColor: 'white',
+        textColor: 'black',
+        bgImage: assets.defaultNewBgImage,
+        bgImageBlur: 0,
+      },
+    };
 
     setDraggableData([
       ...draggableData,
@@ -143,6 +163,17 @@ const EditCategory = ({navigation, route}) => {
       newData.push(categories[newIdx]);
     });
     setCategories(newData);
+  };
+
+  const storeData = async (data) => {
+    console.log('storeData');
+    console.log(data);
+    try {
+      await AsyncStorage.setItem('@Data', JSON.stringify(data));
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
   };
 
   return (

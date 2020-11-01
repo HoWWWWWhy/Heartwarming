@@ -26,12 +26,15 @@ const Setting = ({navigation}) => {
         {
           name: '카테고리 편집',
           action: () => {
-            navigation.navigate('EditCategory', {
-              screenName: 'EditCategory',
-            });
+            navigation.navigate('EditCategory');
           },
         },
-        {name: '탭 디자인 설정', action: () => console.log('탭 디자인 설정')},
+        {
+          name: '탭 디자인 설정',
+          action: () => {
+            navigation.navigate('SettingTabList');
+          },
+        },
       ],
     },
     {
@@ -74,6 +77,8 @@ const Setting = ({navigation}) => {
     },
   ];
 
+  const {categories, setCategories} = useContext(Store);
+
   const {movieCheckBox, setMovieCheckBox} = useContext(Store);
   const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
   const {bookCheckBox, setBookCheckBox} = useContext(Store);
@@ -102,6 +107,7 @@ const Setting = ({navigation}) => {
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
 
   useEffect(() => {
+    console.log(categories);
     return () => {
       setThisMovieSetting({});
       setThisLyricsSetting({});
@@ -219,7 +225,7 @@ const Setting = ({navigation}) => {
             <View style={styles.settingEdit}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('SettingTabScreen', {screenName: 'Movie'})
+                  navigation.navigate('EditTabScreen', {screenName: 'Movie'})
                 }>
                 <Icon
                   name={settingEditIcon.name}
@@ -245,7 +251,7 @@ const Setting = ({navigation}) => {
             <View style={styles.settingEdit}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('SettingTabScreen', {
+                  navigation.navigate('EditTabScreen', {
                     screenName: 'Lyrics',
                   })
                 }>
@@ -273,7 +279,7 @@ const Setting = ({navigation}) => {
             <View style={styles.settingEdit}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('SettingTabScreen', {screenName: 'Book'})
+                  navigation.navigate('EditTabScreen', {screenName: 'Book'})
                 }>
                 <Icon
                   name={settingEditIcon.name}
@@ -292,23 +298,6 @@ const Setting = ({navigation}) => {
 위에서 아래로 쓸어내려주시면 메뉴 화면으로 
 갈 수 있습니다.`}
           </Text>
-        </View>
-        <View style={styles.innerContainer}>
-          <Text style={styles.menuText}>정보</Text>
-          <View style={styles.feedback}>
-            <TouchableOpacity onPress={() => onPressURL(URL_EMAIL)}>
-              <Text style={styles.subMenuText}>개발자 문의 및 제안하기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onPressURL(URL_GOOGLEPLAY)}>
-              <Text style={styles.subMenuText}>Google Play 평가하기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onPressURL(URL_GOOGLEPLAY)}>
-              <Text style={styles.subMenuText}>최신 버전 확인</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onPressURL(URL_PRIVACY)}>
-              <Text style={styles.subMenuText}>개인정보처리방침</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
       <TouchableOpacity style={styles.setButton} onPress={storeData}>

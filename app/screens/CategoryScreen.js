@@ -45,13 +45,14 @@ const CategoryScreen = ({route, navigation}) => {
 
       setCategoryIdx(newIdx);
     } else {
-      console.log(
-        itemId,
-        categories,
-        categoryIdx,
-        categories[categoryIdx][screenName]['data'],
-        categories[categoryIdx][screenName]['data'].length,
-      );
+      console.log(categories[categoryIdx][screenName]['data'], itemId);
+      // console.log(
+      //   itemId,
+      //   categories,
+      //   categoryIdx,
+      //   categories[categoryIdx][screenName]['data'],
+      //   categories[categoryIdx][screenName]['data'].length,
+      // );
       if (categories[categoryIdx][screenName]['data'].length > 0) {
         setContents(
           categories[categoryIdx][screenName]['data'][itemId]['contents'],
@@ -268,18 +269,27 @@ ${source}`,
 
   return (
     <View style={styles.container}>
-      {movieSetting.useBgImage ? (
-        <ImageBackground
-          source={movieSetting.bgImage}
-          blurRadius={movieSetting.bgImageBlur}
-          style={styles.image}>
-          {renderInnerContainer()}
-        </ImageBackground>
-      ) : (
-        <View style={{flex: 1, backgroundColor: movieSetting.bgColor}}>
-          {renderInnerContainer()}
-        </View>
-      )}
+      {categoryIdx > -1 ? (
+        categories[categoryIdx][screenName]['setting'].useBgImage ? (
+          <ImageBackground
+            source={categories[categoryIdx][screenName]['setting'].bgImage}
+            blurRadius={
+              categories[categoryIdx][screenName]['setting'].bgImageBlur
+            }
+            style={styles.image}>
+            {renderInnerContainer()}
+          </ImageBackground>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor:
+                categories[categoryIdx][screenName]['setting'].bgColor,
+            }}>
+            {renderInnerContainer()}
+          </View>
+        )
+      ) : null}
     </View>
   );
 };

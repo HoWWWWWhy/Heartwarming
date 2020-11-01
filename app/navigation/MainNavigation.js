@@ -14,7 +14,8 @@ import Add from '../screens/Add';
 import Setting from '../screens/Setting';
 import Update from '../screens/Update';
 import EditCategory from '../screens/EditCategory';
-import SettingTabScreen from '../screens/SettingTabScreen';
+import EditTabScreen from '../screens/EditTabScreen';
+import SettingTabList from '../screens/SettingTabList';
 
 import constants from '../constants';
 import assets from '../default_assets';
@@ -24,9 +25,45 @@ const Stack = createStackNavigator();
 
 const MainNavigation = () => {
   const [categories, setCategories] = useState([
-    {Movie: {icon: 'movie', data: []}},
-    {Lyrics: {icon: 'library-music', data: []}},
-    {Book: {icon: 'library-books', data: []}},
+    {
+      Movie: {
+        icon: 'movie',
+        data: [],
+        setting: {
+          useBgImage: true,
+          bgColor: 'white',
+          textColor: 'black',
+          bgImage: assets.defaultMovieBgImage,
+          bgImageBlur: 0,
+        },
+      },
+    },
+    {
+      Lyrics: {
+        icon: 'library-music',
+        data: [],
+        setting: {
+          useBgImage: true,
+          bgColor: 'white',
+          textColor: 'black',
+          bgImage: assets.defaultLyricsBgImage,
+          bgImageBlur: 0,
+        },
+      },
+    },
+    {
+      Book: {
+        icon: 'library-books',
+        data: [],
+        setting: {
+          useBgImage: true,
+          bgColor: 'white',
+          textColor: 'black',
+          bgImage: assets.defaultBookBgImage,
+          bgImageBlur: 0,
+        },
+      },
+    },
   ]);
 
   const [movies, setMovies] = useState([]);
@@ -74,40 +111,6 @@ const MainNavigation = () => {
           setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
           setBookCheckBox(JSON.parse(checkbox_states)[2]);
         }
-
-        const movie_setting = await AsyncStorage.getItem('@MovieSetting');
-        if (movie_setting !== null) {
-          let parsed_movie_setting = JSON.parse(movie_setting);
-          if (!parsed_movie_setting.hasOwnProperty('bgImage')) {
-            parsed_movie_setting.bgImage = assets.defaultMovieBgImage;
-          }
-          if (!parsed_movie_setting.hasOwnProperty('bgImageBlur')) {
-            parsed_movie_setting.bgImageBlur = 0;
-          }
-          setMovieSetting(parsed_movie_setting);
-        }
-        const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
-        if (lyrics_setting !== null) {
-          let parsed_lyrics_setting = JSON.parse(lyrics_setting);
-          if (!parsed_lyrics_setting.hasOwnProperty('bgImage')) {
-            parsed_lyrics_setting.bgImage = assets.defaultLyricsBgImage;
-          }
-          if (!parsed_lyrics_setting.hasOwnProperty('bgImageBlur')) {
-            parsed_lyrics_setting.bgImageBlur = 0;
-          }
-          setLyricsSetting(parsed_lyrics_setting);
-        }
-        const book_setting = await AsyncStorage.getItem('@BookSetting');
-        if (book_setting !== null) {
-          let parsed_book_setting = JSON.parse(book_setting);
-          if (!parsed_book_setting.hasOwnProperty('bgImage')) {
-            parsed_book_setting.bgImage = assets.defaultBookBgImage;
-          }
-          if (!parsed_book_setting.hasOwnProperty('bgImageBlur')) {
-            parsed_book_setting.bgImageBlur = 0;
-          }
-          setBookSetting(parsed_book_setting);
-        }
         const all_data = await AsyncStorage.getItem('@Data');
         if (all_data !== null) {
           // value previously stored
@@ -115,43 +118,105 @@ const MainNavigation = () => {
           setCategories(JSON.parse(all_data));
           //await AsyncStorage.removeItem('@Data');
         } else {
+          //for old versions (under 1.4.0)
+          let newData = _.cloneDeep(categories);
           const movie_data = await AsyncStorage.getItem('@Movie');
           if (movie_data !== null) {
             // value previously stored
             console.log('movie_data:', movie_data);
 
-            let newData = _.cloneDeep(categories);
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Movie',
             );
             newData[newIdx]['Movie']['data'] = JSON.parse(movie_data);
-            setCategories(newData);
             //setMovies(JSON.parse(movie_data));
           }
+          const movie_setting = await AsyncStorage.getItem('@MovieSetting');
+          if (movie_setting !== null) {
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Movie',
+            );
+            newData[newIdx]['Movie']['setting'] = JSON.parse(movie_setting);
+            //let parsed_movie_setting = JSON.parse(movie_setting);
+            if (
+              !newData[newIdx]['Movie']['setting'].hasOwnProperty('bgImage')
+            ) {
+              newData[newIdx]['Movie']['setting'].bgImage =
+                assets.defaultMovieBgImage;
+            }
+            if (
+              !newData[newIdx]['Movie']['setting'].hasOwnProperty('bgImageBlur')
+            ) {
+              newData[newIdx]['Movie']['setting'].bgImageBlur = 0;
+            }
+            //setMovieSetting(parsed_movie_setting);
+          }
+
           const lyrics_data = await AsyncStorage.getItem('@Lyrics');
           if (lyrics_data !== null) {
             // value previously stored
             console.log('lyrics_data:', lyrics_data);
-            let newData = _.cloneDeep(categories);
+
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Lyrics',
             );
             newData[newIdx]['Lyrics']['data'] = JSON.parse(lyrics_data);
-            setCategories(newData);
             //setLyrics(JSON.parse(lyrics_data));
+          }
+          const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
+          if (lyrics_setting !== null) {
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Lyrics',
+            );
+            newData[newIdx]['Lyrics']['setting'] = JSON.parse(lyrics_setting);
+            //let parsed_lyrics_setting = JSON.parse(lyrics_setting);
+            if (
+              !newData[newIdx]['Lyrics']['setting'].hasOwnProperty('bgImage')
+            ) {
+              newData[newIdx]['Lyrics']['setting'].bgImage =
+                assets.defaultLyricsBgImage;
+            }
+            if (
+              !newData[newIdx]['Lyrics']['setting'].hasOwnProperty(
+                'bgImageBlur',
+              )
+            ) {
+              newData[newIdx]['Lyrics']['setting'].bgImageBlur = 0;
+            }
+            //setLyricsSetting(parsed_lyrics_setting);
           }
           const book_data = await AsyncStorage.getItem('@Book');
           if (book_data !== null) {
             // value previously stored
             console.log('book_data:', book_data);
-            let newData = _.cloneDeep(categories);
+
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Book',
             );
             newData[newIdx]['Book']['data'] = JSON.parse(book_data);
-            setCategories(newData);
             //setBooks(JSON.parse(book_data));
           }
+          const book_setting = await AsyncStorage.getItem('@BookSetting');
+          if (book_setting !== null) {
+            console.log('book_setting:', book_setting);
+
+            const newIdx = newData.findIndex(
+              (category) => Object.keys(category)[0] === 'Book',
+            );
+            newData[newIdx]['Book']['setting'] = JSON.parse(book_setting);
+            //let parsed_book_setting = JSON.parse(book_setting);
+            if (!newData[newIdx]['Book']['setting'].hasOwnProperty('bgImage')) {
+              newData[newIdx]['Book']['setting'].bgImage =
+                assets.defaultBookBgImage;
+            }
+            if (
+              !newData[newIdx]['Book']['setting'].hasOwnProperty('bgImageBlur')
+            ) {
+              newData[newIdx]['Book']['setting'].bgImageBlur = 0;
+            }
+            //setBookSetting(parsed_book_setting);
+          }
+          setCategories(newData);
         }
       } catch (e) {
         // error reading value
@@ -218,8 +283,8 @@ const MainNavigation = () => {
               />
 
               <Stack.Screen
-                name="SettingTabScreen"
-                component={SettingTabScreen}
+                name="EditTabScreen"
+                component={EditTabScreen}
                 options={({route}) => ({
                   title: '배경 설정 [ ' + route.params.screenName + ' ]',
                   gestureEnabled: true,
@@ -256,6 +321,17 @@ const MainNavigation = () => {
                 component={EditCategory}
                 options={{
                   title: '카테고리 편집',
+                  gestureEnabled: true,
+                  gestureResponseDistance: 'horizontal',
+                  gestureDirection: 'horizontal',
+                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                }}
+              />
+              <Stack.Screen
+                name="SettingTabList"
+                component={SettingTabList}
+                options={{
+                  title: '탭 디자인 설정',
                   gestureEnabled: true,
                   gestureResponseDistance: 'horizontal',
                   gestureDirection: 'horizontal',

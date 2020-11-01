@@ -85,43 +85,6 @@ const Add = ({navigation, route}) => {
       newData[newIdx][category]['data'] = cur_data;
       await AsyncStorage.setItem('@Data', JSON.stringify(newData));
       setCategories(newData);
-      // switch (category) {
-      //   case 'Movie':
-      //     if (insertFlag) {
-      //       movies.splice(itemId, 0, new_data);
-      //     } else {
-      //       movies.push(new_data);
-      //     }
-
-      //     await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-      //     setMovies(movies);
-      //     //console.log('movies:', movies);
-      //     break;
-
-      //   case 'Lyrics':
-      //     if (insertFlag) {
-      //       lyrics.splice(itemId, 0, new_data);
-      //     } else {
-      //       lyrics.push(new_data);
-      //     }
-      //     await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-      //     setLyrics(lyrics);
-      //     //console.log('lyrics:', lyrics);
-      //     break;
-
-      //   case 'Book':
-      //     if (insertFlag) {
-      //       books.splice(itemId, 0, new_data);
-      //     } else {
-      //       books.push(new_data);
-      //     }
-      //     await AsyncStorage.setItem('@Book', JSON.stringify(books));
-      //     setBooks(books);
-      //     //console.log('books:', books);
-      //     break;
-
-      //   default:
-      // }
 
       navigation.navigate('Home');
     } catch (e) {

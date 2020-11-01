@@ -25,7 +25,7 @@ import assets from '../default_assets';
 
 const TAB_NAVIGATION_BAR_HEIGHT = 60;
 
-const SettingTabScreen = ({route}) => {
+const EditTabScreen = ({route}) => {
   const {screenName} = route.params;
 
   const {movieSetting, lyricsSetting, bookSetting} = useContext(Store);
@@ -729,4 +729,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingTabScreen;
+export default EditTabScreen;
