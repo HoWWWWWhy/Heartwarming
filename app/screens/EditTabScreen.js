@@ -18,14 +18,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Store from '../store';
 import TempStore from '../temp_store';
 
-import BgPalette from '../components/BgPalette';
-import TextPalette from '../components/TextPalette';
+import Palette from '../components/Palette';
 import constants from '../constants';
 import assets from '../default_assets';
+import _ from 'lodash';
 
 const TAB_NAVIGATION_BAR_HEIGHT = 60;
 
 const EditTabScreen = ({route}) => {
+  const {categories, setCategories} = useContext(Store);
+
   const {screenName} = route.params;
 
   const {movieSetting, lyricsSetting, bookSetting} = useContext(Store);
@@ -34,7 +36,10 @@ const EditTabScreen = ({route}) => {
   const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
   const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
+  const [categoryIdx, setCategoryIdx] = useState(-1);
   const [tempImage, setTempImage] = useState('');
+  const [selectedBgColor, setSelectedBgColor] = useState('');
+  const [selectedTextColor, setSelectedTextColor] = useState('');
 
   const animation = useState(new Animated.Value(0))[0];
 
@@ -43,49 +48,50 @@ const EditTabScreen = ({route}) => {
     // console.log(RNFS.CachesDirectoryPath);
     // console.log(RNFS.TemporaryDirectoryPath);
     // console.log(RNFS.ExternalDirectoryPath);
-    switch (screenName) {
-      case 'Movie':
-        if (Object.keys(thisMovieSetting).length === 0) {
-          setThisMovieSetting(movieSetting);
-          if (movieSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        } else {
-          if (thisMovieSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        }
-        break;
 
-      case 'Lyrics':
-        if (Object.keys(thisLyricsSetting).length === 0) {
-          setThisLyricsSetting(lyricsSetting);
-          if (lyricsSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        } else {
-          if (thisLyricsSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        }
-        break;
+    if (categoryIdx <= -1) {
+      const newIdx = categories.findIndex(
+        (category) => Object.keys(category)[0] === screenName,
+      );
 
-      case 'Book':
-        if (Object.keys(thisBookSetting).length === 0) {
-          setThisBookSetting(bookSetting);
-          if (bookSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        } else {
-          if (thisBookSetting.useBgImage) {
-            pickImageButtonFadeIn();
-          }
-        }
-        break;
+      setCategoryIdx(newIdx);
+    } else {
+      let newData = _.cloneDeep(categories);
 
-      default:
+      if (categories[categoryIdx][screenName]['setting'].useBgImage) {
+        pickImageButtonFadeIn();
+      } else {
+        pickImageButtonFadeOut();
+      }
+      if (selectedBgColor === '') {
+        setSelectedBgColor(
+          categories[categoryIdx][screenName]['setting'].bgColor,
+        );
+      } else {
+        if (
+          newData[categoryIdx][screenName]['setting'].bgColor != selectedBgColor
+        ) {
+          newData[categoryIdx][screenName]['setting'].bgColor = selectedBgColor;
+          setCategories(newData);
+        }
+      }
+      if (selectedTextColor === '') {
+        setSelectedTextColor(
+          categories[categoryIdx][screenName]['setting'].textColor,
+        );
+      } else {
+        if (
+          newData[categoryIdx][screenName]['setting'].textColor !=
+          selectedTextColor
+        ) {
+          newData[categoryIdx][screenName][
+            'setting'
+          ].textColor = selectedTextColor;
+          setCategories(newData);
+        }
+      }
     }
-  }, []);
+  }, [categoryIdx, categories, selectedBgColor, selectedTextColor]);
 
   const pickImageButtonFadeIn = () => {
     Animated.timing(animation, {
@@ -105,45 +111,17 @@ const EditTabScreen = ({route}) => {
   };
 
   const toggleSwitch = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        setThisMovieSetting((prevState) => ({
-          ...prevState,
-          useBgImage: !prevState.useBgImage,
-        }));
-        if (!thisMovieSetting.useBgImage) {
-          pickImageButtonFadeIn();
-        } else {
-          pickImageButtonFadeOut();
-        }
-        break;
-
-      case 'Lyrics':
-        setThisLyricsSetting((prevState) => ({
-          ...prevState,
-          useBgImage: !prevState.useBgImage,
-        }));
-        if (!thisLyricsSetting.useBgImage) {
-          pickImageButtonFadeIn();
-        } else {
-          pickImageButtonFadeOut();
-        }
-        break;
-
-      case 'Book':
-        setThisBookSetting((prevState) => ({
-          ...prevState,
-          useBgImage: !prevState.useBgImage,
-        }));
-        if (!thisBookSetting.useBgImage) {
-          pickImageButtonFadeIn();
-        } else {
-          pickImageButtonFadeOut();
-        }
-        break;
-
-      default:
+    let newData = _.cloneDeep(categories);
+    newData[categoryIdx][screen_name]['setting'].useBgImage = !categories[
+      categoryIdx
+    ][screen_name]['setting'].useBgImage;
+    if (newData[categoryIdx][screen_name]['setting'].useBgImage) {
+      pickImageButtonFadeIn();
+    } else {
+      pickImageButtonFadeOut();
     }
+
+    setCategories(newData);
   };
 
   const onPickImage = async (screen_name) => {
@@ -168,33 +146,11 @@ const EditTabScreen = ({route}) => {
 
       setTempImage(image.path.split('/').pop());
 
-      switch (screen_name) {
-        case 'Movie':
-          setThisMovieSetting((prevState) => ({
-            ...prevState,
-            //bgImage: {uri: `data:${image.mime};base64,${image.data}`},
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
-        case 'Lyrics':
-          setThisLyricsSetting((prevState) => ({
-            ...prevState,
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
+      let newData = _.cloneDeep(categories);
+      newData[categoryIdx][screen_name]['setting'].bgImage = {uri: image.path};
+      newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
-        case 'Book':
-          setThisBookSetting((prevState) => ({
-            ...prevState,
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
-
-        default:
-      }
+      setCategories(newData);
     } catch (e) {
       // saving error
       console.log(e);
@@ -221,139 +177,34 @@ const EditTabScreen = ({route}) => {
 
       setTempImage(image.path.split('/').pop());
 
-      switch (screen_name) {
-        case 'Movie':
-          setThisMovieSetting((prevState) => ({
-            ...prevState,
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
-        case 'Lyrics':
-          setThisLyricsSetting((prevState) => ({
-            ...prevState,
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
+      let newData = _.cloneDeep(categories);
+      newData[categoryIdx][screen_name]['setting'].bgImage = {uri: image.path};
+      newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
-        case 'Book':
-          setThisBookSetting((prevState) => ({
-            ...prevState,
-            bgImage: {uri: image.path},
-            bgImageBlur: 0,
-          }));
-          break;
-
-        default:
-      }
+      setCategories(newData);
     } catch (e) {
       // saving error
       console.log(e);
     }
   };
 
-  const onChangeBlur = async (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        setThisMovieSetting((prevState) => ({
-          ...prevState,
-          bgImageBlur:
-            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
-        }));
-        break;
-      case 'Lyrics':
-        setThisLyricsSetting((prevState) => ({
-          ...prevState,
-          bgImageBlur:
-            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
-        }));
-        break;
+  const onChangeBlur = (screen_name) => {
+    let newData = _.cloneDeep(categories);
+    const oldBlurRadius =
+      newData[categoryIdx][screen_name]['setting'].bgImageBlur;
+    const newBlurRadius = oldBlurRadius === 2 ? 0 : oldBlurRadius + 0.5;
+    newData[categoryIdx][screen_name]['setting'].bgImageBlur = newBlurRadius;
 
-      case 'Book':
-        setThisBookSetting((prevState) => ({
-          ...prevState,
-          bgImageBlur:
-            prevState.bgImageBlur == 2 ? 0 : prevState.bgImageBlur + 0.5,
-        }));
-        break;
-
-      default:
-    }
+    setCategories(newData);
   };
 
-  const onInitializeImage = async (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        setThisMovieSetting((prevState) => ({
-          ...prevState,
-          bgImage: assets.defaultMovieBgImage,
-          bgImageBlur: 0,
-        }));
-        break;
-      case 'Lyrics':
-        setThisLyricsSetting((prevState) => ({
-          ...prevState,
-          bgImage: assets.defaultLyricsBgImage,
-          bgImageBlur: 0,
-        }));
-        break;
+  const onInitializeImage = (screen_name) => {
+    let newData = _.cloneDeep(categories);
+    newData[categoryIdx][screen_name]['setting'].bgImage =
+      assets.defaultNewBgImgae;
+    newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
-      case 'Book':
-        setThisBookSetting((prevState) => ({
-          ...prevState,
-          bgImage: assets.defaultBookBgImage,
-          bgImageBlur: 0,
-        }));
-        break;
-
-      default:
-    }
-  };
-
-  const renderSwitch = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        return (
-          <>
-            <Switch
-              trackColor={{false: '#767577', true: '#6ab04c'}}
-              thumbColor={thisMovieSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screen_name)}
-              value={thisMovieSetting.useBgImage}
-              style={styles.toggleSwitch}
-            />
-          </>
-        );
-
-      case 'Lyrics':
-        return (
-          <>
-            <Switch
-              trackColor={{false: '#767577', true: '#6ab04c'}}
-              thumbColor={thisLyricsSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screen_name)}
-              value={thisLyricsSetting.useBgImage}
-              style={styles.toggleSwitch}
-            />
-          </>
-        );
-
-      case 'Book':
-        return (
-          <>
-            <Switch
-              trackColor={{false: '#767577', true: '#6ab04c'}}
-              thumbColor={thisBookSetting.useBgImage ? '#fab1a0' : 'black'}
-              onValueChange={() => toggleSwitch(screen_name)}
-              value={thisBookSetting.useBgImage}
-              style={styles.toggleSwitch}
-            />
-          </>
-        );
-
-      default:
-    }
+    setCategories(newData);
   };
 
   const renderPickImageButton = (screen_name) => {
@@ -416,215 +267,121 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const renderBgPalette = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        return (
-          <BgPalette
-            setting={setThisMovieSetting}
-            selected={thisMovieSetting.bgColor}
-          />
-        );
+  const renderBgPalette = () => {
+    //console.log('renderBgPalette: ', selectedBgColor);
 
-      case 'Lyrics':
-        return (
-          <BgPalette
-            setting={setThisLyricsSetting}
-            selected={thisLyricsSetting.bgColor}
-          />
-        );
-
-      case 'Book':
-        return (
-          <BgPalette
-            setting={setThisBookSetting}
-            selected={thisBookSetting.bgColor}
-          />
-        );
-
-      default:
-    }
+    return <Palette setting={setSelectedBgColor} selected={selectedBgColor} />;
   };
 
-  const renderTextPalette = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        return (
-          <TextPalette
-            setting={setThisMovieSetting}
-            selected={thisMovieSetting.textColor}
-          />
-        );
+  const renderTextPalette = () => {
+    //console.log('renderTextPalette: ', selectedTextColor);
 
-      case 'Lyrics':
-        return (
-          <TextPalette
-            setting={setThisLyricsSetting}
-            selected={thisLyricsSetting.textColor}
-          />
-        );
-
-      case 'Book':
-        return (
-          <TextPalette
-            setting={setThisBookSetting}
-            selected={thisBookSetting.textColor}
-          />
-        );
-
-      default:
-    }
-  };
-
-  const renderPreviewBox = (screen_name) => {
-    switch (screen_name) {
-      case 'Movie':
-        return thisMovieSetting.useBgImage ? (
-          <ImageBackground
-            source={thisMovieSetting.bgImage}
-            blurRadius={thisMovieSetting.bgImageBlur}
-            style={[
-              styles.previewBox,
-              styles.previewBgImage,
-              styles.previewHeight,
-            ]}>
-            <Text
-              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
-              by 괴테
-            </Text>
-          </ImageBackground>
-        ) : (
-          <View
-            style={[
-              styles.previewBox,
-              styles.previewHeight,
-              {backgroundColor: thisMovieSetting.bgColor},
-            ]}>
-            <Text
-              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[styles.previewText, {color: thisMovieSetting.textColor}]}>
-              by 괴테
-            </Text>
-          </View>
-        );
-
-      case 'Lyrics':
-        return thisLyricsSetting.useBgImage ? (
-          <ImageBackground
-            source={thisLyricsSetting.bgImage}
-            blurRadius={thisLyricsSetting.bgImageBlur}
-            style={[
-              styles.previewBox,
-              styles.previewBgImage,
-              styles.previewHeight,
-            ]}>
-            <Text
-              style={[
-                styles.previewText,
-                {color: thisLyricsSetting.textColor},
-              ]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[
-                styles.previewText,
-                {color: thisLyricsSetting.textColor},
-              ]}>
-              by 괴테
-            </Text>
-          </ImageBackground>
-        ) : (
-          <View
-            style={[
-              styles.previewBox,
-              styles.previewHeight,
-              {backgroundColor: thisLyricsSetting.bgColor},
-            ]}>
-            <Text
-              style={[
-                styles.previewText,
-                {color: thisLyricsSetting.textColor},
-              ]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[
-                styles.previewText,
-                {color: thisLyricsSetting.textColor},
-              ]}>
-              by 괴테
-            </Text>
-          </View>
-        );
-
-      case 'Book':
-        return thisBookSetting.useBgImage ? (
-          <ImageBackground
-            source={thisBookSetting.bgImage}
-            blurRadius={thisBookSetting.bgImageBlur}
-            style={[
-              styles.previewBox,
-              styles.previewBgImage,
-              styles.previewHeight,
-            ]}>
-            <Text
-              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
-              by 괴테
-            </Text>
-          </ImageBackground>
-        ) : (
-          <View
-            style={[
-              styles.previewBox,
-              styles.previewHeight,
-              {backgroundColor: thisBookSetting.bgColor},
-            ]}>
-            <Text
-              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
-              인생은 속도가 아니라 방향이다.
-            </Text>
-            <Text
-              style={[styles.previewText, {color: thisBookSetting.textColor}]}>
-              by 괴테
-            </Text>
-          </View>
-        );
-
-      default:
-    }
+    return (
+      <Palette setting={setSelectedTextColor} selected={selectedTextColor} />
+    );
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.switchContainer}>
-          <Text style={styles.text}>배경이미지 사용하기</Text>
-          {renderSwitch(screenName)}
-        </View>
-        <View style={styles.paletteContainer}>
-          <View style={styles.bgPaletteContainer}>
-            <Text style={styles.text}>Select Background Color</Text>
-            {renderBgPalette(screenName)}
+      {categoryIdx > -1 ? (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.switchContainer}>
+            <Text style={styles.text}>배경이미지 사용하기</Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#6ab04c'}}
+              thumbColor={
+                categories[categoryIdx][screenName]['setting'].useBgImage
+                  ? '#fab1a0'
+                  : 'black'
+              }
+              onValueChange={() => toggleSwitch(screenName)}
+              value={categories[categoryIdx][screenName]['setting'].useBgImage}
+              style={styles.toggleSwitch}
+            />
           </View>
-          <View style={styles.textPaletteContainer}>
-            <Text style={styles.text}>Select Text Color</Text>
-            {renderTextPalette(screenName)}
+          <View style={styles.paletteContainer}>
+            <View style={styles.bgPaletteContainer}>
+              <Text style={styles.text}>배경색 선택</Text>
+              {renderBgPalette()}
+            </View>
+            <View style={styles.textPaletteContainer}>
+              <Text style={styles.text}>글씨색 선택</Text>
+              {renderTextPalette()}
+            </View>
           </View>
           <View style={styles.previewContainer}>
-            <Text style={styles.text}>미리보기 (preview)</Text>
+            <Text style={styles.text}>미리보기</Text>
             <View style={styles.previewImageContainer}>
-              {renderPreviewBox(screenName)}
+              {categories[categoryIdx][screenName]['setting'].useBgImage ? (
+                <ImageBackground
+                  source={
+                    categories[categoryIdx][screenName]['setting'].bgImage
+                  }
+                  blurRadius={
+                    categories[categoryIdx][screenName]['setting'].bgImageBlur
+                  }
+                  style={[
+                    styles.previewBox,
+                    styles.previewBgImage,
+                    styles.previewHeight,
+                  ]}>
+                  <Text
+                    style={[
+                      styles.previewText,
+                      {
+                        color:
+                          categories[categoryIdx][screenName]['setting']
+                            .textColor,
+                      },
+                    ]}>
+                    인생은 속도가 아니라 방향이다.
+                  </Text>
+                  <Text
+                    style={[
+                      styles.previewText,
+                      {
+                        color:
+                          categories[categoryIdx][screenName]['setting']
+                            .textColor,
+                      },
+                    ]}>
+                    by 괴테
+                  </Text>
+                </ImageBackground>
+              ) : (
+                <View
+                  style={[
+                    styles.previewBox,
+                    styles.previewHeight,
+                    {
+                      backgroundColor:
+                        categories[categoryIdx][screenName]['setting'].bgColor,
+                    },
+                  ]}>
+                  <Text
+                    style={[
+                      styles.previewText,
+                      {
+                        color:
+                          categories[categoryIdx][screenName]['setting']
+                            .textColor,
+                      },
+                    ]}>
+                    인생은 속도가 아니라 방향이다.
+                  </Text>
+                  <Text
+                    style={[
+                      styles.previewText,
+                      {
+                        color:
+                          categories[categoryIdx][screenName]['setting']
+                            .textColor,
+                      },
+                    ]}>
+                    by 괴테
+                  </Text>
+                </View>
+              )}
               <View
                 style={[styles.previewImageController, styles.previewHeight]}>
                 {renderPickImageButton(screenName)}
@@ -634,8 +391,8 @@ const EditTabScreen = ({route}) => {
               </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      ) : null}
     </View>
   );
 };
@@ -643,7 +400,6 @@ const EditTabScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 25,
     paddingVertical: 5,
     backgroundColor: '#dfe6e9',
     //backgroundColor: 'yellow',
@@ -651,6 +407,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     textAlignVertical: 'center',
+    //backgroundColor: 'yellow',
+    paddingLeft: 5,
   },
   switchContainer: {
     flex: 1,
@@ -658,17 +416,18 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     //backgroundColor: 'red',
     alignItems: 'center',
-  },
-  paletteContainer: {
-    flex: 9,
-    //backgroundColor: 'skyblue',
+    paddingHorizontal: 20,
   },
   toggleSwitch: {
     marginHorizontal: 5,
     transform: [{scaleX: 1.0}, {scaleY: 1.0}],
     //backgroundColor: 'yellow',
   },
-
+  paletteContainer: {
+    flex: 9,
+    paddingHorizontal: 20,
+    //backgroundColor: 'skyblue',
+  },
   bgPaletteContainer: {
     //backgroundColor: 'red',
     marginVertical: 5,
@@ -679,6 +438,7 @@ const styles = StyleSheet.create({
   },
   previewContainer: {
     //backgroundColor: 'blue',
+    paddingHorizontal: 20,
     marginVertical: 5,
   },
   previewImageContainer: {
@@ -696,7 +456,7 @@ const styles = StyleSheet.create({
   },
   previewImageController: {
     //backgroundColor: 'white',
-    width: constants.width - 25 * 2 - 5 * 2 - 200 - 10,
+    width: constants.width - 20 * 2 - 5 * 2 - 200 - 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,

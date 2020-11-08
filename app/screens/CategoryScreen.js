@@ -35,7 +35,7 @@ const CategoryScreen = ({route, navigation}) => {
   const [copiedText, setCopiedText] = useState('');
 
   useEffect(() => {
-    //console.log('useEffect', screenName, itemId);
+    //console.log('useEffect', screenName, itemId, navigation);
     //console.log('useEffect:', screenName, categories);
 
     if (categoryIdx <= -1) {
@@ -45,7 +45,7 @@ const CategoryScreen = ({route, navigation}) => {
 
       setCategoryIdx(newIdx);
     } else {
-      console.log(categories[categoryIdx][screenName]['data'], itemId);
+      //console.log(categories[categoryIdx][screenName]['data'], itemId);
       // console.log(
       //   itemId,
       //   categories,
@@ -53,42 +53,57 @@ const CategoryScreen = ({route, navigation}) => {
       //   categories[categoryIdx][screenName]['data'],
       //   categories[categoryIdx][screenName]['data'].length,
       // );
-      if (categories[categoryIdx][screenName]['data'].length > 0) {
-        setContents(
-          categories[categoryIdx][screenName]['data'][itemId]['contents'],
-        );
-        setPrepos(
-          categories[categoryIdx][screenName]['data'][itemId]['prepos'],
-        );
-        setSource(
-          categories[categoryIdx][screenName]['data'][itemId]['source'],
-        );
-        if (itemId === 0) {
+      if (
+        itemId > 0 &&
+        itemId === categories[categoryIdx][screenName]['data'].length
+      ) {
+        navigation.setParams({
+          itemId: itemId - 1,
+          screenName,
+        });
+      } else {
+        if (categories[categoryIdx][screenName]['data'].length > 0) {
+          console.log('here', screenName, itemId);
+          console.log(categories[categoryIdx][screenName]['data']);
+          setContents(
+            categories[categoryIdx][screenName]['data'][itemId]['contents'],
+          );
+          setPrepos(
+            categories[categoryIdx][screenName]['data'][itemId]['prepos'],
+          );
+          setSource(
+            categories[categoryIdx][screenName]['data'][itemId]['source'],
+          );
+          if (itemId === 0) {
+            setPrevButtonDisable(true);
+            setPrevButtonColor(buttonColor.inactive);
+          } else {
+            setPrevButtonDisable(false);
+            setPrevButtonColor(buttonColor.active);
+          }
+          if (
+            itemId ===
+            categories[categoryIdx][screenName]['data'].length - 1
+          ) {
+            setNextButtonDisable(true);
+            setNextButtonColor(buttonColor.inactive);
+          } else {
+            setNextButtonDisable(false);
+            setNextButtonColor(buttonColor.active);
+          }
+        } else {
+          setContents('');
+          setPrepos('No Contents');
+          setSource('');
           setPrevButtonDisable(true);
           setPrevButtonColor(buttonColor.inactive);
-        } else {
-          setPrevButtonDisable(false);
-          setPrevButtonColor(buttonColor.active);
-        }
-        if (itemId === categories[categoryIdx][screenName]['data'].length - 1) {
           setNextButtonDisable(true);
           setNextButtonColor(buttonColor.inactive);
-        } else {
-          setNextButtonDisable(false);
-          setNextButtonColor(buttonColor.active);
         }
-      } else {
-        setContents('');
-        setPrepos('No Contents');
-        setSource('');
-        setPrevButtonDisable(true);
-        setPrevButtonColor(buttonColor.inactive);
-        setNextButtonDisable(true);
-        setNextButtonColor(buttonColor.inactive);
       }
     }
   }, [categoryIdx, itemId, categories]);
-  //itemId, Object.values(movies)
+
   const setPrevItemId = () => {
     let prevId = itemId - 1;
     if (prevId < 0) {

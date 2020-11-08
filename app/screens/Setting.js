@@ -5,13 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ScrollView,
   Linking,
   SectionList,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import CheckBox from '@react-native-community/checkbox';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import constants from '../constants';
 import Home from './Home';
@@ -40,9 +37,27 @@ const Setting = ({navigation}) => {
     {
       title: '데이터 관리',
       data: [
-        {name: '내보내기', action: () => console.log('내보내기')},
-        {name: '가져오기', action: () => console.log('가져오기')},
-        {name: '초기화', action: () => console.log('초기화')},
+        {
+          name: '내보내기',
+          action: () => {
+            Alert.alert('준비 중인 기능입니다 :)');
+            console.log('내보내기');
+          },
+        },
+        {
+          name: '가져오기',
+          action: () => {
+            Alert.alert('준비 중인 기능입니다 :)');
+            console.log('가져오기');
+          },
+        },
+        {
+          name: '초기화',
+          action: () => {
+            Alert.alert('준비 중인 기능입니다 :)');
+            console.log('초기화');
+          },
+        },
       ],
     },
     {
@@ -107,7 +122,7 @@ const Setting = ({navigation}) => {
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
 
   useEffect(() => {
-    console.log(categories);
+    console.log('Setting:', categories);
     return () => {
       setThisMovieSetting({});
       setThisLyricsSetting({});

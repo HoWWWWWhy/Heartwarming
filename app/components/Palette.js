@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 
-const BgPalette = ({setting, selected}) => {
+const Palette = ({setting, selected}) => {
   const paletteColors = [
     'white',
     '#f6e58d',
@@ -23,14 +23,7 @@ const BgPalette = ({setting, selected}) => {
     <View style={styles.paletteContainer}>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         {paletteColors.map((color) => (
-          <TouchableOpacity
-            key={color}
-            onPress={() =>
-              setting((prevState) => ({
-                ...prevState,
-                bgColor: color,
-              }))
-            }>
+          <TouchableOpacity key={color} onPress={() => setting(color)}>
             <View
               style={[
                 styles.palette,
@@ -63,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BgPalette;
+export default Palette;

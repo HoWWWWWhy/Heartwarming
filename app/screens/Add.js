@@ -86,7 +86,12 @@ const Add = ({navigation, route}) => {
       await AsyncStorage.setItem('@Data', JSON.stringify(newData));
       setCategories(newData);
 
-      navigation.navigate('Home');
+      navigation.goBack();
+      // if (insertFlag) {
+      //   navigation.goBack();
+      // } else {
+      //   navigation.navigate('Home');
+      // }
     } catch (e) {
       // saving error
       console.log(e);

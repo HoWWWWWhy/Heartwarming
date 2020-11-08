@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Linking,
   FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';

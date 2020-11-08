@@ -105,7 +105,7 @@ const Update = ({navigation, route}) => {
         setCategories(newData);
       }
 
-      navigation.navigate('Home');
+      navigation.goBack();
     } catch (e) {
       // saving error
       console.log(e);

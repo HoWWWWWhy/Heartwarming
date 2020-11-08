@@ -133,6 +133,7 @@ const MainNavigation = () => {
           }
           const movie_setting = await AsyncStorage.getItem('@MovieSetting');
           if (movie_setting !== null) {
+            console.log('movie_setting:', movie_setting);
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Movie',
             );
@@ -165,6 +166,7 @@ const MainNavigation = () => {
           }
           const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
           if (lyrics_setting !== null) {
+            console.log('lyrics_setting:', lyrics_setting);
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Lyrics',
             );
