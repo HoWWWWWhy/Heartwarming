@@ -10,6 +10,8 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,11 +32,11 @@ const EditTabScreen = ({route}) => {
 
   const {screenName} = route.params;
 
-  const {movieSetting, lyricsSetting, bookSetting} = useContext(Store);
+  //const {movieSetting, lyricsSetting, bookSetting} = useContext(Store);
 
-  const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
-  const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
-  const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
+  //const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
+  //const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
+  //const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   const [categoryIdx, setCategoryIdx] = useState(-1);
   const [tempImage, setTempImage] = useState('');
@@ -48,7 +50,9 @@ const EditTabScreen = ({route}) => {
     // console.log(RNFS.CachesDirectoryPath);
     // console.log(RNFS.TemporaryDirectoryPath);
     // console.log(RNFS.ExternalDirectoryPath);
-
+    // console.log("EditTabScreen Mounted, categoryIdx:", categoryIdx);
+    // console.log("selectedBgColor", selectedBgColor);
+    // console.log("selectedTextColor", selectedTextColor);
     if (categoryIdx <= -1) {
       const newIdx = categories.findIndex(
         (category) => Object.keys(category)[0] === screenName,
@@ -91,6 +95,10 @@ const EditTabScreen = ({route}) => {
         }
       }
     }
+    return () => {
+      //console.log("EditTabScreen Cleanup");
+      storeData(categories);
+    };
   }, [categoryIdx, categories, selectedBgColor, selectedTextColor]);
 
   const pickImageButtonFadeIn = () => {
@@ -101,6 +109,7 @@ const EditTabScreen = ({route}) => {
     }).start();
     //console.log('fadeIn');
   };
+
   const pickImageButtonFadeOut = () => {
     Animated.timing(animation, {
       toValue: 0,
@@ -120,7 +129,6 @@ const EditTabScreen = ({route}) => {
     } else {
       pickImageButtonFadeOut();
     }
-
     setCategories(newData);
   };
 
@@ -267,18 +275,13 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const renderBgPalette = () => {
-    //console.log('renderBgPalette: ', selectedBgColor);
-
-    return <Palette setting={setSelectedBgColor} selected={selectedBgColor} />;
-  };
-
-  const renderTextPalette = () => {
-    //console.log('renderTextPalette: ', selectedTextColor);
-
-    return (
-      <Palette setting={setSelectedTextColor} selected={selectedTextColor} />
-    );
+  const storeData = async (data) => {
+    try {
+      await AsyncStorage.setItem('@Data', JSON.stringify(data));
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
   };
 
   return (
@@ -302,11 +305,11 @@ const EditTabScreen = ({route}) => {
           <View style={styles.paletteContainer}>
             <View style={styles.bgPaletteContainer}>
               <Text style={styles.text}>배경색 선택</Text>
-              {renderBgPalette()}
+              <Palette setting={setSelectedBgColor} selected={selectedBgColor} />
             </View>
             <View style={styles.textPaletteContainer}>
               <Text style={styles.text}>글씨색 선택</Text>
-              {renderTextPalette()}
+              <Palette setting={setSelectedTextColor} selected={selectedTextColor} />
             </View>
           </View>
           <View style={styles.previewContainer}>

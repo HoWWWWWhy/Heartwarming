@@ -102,6 +102,7 @@ const MainNavigation = () => {
   const [thisBookSetting, setThisBookSetting] = useState({});
 
   useEffect(() => {
+    console.log('MainNavigation Mounted');
     const getData = async () => {
       try {
         const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');

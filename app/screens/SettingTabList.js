@@ -48,6 +48,7 @@ const SettingTabList = ({navigation}) => {
 
   useEffect(() => {
     return () => {
+      console.log(categories);
       console.log('cleanup');
       setThisMovieSetting({});
       setThisLyricsSetting({});
