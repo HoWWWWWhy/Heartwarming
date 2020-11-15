@@ -14,23 +14,20 @@ import _ from 'lodash';
 const CategoryScreen = ({route, navigation}) => {
   const {categories, setCategories} = useContext(Store);
 
-  //const {movies, setMovies} = useContext(Store);
-  const {movieSetting, setMovieSetting} = useContext(Store);
-
   const {itemId, screenName} = route.params;
 
-  const buttonColor = {active: movieSetting.textColor, inactive: 'darkgrey'};
+  const BUTTON_INACTIVE_COLOR = 'darkgrey';
 
   const [categoryIdx, setCategoryIdx] = useState(-1);
-  //const [screenData, setScreenData] = useState(null);
+
   const [contents, setContents] = useState('');
   const [prepos, setPrepos] = useState('No Contents');
   const [source, setSource] = useState('');
 
   const [prevButtonDisable, setPrevButtonDisable] = useState(false);
-  const [prevButtonColor, setPrevButtonColor] = useState(buttonColor.active);
+  const [prevButtonColor, setPrevButtonColor] = useState(BUTTON_INACTIVE_COLOR);
   const [nextButtonDisable, setNextButtonDisable] = useState(false);
-  const [nextButtonColor, setNextButtonColor] = useState(buttonColor.active);
+  const [nextButtonColor, setNextButtonColor] = useState(BUTTON_INACTIVE_COLOR);
 
   const [copiedText, setCopiedText] = useState('');
 
@@ -42,17 +39,8 @@ const CategoryScreen = ({route, navigation}) => {
       const newIdx = categories.findIndex(
         (category) => Object.keys(category)[0] === screenName,
       );
-
       setCategoryIdx(newIdx);
     } else {
-      //console.log(categories[categoryIdx][screenName]['data'], itemId);
-      // console.log(
-      //   itemId,
-      //   categories,
-      //   categoryIdx,
-      //   categories[categoryIdx][screenName]['data'],
-      //   categories[categoryIdx][screenName]['data'].length,
-      // );
       if (
         itemId > 0 &&
         itemId === categories[categoryIdx][screenName]['data'].length
@@ -63,8 +51,6 @@ const CategoryScreen = ({route, navigation}) => {
         });
       } else {
         if (categories[categoryIdx][screenName]['data'].length > 0) {
-          console.log('here', screenName, itemId);
-          console.log(categories[categoryIdx][screenName]['data']);
           setContents(
             categories[categoryIdx][screenName]['data'][itemId]['contents'],
           );
@@ -76,29 +62,33 @@ const CategoryScreen = ({route, navigation}) => {
           );
           if (itemId === 0) {
             setPrevButtonDisable(true);
-            setPrevButtonColor(buttonColor.inactive);
+            setPrevButtonColor(BUTTON_INACTIVE_COLOR);
           } else {
             setPrevButtonDisable(false);
-            setPrevButtonColor(buttonColor.active);
+            setPrevButtonColor(
+              categories[categoryIdx][screenName]['setting']['textColor'],
+            );
           }
           if (
             itemId ===
             categories[categoryIdx][screenName]['data'].length - 1
           ) {
             setNextButtonDisable(true);
-            setNextButtonColor(buttonColor.inactive);
+            setNextButtonColor(BUTTON_INACTIVE_COLOR);
           } else {
             setNextButtonDisable(false);
-            setNextButtonColor(buttonColor.active);
+            setNextButtonColor(
+              categories[categoryIdx][screenName]['setting']['textColor'],
+            );
           }
         } else {
           setContents('');
           setPrepos('No Contents');
           setSource('');
           setPrevButtonDisable(true);
-          setPrevButtonColor(buttonColor.inactive);
+          setPrevButtonColor(BUTTON_INACTIVE_COLOR);
           setNextButtonDisable(true);
-          setNextButtonColor(buttonColor.inactive);
+          setNextButtonColor(BUTTON_INACTIVE_COLOR);
         }
       }
     }
@@ -234,7 +224,9 @@ ${source}`,
             contents={contents}
             prepos={prepos}
             source={source}
-            textColor={movieSetting.textColor}
+            textColor={
+              categories[categoryIdx][screenName]['setting']['textColor']
+            }
           />
           <TouchableOpacity
             disabled={nextButtonDisable}

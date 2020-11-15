@@ -6,7 +6,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Store from '../store';
-import TempStore from '../temp_store';
+//import TempStore from '../temp_store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
 
@@ -35,6 +35,7 @@ const MainNavigation = () => {
           textColor: 'black',
           bgImage: assets.defaultMovieBgImage,
           bgImageBlur: 0,
+          isSelected: true,
         },
       },
     },
@@ -48,6 +49,7 @@ const MainNavigation = () => {
           textColor: 'black',
           bgImage: assets.defaultLyricsBgImage,
           bgImageBlur: 0,
+          isSelected: true,
         },
       },
     },
@@ -61,11 +63,13 @@ const MainNavigation = () => {
           textColor: 'black',
           bgImage: assets.defaultBookBgImage,
           bgImageBlur: 0,
+          isSelected: true,
         },
       },
     },
   ]);
 
+  /*
   const [movies, setMovies] = useState([]);
   const [lyrics, setLyrics] = useState([]);
   const [books, setBooks] = useState([]);
@@ -73,7 +77,7 @@ const MainNavigation = () => {
   const [movieCheckBox, setMovieCheckBox] = useState(true);
   const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
   const [bookCheckBox, setBookCheckBox] = useState(true);
-
+  
   const [movieSetting, setMovieSetting] = useState({
     useBgImage: true,
     bgColor: 'white',
@@ -95,23 +99,29 @@ const MainNavigation = () => {
     bgImage: assets.defaultBookBgImage,
     bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
   });
+*/
 
   //각 탭의 상세 설정을 위한 임시 세팅 저장소
-  const [thisMovieSetting, setThisMovieSetting] = useState({});
-  const [thisLyricsSetting, setThisLyricsSetting] = useState({});
-  const [thisBookSetting, setThisBookSetting] = useState({});
+  // const [thisMovieSetting, setThisMovieSetting] = useState({});
+  // const [thisLyricsSetting, setThisLyricsSetting] = useState({});
+  // const [thisBookSetting, setThisBookSetting] = useState({});
 
   useEffect(() => {
     console.log('MainNavigation Mounted');
+
+    const storeData = async (data) => {
+      console.log('storeData');
+      console.log(data);
+      try {
+        await AsyncStorage.setItem('@Data', JSON.stringify(data));
+      } catch (e) {
+        // saving error
+        console.log(e);
+      }
+    };
+
     const getData = async () => {
       try {
-        const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
-        //console.log(checkbox_states);
-        if (checkbox_states !== null) {
-          setMovieCheckBox(JSON.parse(checkbox_states)[0]);
-          setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
-          setBookCheckBox(JSON.parse(checkbox_states)[2]);
-        }
         const all_data = await AsyncStorage.getItem('@Data');
         if (all_data !== null) {
           // value previously stored
@@ -121,6 +131,15 @@ const MainNavigation = () => {
         } else {
           //for old versions (under 1.4.0)
           let newData = _.cloneDeep(categories);
+          const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
+          //console.log(checkbox_states);
+          /*
+          if (checkbox_states !== null) {
+            setMovieCheckBox(JSON.parse(checkbox_states)[0]);
+            setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
+            setBookCheckBox(JSON.parse(checkbox_states)[2]);
+          }
+          */
           const movie_data = await AsyncStorage.getItem('@Movie');
           if (movie_data !== null) {
             // value previously stored
@@ -150,6 +169,11 @@ const MainNavigation = () => {
               !newData[newIdx]['Movie']['setting'].hasOwnProperty('bgImageBlur')
             ) {
               newData[newIdx]['Movie']['setting'].bgImageBlur = 0;
+            }
+            if (checkbox_states !== null) {
+              newData[newIdx]['Movie']['setting'].isSelected = JSON.parse(
+                checkbox_states,
+              )[0];
             }
             //setMovieSetting(parsed_movie_setting);
           }
@@ -186,6 +210,11 @@ const MainNavigation = () => {
             ) {
               newData[newIdx]['Lyrics']['setting'].bgImageBlur = 0;
             }
+            if (checkbox_states !== null) {
+              newData[newIdx]['Lyrics']['setting'].isSelected = JSON.parse(
+                checkbox_states,
+              )[1];
+            }
             //setLyricsSetting(parsed_lyrics_setting);
           }
           const book_data = await AsyncStorage.getItem('@Book');
@@ -217,9 +246,15 @@ const MainNavigation = () => {
             ) {
               newData[newIdx]['Book']['setting'].bgImageBlur = 0;
             }
+            if (checkbox_states !== null) {
+              newData[newIdx]['Book']['setting'].isSelected = JSON.parse(
+                checkbox_states,
+              )[2];
+            }
             //setBookSetting(parsed_book_setting);
           }
           setCategories(newData);
+          storeData(newData);
         }
       } catch (e) {
         // error reading value
@@ -232,129 +267,119 @@ const MainNavigation = () => {
   const providerValues = {
     categories,
     setCategories,
-    movies,
-    lyrics,
-    books,
-    setMovies,
-    setLyrics,
-    setBooks,
-    movieCheckBox,
-    lyricsCheckBox,
-    bookCheckBox,
-    setMovieCheckBox,
-    setLyricsCheckBox,
-    setBookCheckBox,
-    movieSetting,
-    lyricsSetting,
-    bookSetting,
-    setMovieSetting,
-    setLyricsSetting,
-    setBookSetting,
+    // movies,
+    // lyrics,
+    // books,
+    // setMovies,
+    // setLyrics,
+    // setBooks,
+    // movieCheckBox,
+    // lyricsCheckBox,
+    // bookCheckBox,
+    // setMovieCheckBox,
+    // setLyricsCheckBox,
+    // setBookCheckBox,
+    //movieSetting,
+    //lyricsSetting,
+    //bookSetting,
+    //setMovieSetting,
+    //setLyricsSetting,
+    //setBookSetting,
   };
 
   return (
     <>
       <Store.Provider value={providerValues}>
-        <TempStore.Provider
-          value={{
-            thisMovieSetting,
-            setThisMovieSetting,
-            thisLyricsSetting,
-            setThisLyricsSetting,
-            thisBookSetting,
-            setThisBookSetting,
-          }}>
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
-              <Stack.Screen
-                name="Home"
-                component={Home}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="Setting"
-                component={Setting}
-                options={{
-                  title: '설정하기',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                }}
-              />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Setting"
+              component={Setting}
+              options={{
+                title: '설정하기',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
 
-              <Stack.Screen
-                name="EditTabScreen"
-                component={EditTabScreen}
-                options={({route}) => ({
-                  title: '배경 설정 [ ' + route.params.screenName + ' ]',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                })}
-              />
+            <Stack.Screen
+              name="EditTabScreen"
+              component={EditTabScreen}
+              options={({route}) => ({
+                title: '배경 설정 [ ' + route.params.screenName + ' ]',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              })}
+            />
 
-              <Stack.Screen
-                name="Add"
-                component={Add}
-                options={{
-                  title: '추가하기',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                }}
-              />
-              <Stack.Screen
-                name="Update"
-                component={Update}
-                options={{
-                  title: '수정하기',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                }}
-              />
-              <Stack.Screen
-                name="EditCategory"
-                component={EditCategory}
-                options={{
-                  title: '카테고리 편집',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                }}
-              />
-              <Stack.Screen
-                name="SettingTabList"
-                component={SettingTabList}
-                options={{
-                  title: '탭 디자인 설정',
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'horizontal',
-                  headerStyle: {height: constants.STACK_HEADER_HEIGHT},
-                }}
-              />
-              <Stack.Screen
-                name="TabNavigation"
-                component={TabNavigation}
-                options={{
-                  title: 'View',
-                  headerShown: false,
-                  gestureEnabled: true,
-                  gestureResponseDistance: 'horizontal',
-                  gestureDirection: 'vertical',
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </TempStore.Provider>
+            <Stack.Screen
+              name="Add"
+              component={Add}
+              options={{
+                title: '추가하기',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+            <Stack.Screen
+              name="Update"
+              component={Update}
+              options={{
+                title: '수정하기',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+            <Stack.Screen
+              name="EditCategory"
+              component={EditCategory}
+              options={{
+                title: '카테고리 편집',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+            <Stack.Screen
+              name="SettingTabList"
+              component={SettingTabList}
+              options={{
+                title: '탭 디자인 설정',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+            <Stack.Screen
+              name="TabNavigation"
+              component={TabNavigation}
+              options={{
+                title: 'View',
+                headerShown: false,
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'vertical',
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </Store.Provider>
     </>
   );

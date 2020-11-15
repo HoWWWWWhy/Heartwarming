@@ -33,10 +33,10 @@ const EditCategory = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('EditCategory Mounted');
-    return () => {
-      //console.log('cleanup');
-      storeData(categories);
-    };
+    // return () => {
+    //   //console.log('cleanup');
+    //   storeData(categories);
+    // };
   }, [categories]);
 
   const renderItem = ({item, index, drag, isActive}) => {
@@ -163,6 +163,7 @@ const EditCategory = ({navigation, route}) => {
       newData.push(categories[newIdx]);
     });
     setCategories(newData);
+    storeData(newData);
   };
 
   const storeData = async (data) => {

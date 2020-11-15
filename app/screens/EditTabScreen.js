@@ -18,7 +18,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
-import TempStore from '../temp_store';
 
 import Palette from '../components/Palette';
 import constants from '../constants';
@@ -31,12 +30,6 @@ const EditTabScreen = ({route}) => {
   const {categories, setCategories} = useContext(Store);
 
   const {screenName} = route.params;
-
-  //const {movieSetting, lyricsSetting, bookSetting} = useContext(Store);
-
-  //const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
-  //const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
-  //const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   const [categoryIdx, setCategoryIdx] = useState(-1);
   const [tempImage, setTempImage] = useState('');
@@ -305,11 +298,17 @@ const EditTabScreen = ({route}) => {
           <View style={styles.paletteContainer}>
             <View style={styles.bgPaletteContainer}>
               <Text style={styles.text}>배경색 선택</Text>
-              <Palette setting={setSelectedBgColor} selected={selectedBgColor} />
+              <Palette
+                setting={setSelectedBgColor}
+                selected={selectedBgColor}
+              />
             </View>
             <View style={styles.textPaletteContainer}>
               <Text style={styles.text}>글씨색 선택</Text>
-              <Palette setting={setSelectedTextColor} selected={selectedTextColor} />
+              <Palette
+                setting={setSelectedTextColor}
+                selected={selectedTextColor}
+              />
             </View>
           </View>
           <View style={styles.previewContainer}>

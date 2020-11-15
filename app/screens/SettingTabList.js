@@ -7,6 +7,7 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
+
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,7 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import constants from '../constants';
 import Home from './Home';
 import Store from '../store';
-import TempStore from '../temp_store';
+import _ from 'lodash';
 
 const SettingTabList = ({navigation}) => {
   const {categories, setCategories} = useContext(Store);
@@ -22,24 +23,25 @@ const SettingTabList = ({navigation}) => {
   const DATA = categories.map((category, idx) => ({
     id: `setting-${Object.keys(category)[0]}`,
     title: Object.keys(category)[0],
+    idx,
   }));
 
-  const {movieCheckBox, setMovieCheckBox} = useContext(Store);
-  const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
-  const {bookCheckBox, setBookCheckBox} = useContext(Store);
+  // const {movieCheckBox, setMovieCheckBox} = useContext(Store);
+  // const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
+  // const {bookCheckBox, setBookCheckBox} = useContext(Store);
 
-  const {movieSetting, setMovieSetting} = useContext(Store);
-  const {lyricsSetting, setLyricsSetting} = useContext(Store);
-  const {bookSetting, setBookSetting} = useContext(Store);
+  // const {movieSetting, setMovieSetting} = useContext(Store);
+  // const {lyricsSetting, setLyricsSetting} = useContext(Store);
+  // const {bookSetting, setBookSetting} = useContext(Store);
 
-  const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
-  const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
-  const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
+  // const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
+  // const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
+  // const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   // 아직 저장되지 않은 state 관리
-  const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
-  const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
-  const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
+  // const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
+  // const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
+  // const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
 
   const settingEditIcon = {
     name: 'edit',
@@ -47,28 +49,33 @@ const SettingTabList = ({navigation}) => {
   };
 
   useEffect(() => {
+    console.log('SettingTabList Mounted');
+    console.log(categories);
     return () => {
-      console.log(categories);
+      //console.log(categories);
       console.log('cleanup');
-      setThisMovieSetting({});
-      setThisLyricsSetting({});
-      setThisBookSetting({});
+      // setThisMovieSetting({});
+      // setThisLyricsSetting({});
+      // setThisBookSetting({});
     };
   }, []);
 
-  const Item = ({title}) => (
+  const Item = ({title, idx}) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemText}>{title}</Text>
 
       <View style={styles.buttonContainer}>
+        <Text>{idx}</Text>
         <CheckBox
           disabled={false}
-          value={thisMovieCheckBox}
-          onValueChange={() =>
-            thisMovieCheckBox
-              ? setThisMovieCheckBox(false)
-              : setThisMovieCheckBox(true)
-          }
+          value={categories[idx][title]['setting'].isSelected}
+          onValueChange={() => {
+            let newData = _.cloneDeep(categories);
+            newData[idx][title]['setting'].isSelected = !newData[idx][title][
+              'setting'
+            ].isSelected;
+            setCategories(newData);
+          }}
         />
         <TouchableOpacity
           onPress={() =>
@@ -83,7 +90,7 @@ const SettingTabList = ({navigation}) => {
       </View>
     </View>
   );
-
+  /*
   const storeData = async () => {
     if (thisMovieCheckBox | thisLyricsCheckBox | thisBookCheckBox) {
       try {
@@ -130,13 +137,13 @@ const SettingTabList = ({navigation}) => {
       Alert.alert('알림', '최소 한 개의 카테고리를 선택해 주세요.');
     }
   };
-
+*/
   return (
     <View style={styles.container}>
       <FlatList
         data={DATA}
         keyExtractor={(item) => item.id}
-        renderItem={({item}) => <Item title={item.title} />}
+        renderItem={({item}) => <Item title={item.title} idx={item.idx} />}
       />
     </View>
   );

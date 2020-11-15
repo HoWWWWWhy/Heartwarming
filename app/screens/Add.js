@@ -35,6 +35,7 @@ const Add = ({navigation, route}) => {
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
+
   const categoryList = ['Movie', 'Lyrics', 'Book'];
   const [category, setCategory] = useState(categoryList[0]);
 
@@ -45,9 +46,6 @@ const Add = ({navigation, route}) => {
   const [cameraOn, setCameraOn] = useState(false);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
-  const {movies, setMovies} = useContext(Store);
-  const {lyrics, setLyrics} = useContext(Store);
-  const {books, setBooks} = useContext(Store);
   const {categories, setCategories} = useContext(Store);
 
   useEffect(() => {
@@ -69,7 +67,7 @@ const Add = ({navigation, route}) => {
     //console.log('data:', new_data);
 
     try {
-      console.log(categories);
+      //console.log(categories);
       let cur_data = [];
       let newData = _.cloneDeep(categories);
       const newIdx = categories.findIndex(

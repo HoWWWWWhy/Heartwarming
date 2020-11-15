@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import constants from '../constants';
 import Home from './Home';
 import Store from '../store';
-import TempStore from '../temp_store';
 
 const Setting = ({navigation}) => {
   const DATA = [
@@ -102,14 +100,14 @@ const Setting = ({navigation}) => {
   const {lyricsSetting, setLyricsSetting} = useContext(Store);
   const {bookSetting, setBookSetting} = useContext(Store);
 
-  const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
-  const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
-  const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
+  // const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
+  // const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
+  // const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
 
   // 아직 저장되지 않은 state 관리
-  const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
-  const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
-  const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
+  // const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
+  // const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
+  // const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
 
   const settingEditIcon = {
     name: 'edit',
@@ -123,11 +121,11 @@ const Setting = ({navigation}) => {
 
   useEffect(() => {
     console.log('Setting:', categories);
-    return () => {
-      setThisMovieSetting({});
-      setThisLyricsSetting({});
-      setThisBookSetting({});
-    };
+    // return () => {
+    //   setThisMovieSetting({});
+    //   setThisLyricsSetting({});
+    //   setThisBookSetting({});
+    // };
   }, []);
 
   const Item = ({item}) => (
@@ -137,7 +135,7 @@ const Setting = ({navigation}) => {
       </TouchableOpacity>
     </View>
   );
-
+  /*
   const storeData = async () => {
     if (thisMovieCheckBox | thisLyricsCheckBox | thisBookCheckBox) {
       try {
@@ -184,6 +182,7 @@ const Setting = ({navigation}) => {
       Alert.alert('알림', '최소 한 개의 카테고리를 선택해 주세요.');
     }
   };
+*/
 
   const onPressURL = async (url) => {
     // Checking if the link is supported for links with custom URL scheme.
