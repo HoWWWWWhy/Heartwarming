@@ -12,8 +12,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import constants from '../constants';
-import Home from './Home';
 import Store from '../store';
 import _ from 'lodash';
 
@@ -26,23 +24,6 @@ const SettingTabList = ({navigation}) => {
     idx,
   }));
 
-  // const {movieCheckBox, setMovieCheckBox} = useContext(Store);
-  // const {lyricsCheckBox, setLyricsCheckBox} = useContext(Store);
-  // const {bookCheckBox, setBookCheckBox} = useContext(Store);
-
-  // const {movieSetting, setMovieSetting} = useContext(Store);
-  // const {lyricsSetting, setLyricsSetting} = useContext(Store);
-  // const {bookSetting, setBookSetting} = useContext(Store);
-
-  // const {thisMovieSetting, setThisMovieSetting} = useContext(TempStore);
-  // const {thisLyricsSetting, setThisLyricsSetting} = useContext(TempStore);
-  // const {thisBookSetting, setThisBookSetting} = useContext(TempStore);
-
-  // 아직 저장되지 않은 state 관리
-  // const [thisMovieCheckBox, setThisMovieCheckBox] = useState(movieCheckBox);
-  // const [thisLyricsCheckBox, setThisLyricsCheckBox] = useState(lyricsCheckBox);
-  // const [thisBookCheckBox, setThisBookCheckBox] = useState(bookCheckBox);
-
   const settingEditIcon = {
     name: 'edit',
     color: '#535c68',
@@ -50,22 +31,14 @@ const SettingTabList = ({navigation}) => {
 
   useEffect(() => {
     console.log('SettingTabList Mounted');
-    console.log(categories);
-    return () => {
-      //console.log(categories);
-      console.log('cleanup');
-      // setThisMovieSetting({});
-      // setThisLyricsSetting({});
-      // setThisBookSetting({});
-    };
-  }, []);
+    //console.log(categories);
+  }, [categories]);
 
   const Item = ({title, idx}) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemText}>{title}</Text>
 
       <View style={styles.buttonContainer}>
-        <Text>{idx}</Text>
         <CheckBox
           disabled={false}
           value={categories[idx][title]['setting'].isSelected}
@@ -75,6 +48,7 @@ const SettingTabList = ({navigation}) => {
               'setting'
             ].isSelected;
             setCategories(newData);
+            storeData(newData);
           }}
         />
         <TouchableOpacity
@@ -90,54 +64,16 @@ const SettingTabList = ({navigation}) => {
       </View>
     </View>
   );
-  /*
-  const storeData = async () => {
-    if (thisMovieCheckBox | thisLyricsCheckBox | thisBookCheckBox) {
-      try {
-        await AsyncStorage.setItem(
-          '@CheckBoxState',
-          JSON.stringify([
-            thisMovieCheckBox,
-            thisLyricsCheckBox,
-            thisBookCheckBox,
-          ]),
-        );
-        if (Object.keys(thisMovieSetting).length > 0) {
-          await AsyncStorage.setItem(
-            '@MovieSetting',
-            JSON.stringify(thisMovieSetting),
-          );
-          setMovieSetting(thisMovieSetting);
-        }
-        if (Object.keys(thisLyricsSetting).length > 0) {
-          await AsyncStorage.setItem(
-            '@LyricsSetting',
-            JSON.stringify(thisLyricsSetting),
-          );
-          setLyricsSetting(thisLyricsSetting);
-        }
-        if (Object.keys(thisBookSetting).length > 0) {
-          await AsyncStorage.setItem(
-            '@BookSetting',
-            JSON.stringify(thisBookSetting),
-          );
-          setBookSetting(thisBookSetting);
-        }
-      } catch (e) {
-        // saving error
-        console.log(e);
-      }
 
-      setMovieCheckBox(thisMovieCheckBox);
-      setLyricsCheckBox(thisLyricsCheckBox);
-      setBookCheckBox(thisBookCheckBox);
-
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('알림', '최소 한 개의 카테고리를 선택해 주세요.');
+  const storeData = async (data) => {
+    try {
+      await AsyncStorage.setItem('@Data', JSON.stringify(data));
+    } catch (e) {
+      // saving error
+      console.log(e);
     }
   };
-*/
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -164,46 +100,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemText: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   buttonContainer: {
     flexDirection: 'row',
-    backgroundColor: 'yellow',
-  },
-  checkbox: {
-    flexDirection: 'row',
-    //backgroundColor: 'grey',
-    alignItems: 'center',
-    width: 80,
-    height: 30,
-    marginVertical: 3,
-    marginLeft: 3,
-    marginRight: 5,
-  },
-  checkboxText: {
-    fontSize: 16,
-  },
-  settingEdit: {
-    //marginLeft: 10,
-    //paddingTop: 3,
-    height: 30,
-    //backgroundColor: 'black',
-  },
-  setButton: {
-    backgroundColor: '#34495e',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 50,
-    //marginHorizontal: 30,
-  },
-  textButton: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    width: 60,
+    justifyContent: 'space-between',
+    //backgroundColor: 'yellow',
   },
 });
 

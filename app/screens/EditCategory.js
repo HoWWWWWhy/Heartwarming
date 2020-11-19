@@ -33,11 +33,7 @@ const EditCategory = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('EditCategory Mounted');
-    // return () => {
-    //   //console.log('cleanup');
-    //   storeData(categories);
-    // };
-  }, [categories]);
+  }, []);
 
   const renderItem = ({item, index, drag, isActive}) => {
     return (
@@ -56,7 +52,7 @@ const EditCategory = ({navigation, route}) => {
             flex: 8,
             fontWeight: 'bold',
             color: '#34495e',
-            fontSize: 24,
+            fontSize: 20,
             textAlignVertical: 'center',
             //backgroundColor: 'green',
           }}>
@@ -100,7 +96,7 @@ const EditCategory = ({navigation, route}) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('창을 닫아주세요');
+          Alert.alert('[완료] 또는 [취소] 버튼을 눌러 창을 닫아주세요');
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -110,14 +106,25 @@ const EditCategory = ({navigation, route}) => {
               onChangeText={(text) => setCategoryName(text)}
               value={categoryName}
             />
-            <TouchableHighlight
-              style={styles.openButton}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-                addCategory();
-              }}>
-              <Text style={styles.textStyle}>완료</Text>
-            </TouchableHighlight>
+            <View style={styles.modalButtonContainer}>
+              <TouchableHighlight
+                style={styles.modalButton}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setCategoryName('');
+                  addCategory();
+                }}>
+                <Text style={styles.textStyle}>완료</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={styles.modalButton}
+                onPress={() => {
+                  setCategoryName('');
+                  setModalVisible(!modalVisible);
+                }}>
+                <Text style={styles.textStyle}>취소</Text>
+              </TouchableHighlight>
+            </View>
           </View>
         </View>
       </Modal>
@@ -125,6 +132,7 @@ const EditCategory = ({navigation, route}) => {
   };
 
   const addCategory = () => {
+    let newData = [];
     let newCategory = {};
     newCategory[categoryName] = {
       data: [],
@@ -135,9 +143,11 @@ const EditCategory = ({navigation, route}) => {
         textColor: 'black',
         bgImage: assets.defaultNewBgImage,
         bgImageBlur: 0,
+        isSelected: true,
       },
     };
 
+    newData = [...categories, newCategory];
     setDraggableData([
       ...draggableData,
       {
@@ -146,7 +156,9 @@ const EditCategory = ({navigation, route}) => {
         backgroundColor: '#f1f2f6',
       },
     ]);
-    setCategories([...categories, newCategory]);
+
+    setCategories(newData);
+    storeData(newData);
   };
 
   const reorderCategories = (draggable_data) => {
@@ -223,14 +235,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: constants.STACK_HEADER_HEIGHT,
-    //backgroundColor: 'black',
+    backgroundColor: 'black',
   },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    //alignItems: 'center',
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -240,10 +252,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  openButton: {
+  modalButtonContainer: {
+    flexDirection: 'row',
+  },
+  modalButton: {
     backgroundColor: '#34495e',
     borderRadius: 5,
     marginTop: 10,
+    marginHorizontal: 5,
     padding: 10,
   },
   textStyle: {

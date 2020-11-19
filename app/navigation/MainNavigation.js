@@ -16,6 +16,7 @@ import Update from '../screens/Update';
 import EditCategory from '../screens/EditCategory';
 import EditTabScreen from '../screens/EditTabScreen';
 import SettingTabList from '../screens/SettingTabList';
+import Help from '../screens/Help';
 
 import constants from '../constants';
 import assets from '../default_assets';
@@ -367,6 +368,18 @@ const MainNavigation = () => {
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
+            <Stack.Screen
+              name="Help"
+              component={Help}
+              options={{
+                title: '도움말',
+                gestureEnabled: true,
+                gestureResponseDistance: 'horizontal',
+                gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+
             <Stack.Screen
               name="TabNavigation"
               component={TabNavigation}
