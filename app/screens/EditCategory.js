@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {Component, useState, useEffect, useContext, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,9 +8,11 @@ import {
   TouchableHighlight,
   Modal,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import NavIcon from '../components/NavIcon';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -28,44 +30,94 @@ const EditCategory = ({navigation, route}) => {
   }));
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [categoryName, setCategoryName] = useState('');
+
   const [draggableData, setDraggableData] = useState(draggableList);
+
+  const categoryNameRef = useRef();
 
   useEffect(() => {
     console.log('EditCategory Mounted');
   }, []);
 
+  const AddCategoryModal = () => {
+    const [categoryName, setCategoryName] = useState('');
+
+    const handleComplete = () => {
+      const blankRemovedStr = categoryName.replace(/(\s*)/gi, ''); //모든 공백 제거
+      const foundIdx = categories.findIndex(
+        (category) => Object.keys(category)[0] === categoryName.trim(),
+      );
+      console.log(foundIdx);
+      if (blankRemovedStr.length === 0) {
+        Alert.alert('카테고리 이름은 적어도 한 글자여야 합니다.');
+      } else if (foundIdx >= 0) {
+        Alert.alert('중복된 카테고리입니다.');
+      } else {
+        setModalVisible(!modalVisible);
+        setCategoryName('');
+        addCategory(categoryName.trim());
+      }
+    };
+    return (
+      <KeyboardAvoidingView behavior={'height'}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onShow={() => {
+            categoryNameRef.current.focus();
+          }}
+          onRequestClose={() => {
+            setCategoryName('');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <MaterialIcons
+                name="close"
+                size={30}
+                color={'black'}
+                style={styles.modalCloseButton}
+                onPress={() => {
+                  setCategoryName('');
+                  setModalVisible(!modalVisible);
+                }}
+              />
+              <Text style={styles.modalText}>새 카테고리명</Text>
+              <TextInput
+                style={styles.modalTextInput}
+                onChangeText={(text) => {
+                  setCategoryName(text);
+                }}
+                value={categoryName}
+                underlineColorAndroid="transparent"
+                ref={categoryNameRef}
+              />
+              <TouchableHighlight
+                style={styles.modalButton}
+                onPress={handleComplete}>
+                <Text style={styles.textStyle}>완료</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
+    );
+  };
+
   const renderItem = ({item, index, drag, isActive}) => {
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingHorizontal: 14,
-          borderBottomWidth: 1,
-          borderBottomColor: '#c8d6e5',
-          backgroundColor: '#f1f2f6',
-        }}>
-        <Text
-          style={{
-            flex: 8,
-            fontWeight: 'bold',
-            color: '#34495e',
-            fontSize: 20,
-            textAlignVertical: 'center',
-            //backgroundColor: 'green',
-          }}>
-          {item.label}
-        </Text>
+      <View style={styles.draggableItemContainer}>
         <TouchableOpacity
-          style={{
-            flex: 1,
-            height: 50,
-            backgroundColor: item.backgroundColor,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={{flex: 8, justifyContent: 'center'}}
+          onPress={() => console.log('show modal')}>
+          <Text style={styles.draggableItemText}>{item.label}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.draggableItemIcon,
+            {backgroundColor: item.backgroundColor},
+          ]}
           onPress={() => console.log(Object.keys(categories[index])[0])}>
           <NavIcon
             focused={true}
@@ -75,13 +127,12 @@ const EditCategory = ({navigation, route}) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{
-            flex: 1,
-            height: 50,
-            backgroundColor: isActive ? '#dfe6e9' : item.backgroundColor,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={[
+            styles.draggableItemIcon,
+            {
+              backgroundColor: isActive ? '#dfe6e9' : item.backgroundColor,
+            },
+          ]}
           onLongPress={drag}>
           <Icon name="reorder" size={30} color={'#487eb0'} />
         </TouchableOpacity>
@@ -89,52 +140,10 @@ const EditCategory = ({navigation, route}) => {
     );
   };
 
-  const AddCategoryModal = () => {
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('[완료] 또는 [취소] 버튼을 눌러 창을 닫아주세요');
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>새 카테고리명</Text>
-            <TextInput
-              style={styles.modalTextInput}
-              onChangeText={(text) => setCategoryName(text)}
-              value={categoryName}
-            />
-            <View style={styles.modalButtonContainer}>
-              <TouchableHighlight
-                style={styles.modalButton}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  setCategoryName('');
-                  addCategory();
-                }}>
-                <Text style={styles.textStyle}>완료</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={styles.modalButton}
-                onPress={() => {
-                  setCategoryName('');
-                  setModalVisible(!modalVisible);
-                }}>
-                <Text style={styles.textStyle}>취소</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-
-  const addCategory = () => {
+  const addCategory = (name) => {
     let newData = [];
     let newCategory = {};
-    newCategory[categoryName] = {
+    newCategory[name] = {
       data: [],
       icon: 'person',
       setting: {
@@ -151,8 +160,8 @@ const EditCategory = ({navigation, route}) => {
     setDraggableData([
       ...draggableData,
       {
-        label: categoryName,
-        key: `category-${categoryName}`,
+        label: name,
+        key: `category-${name}`,
         backgroundColor: '#f1f2f6',
       },
     ]);
@@ -179,8 +188,8 @@ const EditCategory = ({navigation, route}) => {
   };
 
   const storeData = async (data) => {
-    console.log('storeData');
-    console.log(data);
+    //console.log('storeData');
+    //console.log(data);
     try {
       await AsyncStorage.setItem('@Data', JSON.stringify(data));
     } catch (e) {
@@ -203,18 +212,7 @@ const EditCategory = ({navigation, route}) => {
       />
       <View>
         <TouchableOpacity
-          style={{
-            //flex: 1,
-            position: 'absolute',
-            height: 60,
-            width: 60,
-            borderRadius: 30,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bottom: 20,
-            right: 20,
-          }}
+          style={styles.addButton}
           onPress={() => {
             setModalVisible(true);
           }}>
@@ -231,17 +229,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#dfe6e9',
   },
   centeredView: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: constants.STACK_HEADER_HEIGHT,
-    backgroundColor: 'black',
+    //backgroundColor: 'black',
   },
   modalView: {
     margin: 20,
+    width: '60%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -252,8 +251,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  modalButtonContainer: {
-    flexDirection: 'row',
+  modalCloseButton: {
+    marginBottom: 10,
+    alignSelf: 'flex-end',
   },
   modalButton: {
     backgroundColor: '#34495e',
@@ -276,6 +276,42 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderBottomWidth: 1,
     marginVertical: 15,
+  },
+  addButton: {
+    //flex: 1,
+    position: 'absolute',
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 20,
+    right: 20,
+  },
+  draggableItemContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#c8d6e5',
+    backgroundColor: '#f1f2f6',
+  },
+  draggableItemText: {
+    //flex: 8,
+    fontWeight: 'bold',
+    color: '#34495e',
+    fontSize: 20,
+    //textAlignVertical: 'center',
+    //backgroundColor: 'green',
+  },
+  draggableItemIcon: {
+    flex: 1,
+    height: 50,
+
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
