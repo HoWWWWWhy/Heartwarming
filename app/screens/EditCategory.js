@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
   Modal,
   Alert,
+  SectionList,
   KeyboardAvoidingView,
 } from 'react-native';
 import NavIcon from '../components/NavIcon';
@@ -29,8 +30,8 @@ const EditCategory = ({navigation, route}) => {
     backgroundColor: '#f1f2f6',
   }));
 
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const [draggableData, setDraggableData] = useState(draggableList);
 
   const categoryNameRef = useRef();
@@ -53,7 +54,7 @@ const EditCategory = ({navigation, route}) => {
       } else if (foundIdx >= 0) {
         Alert.alert('중복된 카테고리입니다.');
       } else {
-        setModalVisible(!modalVisible);
+        setAddModalVisible(!addModalVisible);
         setCategoryName('');
         addCategory(categoryName.trim());
       }
@@ -63,13 +64,13 @@ const EditCategory = ({navigation, route}) => {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
+          visible={addModalVisible}
           onShow={() => {
             categoryNameRef.current.focus();
           }}
           onRequestClose={() => {
             setCategoryName('');
-            setModalVisible(!modalVisible);
+            setAddModalVisible(!addModalVisible);
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -80,7 +81,7 @@ const EditCategory = ({navigation, route}) => {
                 style={styles.modalCloseButton}
                 onPress={() => {
                   setCategoryName('');
-                  setModalVisible(!modalVisible);
+                  setAddModalVisible(!addModalVisible);
                 }}
               />
               <Text style={styles.modalText}>새 카테고리명</Text>
@@ -94,10 +95,72 @@ const EditCategory = ({navigation, route}) => {
                 ref={categoryNameRef}
               />
               <TouchableHighlight
-                style={styles.modalButton}
+                style={styles.addModalButton}
                 onPress={handleComplete}>
                 <Text style={styles.textStyle}>완료</Text>
               </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
+    );
+  };
+
+  const EditCategoryModal = () => {
+    const DATA = [
+      {
+        title: '카테고리 편집',
+        data: [
+          {
+            name: '수정',
+            action: () => {
+              //navigation.navigate('EditCategory');
+            },
+          },
+          {
+            name: '삭제',
+            action: () => {
+              //navigation.navigate('SettingTabList');
+            },
+          },
+          {
+            name: '취소',
+            action: () => {
+              //navigation.navigate('SettingTabList');
+            },
+          },
+        ],
+      },
+    ];
+    const Item = ({item}) => (
+      <View style={styles.item}>
+        <TouchableHighlight
+          style={styles.editModalSelector}
+          onPress={() => console.log(item.name)}>
+          <Text style={styles.title}>{item.name}</Text>
+        </TouchableHighlight>
+      </View>
+    );
+
+    return (
+      <KeyboardAvoidingView behavior={'height'}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={editModalVisible}
+          onRequestClose={() => {
+            setEditModalVisible(!editModalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.editCategoryModalView}>
+              <SectionList
+                sections={DATA}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({item}) => <Item item={item} />}
+                renderSectionHeader={({section: {title}}) => (
+                  <Text style={styles.header}>{title}</Text>
+                )}
+              />
             </View>
           </View>
         </Modal>
@@ -110,7 +173,7 @@ const EditCategory = ({navigation, route}) => {
       <View style={styles.draggableItemContainer}>
         <TouchableOpacity
           style={{flex: 8, justifyContent: 'center'}}
-          onPress={() => console.log('show modal')}>
+          onPress={() => setEditModalVisible(!editModalVisible)}>
           <Text style={styles.draggableItemText}>{item.label}</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -201,6 +264,7 @@ const EditCategory = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <AddCategoryModal />
+      <EditCategoryModal />
       <DraggableFlatList
         data={draggableData}
         renderItem={renderItem}
@@ -211,13 +275,15 @@ const EditCategory = ({navigation, route}) => {
         }}
       />
       <View>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            setModalVisible(true);
-          }}>
-          <NavIcon focused={true} name={'add'} size={40} color={'#487eb0'} />
-        </TouchableOpacity>
+        {!addModalVisible && (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => {
+              setAddModalVisible(true);
+            }}>
+            <NavIcon focused={true} name={'add'} size={40} color={'#487eb0'} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -251,16 +317,30 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  editCategoryModalView: {
+    margin: 20,
+    width: '50%',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    alignItems: 'center',
+  },
   modalCloseButton: {
     marginBottom: 10,
     alignSelf: 'flex-end',
   },
-  modalButton: {
+  addModalButton: {
     backgroundColor: '#34495e',
     borderRadius: 5,
     marginTop: 10,
     marginHorizontal: 5,
     padding: 10,
+  },
+  editModalSelector: {
+    borderBottomColor: '#34495e',
+    borderBottomWidth: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    width: 100,
   },
   textStyle: {
     color: 'white',
@@ -309,7 +389,6 @@ const styles = StyleSheet.create({
   draggableItemIcon: {
     flex: 1,
     height: 50,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
