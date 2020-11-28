@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect, useContext, useRef} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Store from '../store';
 import constants from '../constants';
 import assets from '../default_assets';
+import _ from 'lodash';
 
 const EditCategory = ({navigation, route}) => {
   const {categories, setCategories} = useContext(Store);
@@ -32,7 +33,9 @@ const EditCategory = ({navigation, route}) => {
 
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [draggableData, setDraggableData] = useState(draggableList);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const categoryNameRef = useRef();
 
@@ -48,7 +51,7 @@ const EditCategory = ({navigation, route}) => {
       const foundIdx = categories.findIndex(
         (category) => Object.keys(category)[0] === categoryName.trim(),
       );
-      console.log(foundIdx);
+
       if (blankRemovedStr.length === 0) {
         Alert.alert('카테고리 이름은 적어도 한 글자여야 합니다.');
       } else if (foundIdx >= 0) {
@@ -114,7 +117,8 @@ const EditCategory = ({navigation, route}) => {
           {
             name: '수정',
             action: () => {
-              //navigation.navigate('EditCategory');
+              setEditModalVisible(!editModalVisible);
+              setUpdateModalVisible(!updateModalVisible);
             },
           },
           {
@@ -126,26 +130,23 @@ const EditCategory = ({navigation, route}) => {
           {
             name: '취소',
             action: () => {
-              //navigation.navigate('SettingTabList');
+              setEditModalVisible(!editModalVisible);
             },
           },
         ],
       },
     ];
     const Item = ({item}) => (
-      <View style={styles.item}>
-        <TouchableHighlight
-          style={styles.editModalSelector}
-          onPress={() => console.log(item.name)}>
-          <Text style={styles.title}>{item.name}</Text>
-        </TouchableHighlight>
+      <View style={styles.editModalItemContainer}>
+        <TouchableOpacity onPress={item.action}>
+          <Text style={styles.editModalItemText}>{item.name}</Text>
+        </TouchableOpacity>
       </View>
     );
 
     return (
       <KeyboardAvoidingView behavior={'height'}>
         <Modal
-          animationType="slide"
           transparent={true}
           visible={editModalVisible}
           onRequestClose={() => {
@@ -158,9 +159,75 @@ const EditCategory = ({navigation, route}) => {
                 keyExtractor={(item, index) => item + index}
                 renderItem={({item}) => <Item item={item} />}
                 renderSectionHeader={({section: {title}}) => (
-                  <Text style={styles.header}>{title}</Text>
+                  <Text style={styles.editModalHeader}>{title}</Text>
                 )}
               />
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
+    );
+  };
+
+  const UpdateCategoryModal = () => {
+    const [categoryName, setCategoryName] = useState(selectedCategory);
+
+    const handleComplete = () => {
+      const blankRemovedStr = categoryName.replace(/(\s*)/gi, ''); //모든 공백 제거
+      const foundIdx = categories.findIndex(
+        (category) => Object.keys(category)[0] === categoryName.trim(),
+      );
+
+      if (blankRemovedStr.length === 0) {
+        Alert.alert('카테고리 이름은 적어도 한 글자여야 합니다.');
+      } else if (foundIdx >= 0 && categoryName.trim() !== selectedCategory) {
+        Alert.alert('중복된 카테고리입니다.');
+      } else {
+        setUpdateModalVisible(!updateModalVisible);
+        setCategoryName('');
+        updateCategory(categoryName.trim());
+      }
+    };
+    return (
+      <KeyboardAvoidingView behavior={'height'}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={updateModalVisible}
+          onShow={() => {
+            categoryNameRef.current.focus();
+          }}
+          onRequestClose={() => {
+            setCategoryName('');
+            setUpdateModalVisible(!updateModalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <MaterialIcons
+                name="close"
+                size={30}
+                color={'black'}
+                style={styles.modalCloseButton}
+                onPress={() => {
+                  setCategoryName('');
+                  setUpdateModalVisible(!updateModalVisible);
+                }}
+              />
+              <Text style={styles.modalText}>수정 카테고리명</Text>
+              <TextInput
+                style={styles.modalTextInput}
+                onChangeText={(text) => {
+                  setCategoryName(text);
+                }}
+                value={categoryName}
+                underlineColorAndroid="transparent"
+                ref={categoryNameRef}
+              />
+              <TouchableHighlight
+                style={styles.addModalButton}
+                onPress={handleComplete}>
+                <Text style={styles.textStyle}>완료</Text>
+              </TouchableHighlight>
             </View>
           </View>
         </Modal>
@@ -173,7 +240,11 @@ const EditCategory = ({navigation, route}) => {
       <View style={styles.draggableItemContainer}>
         <TouchableOpacity
           style={{flex: 8, justifyContent: 'center'}}
-          onPress={() => setEditModalVisible(!editModalVisible)}>
+          onPress={() => {
+            console.log(item.label);
+            setSelectedCategory(item.label);
+            setEditModalVisible(!editModalVisible);
+          }}>
           <Text style={styles.draggableItemText}>{item.label}</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -233,6 +304,46 @@ const EditCategory = ({navigation, route}) => {
     storeData(newData);
   };
 
+  const renameKey = (obj, old_key, new_key) => {
+    // check if old key = new key
+    if (old_key !== new_key) {
+      Object.defineProperty(
+        obj,
+        new_key, // modify old key
+        // fetch description from object
+        Object.getOwnPropertyDescriptor(obj, old_key),
+      );
+      delete obj[old_key]; // delete old key
+    }
+  };
+
+  const updateCategory = (name) => {
+    console.log('UpdateCategory', name);
+    let newData = _.cloneDeep(categories);
+    newData.map((obj) => {
+      if (selectedCategory === Object.keys(obj)[0]) {
+        console.log(obj);
+        renameKey(obj, selectedCategory, name);
+      }
+    });
+
+    let newDraggableData = _.cloneDeep(draggableData);
+    newDraggableData.map((obj) => {
+      //console.log(obj['label']);
+      if (selectedCategory === obj['label']) {
+        //console.log(obj);
+        obj['label'] = name;
+      }
+    });
+    //console.log(newData);
+    console.log(newDraggableData);
+    console.log(draggableData);
+
+    setDraggableData(newDraggableData);
+    setCategories(newData);
+    storeData(newData);
+  };
+
   const reorderCategories = (draggable_data) => {
     let newData = [];
 
@@ -265,6 +376,7 @@ const EditCategory = ({navigation, route}) => {
     <View style={styles.container}>
       <AddCategoryModal />
       <EditCategoryModal />
+      <UpdateCategoryModal />
       <DraggableFlatList
         data={draggableData}
         renderItem={renderItem}
@@ -318,7 +430,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   editCategoryModalView: {
-    margin: 20,
+    //margin: 20,
+    //padding: 20,
     width: '50%',
     backgroundColor: 'white',
     borderWidth: 1,
@@ -334,13 +447,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginHorizontal: 5,
     padding: 10,
-  },
-  editModalSelector: {
-    borderBottomColor: '#34495e',
-    borderBottomWidth: 1,
-    marginHorizontal: 5,
-    padding: 10,
-    width: 100,
   },
   textStyle: {
     color: 'white',
@@ -391,6 +497,32 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  editModalHeader: {
+    fontSize: 16,
+    backgroundColor: '#dfe6e9',
+    color: '#34495e',
+    //paddingVertical: 5,
+  },
+  editModalItemContainer: {
+    flex: 1,
+    backgroundColor: '#f1f2f6',
+    paddingVertical: 10,
+    //paddingLeft: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dfe6e9',
+  },
+  editModalItemText: {
+    flex: 1,
+    fontSize: 18,
+    //width: 200,
+  },
+  editModalSelector: {
+    borderBottomColor: '#34495e',
+    borderBottomWidth: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    width: 100,
   },
 });
 
