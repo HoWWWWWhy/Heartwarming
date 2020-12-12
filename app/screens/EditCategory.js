@@ -124,7 +124,26 @@ const EditCategory = ({navigation, route}) => {
           {
             name: '삭제',
             action: () => {
-              //navigation.navigate('SettingTabList');
+              setEditModalVisible(!editModalVisible);
+              Alert.alert(
+                '카테고리 삭제',
+                '카테고리 삭제 시 내용도 함께 삭제됩니다. 그래도 삭제하시겠습니까?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      console.log('OK Pressed');
+                      deleteCategory(selectedCategory);
+                    },
+                  },
+                ],
+                {cancelable: false},
+              );
             },
           },
           {
@@ -338,6 +357,28 @@ const EditCategory = ({navigation, route}) => {
     //console.log(newData);
     console.log(newDraggableData);
     console.log(draggableData);
+
+    setDraggableData(newDraggableData);
+    setCategories(newData);
+    storeData(newData);
+  };
+
+  const deleteCategory = (name) => {
+    console.log('DeleteCategory', name);
+    console.log(categories);
+
+    let newIdx;
+
+    let newData = _.cloneDeep(categories);
+    newIdx = newData.findIndex((obj) => Object.keys(obj)[0] === name);
+    console.log(newIdx);
+    newData.splice(newIdx, 1);
+    console.log(newData);
+
+    let newDraggableData = _.cloneDeep(draggableData);
+    newIdx = newDraggableData.findIndex((item) => item['label'] === name);
+    console.log(newIdx);
+    newDraggableData.splice(newIdx, 1);
 
     setDraggableData(newDraggableData);
     setCategories(newData);
