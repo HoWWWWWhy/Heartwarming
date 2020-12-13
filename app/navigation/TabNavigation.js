@@ -1,50 +1,33 @@
 import React, {useContext} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CategoryNavigation from './CategoryNavigation';
-
-// import MovieNavigation from './MovieNavigation';
-// import LyricsNavigation from './LyricsNavigation';
-// import BookNavigation from './BookNavigation';
 
 import NavIcon from '../components/NavIcon';
 import {TapGestureHandler} from 'react-native-gesture-handler';
 import Store from '../store';
-//import Movie from '../screens/Movie';
 
 const Tab = createMaterialTopTabNavigator();
 
 const TabNavigation = () => {
-  //const {movieCheckBox, lyricsCheckBox, bookCheckBox} = useContext(Store);
   const {categories, setCategories} = useContext(Store);
 
-  // const TabName = {
-  //   Movie: MovieNavigation,
-  //   Lyrics: LyricsNavigation,
-  //   Book: BookNavigation,
-  // };
+  const checkedCategories = categories.filter(
+    (category, idx) => Object.values(category)[0]['setting'].isSelected,
+  );
 
-  const TabInfo = [
-    {
-      checked: Object.values(categories[0])[0]['setting'].isSelected,
-      //tab: TabName[Object.keys(categories[0])[0]],
-      name: Object.keys(categories[0])[0],
-      icon: Object.values(categories[0])[0]['icon'],
-    },
-    {
-      checked: Object.values(categories[1])[0]['setting'].isSelected,
-      //tab: TabName[Object.keys(categories[1])[0]],
-      name: Object.keys(categories[1])[0],
-      icon: Object.values(categories[1])[0]['icon'],
-    },
-    {
-      checked: Object.values(categories[2])[0]['setting'].isSelected,
-      //tab: TabName[Object.keys(categories[2])[0]],
-      name: Object.keys(categories[2])[0],
-      icon: Object.values(categories[2])[0]['icon'],
-    },
-  ];
+  let TabInfo = checkedCategories.map(function (category) {
+    return {
+      checked: Object.values(category)[0]['setting'].isSelected,
+      name: Object.keys(category)[0],
+      icon: Object.values(category)[0]['icon'],
+    };
+  });
 
-  return (
+  TabInfo = TabInfo.slice(0, 5);
+
+  return TabInfo.length > 0 ? (
     <Tab.Navigator
       tabBarPosition="bottom"
       backBehavior="none"
@@ -70,6 +53,10 @@ const TabNavigation = () => {
           ),
       )}
     </Tab.Navigator>
+  ) : (
+    <View>
+      <Text>선택된 카테고리가 없습니다.</Text>
+    </View>
   );
 };
 

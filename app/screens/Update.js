@@ -13,7 +13,6 @@ import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Home from './Home';
 import Store from '../store';
 import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
 import _ from 'lodash';
@@ -25,29 +24,30 @@ const DismissKeyboard = ({children}) => (
 );
 
 const Update = ({navigation, route}) => {
+  const {categories, setCategories} = useContext(Store);
+
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in', '-', ''];
   const [preposIndex, setProposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
-  const categoryList = ['Movie', 'Lyrics', 'Book'];
+
+  const categoryList = categories.map(
+    (cur_category) => Object.keys(cur_category)[0],
+  );
+
   const [category, setCategory] = useState(categoryList[0]);
 
   const [cameraOn, setCameraOn] = useState(false);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
-  // const {movies, setMovies} = useContext(Store);
-  // const {lyrics, setLyrics} = useContext(Store);
-  // const {books, setBooks} = useContext(Store);
-
   const {itemId, screenName} = route.params;
-  const {categories, setCategories} = useContext(Store);
 
   useEffect(() => {
     const newIdx = categories.findIndex(
-      (category) => Object.keys(category)[0] === screenName,
+      (cur_category) => Object.keys(cur_category)[0] === screenName,
     );
-    //console.log(categories[newIdx][screenName]['data'][itemId]);
+
     setContents(categories[newIdx][screenName]['data'][itemId]['contents']);
     setPrepos(categories[newIdx][screenName]['data'][itemId]['prepos']);
     setSource(categories[newIdx][screenName]['data'][itemId]['source']);
@@ -110,110 +110,6 @@ const Update = ({navigation, route}) => {
       // saving error
       console.log(e);
     }
-
-    // try {
-    //   switch (category) {
-    //     case 'Movie':
-    //       if (screenName === category) {
-    //         movies.splice(itemId, 1, new_data);
-
-    //         await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-    //         setMovies(movies);
-    //         //console.log('movies:', movies);
-    //       } else {
-    //         switch (screenName) {
-    //           case 'Lyrics':
-    //             lyrics.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-    //             setLyrics(lyrics);
-
-    //             movies.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-    //             setMovies(movies);
-    //             break;
-    //           case 'Book':
-    //             books.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Book', JSON.stringify(books));
-    //             setBooks(books);
-
-    //             movies.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-    //             setMovies(movies);
-    //             break;
-    //           default:
-    //         }
-    //       }
-    //       break;
-    //     case 'Lyrics':
-    //       if (screenName === category) {
-    //         lyrics.splice(itemId, 1, new_data);
-
-    //         await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-    //         setLyrics(lyrics);
-    //         //console.log('lyrics:', lyrics);
-    //       } else {
-    //         switch (screenName) {
-    //           case 'Movie':
-    //             movies.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-    //             setMovies(movies);
-
-    //             lyrics.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-    //             setLyrics(lyrics);
-    //             break;
-    //           case 'Book':
-    //             books.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Book', JSON.stringify(books));
-    //             setBooks(books);
-
-    //             lyrics.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-    //             setLyrics(lyrics);
-    //             break;
-    //           default:
-    //         }
-    //       }
-    //       break;
-    //     case 'Book':
-    //       if (screenName === category) {
-    //         books.splice(itemId, 1, new_data);
-
-    //         await AsyncStorage.setItem('@Book', JSON.stringify(books));
-    //         setBooks(books);
-    //         //console.log('books:', books);
-    //       } else {
-    //         switch (screenName) {
-    //           case 'Movie':
-    //             movies.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Movie', JSON.stringify(movies));
-    //             setMovies(movies);
-
-    //             books.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Book', JSON.stringify(books));
-    //             setBooks(books);
-    //             break;
-    //           case 'Lyrics':
-    //             lyrics.splice(itemId, 1); //delete from previous list
-    //             await AsyncStorage.setItem('@Lyrics', JSON.stringify(lyrics));
-    //             setLyrics(lyrics);
-
-    //             books.push(new_data); //add to current list
-    //             await AsyncStorage.setItem('@Book', JSON.stringify(books));
-    //             setBooks(books);
-    //             break;
-    //           default:
-    //         }
-    //       }
-    //       break;
-    //     default:
-    //   }
-
-    //   navigation.navigate('Home');
-    // } catch (e) {
-    //   // saving error
-    //   console.log(e);
-    // }
   };
 
   const changeList = () => {
@@ -357,6 +253,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     paddingTop: 50,
+    backgroundColor: '#dfe6e9',
   },
   contentsContainer: {
     flexDirection: 'row',

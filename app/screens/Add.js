@@ -13,7 +13,6 @@ import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Home from './Home';
 import Store from '../store';
 import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
 import _ from 'lodash';
@@ -25,6 +24,8 @@ const DismissKeyboard = ({children}) => (
 );
 
 const Add = ({navigation, route}) => {
+  const {categories, setCategories} = useContext(Store);
+
   const defaultContents =
     '하지만 우린 나아가야 한다.\n의심을 인생철학으로 선택하는 것은,\n운송수단으로 "정지"를 선택하는 것과 비슷하다.';
   //'If someone is nice to you but rude to the waiter, \nthey are not a nice person.';
@@ -36,7 +37,10 @@ const Add = ({navigation, route}) => {
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
 
-  const categoryList = ['Movie', 'Lyrics', 'Book'];
+  const categoryList = categories.map(
+    (cur_category) => Object.keys(cur_category)[0],
+  );
+
   const [category, setCategory] = useState(categoryList[0]);
 
   const [insertFlag, setInsertFlag] = useState(false);
@@ -45,8 +49,6 @@ const Add = ({navigation, route}) => {
 
   const [cameraOn, setCameraOn] = useState(false);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
-
-  const {categories, setCategories} = useContext(Store);
 
   useEffect(() => {
     if (typeof route.params !== 'undefined') {
