@@ -6,7 +6,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Store from '../store';
-//import TempStore from '../temp_store';
 import Home from '../screens/Home';
 import TabNavigation from './TabNavigation';
 
@@ -70,45 +69,8 @@ const MainNavigation = () => {
     },
   ]);
 
-  /*
-  const [movies, setMovies] = useState([]);
-  const [lyrics, setLyrics] = useState([]);
-  const [books, setBooks] = useState([]);
-
-  const [movieCheckBox, setMovieCheckBox] = useState(true);
-  const [lyricsCheckBox, setLyricsCheckBox] = useState(true);
-  const [bookCheckBox, setBookCheckBox] = useState(true);
-  
-  const [movieSetting, setMovieSetting] = useState({
-    useBgImage: true,
-    bgColor: 'white',
-    textColor: 'black',
-    bgImage: assets.defaultMovieBgImage,
-    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
-  });
-  const [lyricsSetting, setLyricsSetting] = useState({
-    useBgImage: true,
-    bgColor: 'white',
-    textColor: 'black',
-    bgImage: assets.defaultLyricsBgImage,
-    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
-  });
-  const [bookSetting, setBookSetting] = useState({
-    useBgImage: true,
-    bgColor: 'white',
-    textColor: 'black',
-    bgImage: assets.defaultBookBgImage,
-    bgImageBlur: 0, // 0, 0.5, 1, 1.5, 2
-  });
-*/
-
-  //각 탭의 상세 설정을 위한 임시 세팅 저장소
-  // const [thisMovieSetting, setThisMovieSetting] = useState({});
-  // const [thisLyricsSetting, setThisLyricsSetting] = useState({});
-  // const [thisBookSetting, setThisBookSetting] = useState({});
-
   useEffect(() => {
-    console.log('MainNavigation Mounted');
+    //console.log('MainNavigation Mounted');
 
     const storeData = async (data) => {
       console.log('storeData');
@@ -130,17 +92,11 @@ const MainNavigation = () => {
           setCategories(JSON.parse(all_data));
           //await AsyncStorage.removeItem('@Data');
         } else {
-          //for old versions (under 1.4.0)
+          //for old versions (<= 1.3.0)
           let newData = _.cloneDeep(categories);
           const checkbox_states = await AsyncStorage.getItem('@CheckBoxState');
           //console.log(checkbox_states);
-          /*
-          if (checkbox_states !== null) {
-            setMovieCheckBox(JSON.parse(checkbox_states)[0]);
-            setLyricsCheckBox(JSON.parse(checkbox_states)[1]);
-            setBookCheckBox(JSON.parse(checkbox_states)[2]);
-          }
-          */
+
           const movie_data = await AsyncStorage.getItem('@Movie');
           if (movie_data !== null) {
             // value previously stored
@@ -268,24 +224,6 @@ const MainNavigation = () => {
   const providerValues = {
     categories,
     setCategories,
-    // movies,
-    // lyrics,
-    // books,
-    // setMovies,
-    // setLyrics,
-    // setBooks,
-    // movieCheckBox,
-    // lyricsCheckBox,
-    // bookCheckBox,
-    // setMovieCheckBox,
-    // setLyricsCheckBox,
-    // setBookCheckBox,
-    //movieSetting,
-    //lyricsSetting,
-    //bookSetting,
-    //setMovieSetting,
-    //setLyricsSetting,
-    //setBookSetting,
   };
 
   return (

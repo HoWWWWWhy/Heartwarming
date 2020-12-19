@@ -9,10 +9,11 @@ import {
   Modal,
   Alert,
   SectionList,
+  FlatList,
   KeyboardAvoidingView,
 } from 'react-native';
 import NavIcon from '../components/NavIcon';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -34,8 +35,11 @@ const EditCategory = ({navigation, route}) => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [iconListModalVisible, setIconListModalVisible] = useState(false);
   const [draggableData, setDraggableData] = useState(draggableList);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(
+    Object.keys(categories[0])[0],
+  );
 
   const categoryNameRef = useRef();
 
@@ -76,7 +80,7 @@ const EditCategory = ({navigation, route}) => {
             setAddModalVisible(!addModalVisible);
           }}>
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+            <View style={[styles.modalView, styles.commonModalView]}>
               <MaterialIcons
                 name="close"
                 size={30}
@@ -142,7 +146,9 @@ const EditCategory = ({navigation, route}) => {
                     },
                   },
                 ],
-                {cancelable: false},
+                {
+                  cancelable: false,
+                },
               );
             },
           },
@@ -164,27 +170,25 @@ const EditCategory = ({navigation, route}) => {
     );
 
     return (
-      <KeyboardAvoidingView behavior={'height'}>
-        <Modal
-          transparent={true}
-          visible={editModalVisible}
-          onRequestClose={() => {
-            setEditModalVisible(!editModalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.editCategoryModalView}>
-              <SectionList
-                sections={DATA}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({item}) => <Item item={item} />}
-                renderSectionHeader={({section: {title}}) => (
-                  <Text style={styles.editModalHeader}>{title}</Text>
-                )}
-              />
-            </View>
+      <Modal
+        transparent={true}
+        visible={editModalVisible}
+        onRequestClose={() => {
+          setEditModalVisible(!editModalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={[styles.editCategoryModalView, styles.commonModalView]}>
+            <SectionList
+              sections={DATA}
+              keyExtractor={(item, index) => item + index}
+              renderItem={({item}) => <Item item={item} />}
+              renderSectionHeader={({section: {title}}) => (
+                <Text style={styles.editModalHeader}>{title}</Text>
+              )}
+            />
           </View>
-        </Modal>
-      </KeyboardAvoidingView>
+        </View>
+      </Modal>
     );
   };
 
@@ -232,7 +236,7 @@ const EditCategory = ({navigation, route}) => {
                   setUpdateModalVisible(!updateModalVisible);
                 }}
               />
-              <Text style={styles.modalText}>수정 카테고리명</Text>
+              <Text style={styles.modalText}>수정할 카테고리명</Text>
               <TextInput
                 style={styles.modalTextInput}
                 onChangeText={(text) => {
@@ -254,43 +258,139 @@ const EditCategory = ({navigation, route}) => {
     );
   };
 
-  const renderItem = ({item, index, drag, isActive}) => {
-    return (
-      <View style={styles.draggableItemContainer}>
-        <TouchableOpacity
-          style={{flex: 8, justifyContent: 'center'}}
-          onPress={() => {
-            console.log(item.label);
-            setSelectedCategory(item.label);
-            setEditModalVisible(!editModalVisible);
-          }}>
-          <Text style={styles.draggableItemText}>{item.label}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.draggableItemIcon,
-            {backgroundColor: item.backgroundColor},
-          ]}
-          onPress={() => console.log(Object.keys(categories[index])[0])}>
-          <NavIcon
-            focused={true}
-            name={Object.values(categories[index])[0]['icon']}
-            size={30}
-            color={'#487eb0'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.draggableItemIcon,
-            {
-              backgroundColor: isActive ? '#dfe6e9' : item.backgroundColor,
-            },
-          ]}
-          onLongPress={drag}>
-          <Icon name="reorder" size={30} color={'#487eb0'} />
-        </TouchableOpacity>
-      </View>
+  const IconListModal = () => {
+    const ICON_DATA = [
+      {id: 1, title: 'movie'},
+      {id: 2, title: 'library-music'},
+      {id: 3, title: 'library-books'},
+      {id: 4, title: 'ac-unit'},
+      {id: 5, title: 'brush'},
+      {id: 6, title: 'color-lens'},
+      {id: 7, title: 'camera'},
+      {id: 8, title: 'chat'},
+      {id: 9, title: 'audiotrack'},
+      {id: 10, title: 'child-care'},
+      {id: 11, title: 'beach-access'},
+      {id: 12, title: 'cloud-circle'},
+      {id: 13, title: 'bookmark'},
+      {id: 14, title: 'business-center'},
+      {id: 15, title: 'code'},
+      {id: 16, title: 'collections'},
+      {id: 17, title: 'album'},
+      {id: 18, title: 'create'},
+      {id: 19, title: 'email'},
+      {id: 20, title: 'person'},
+      {id: 21, title: 'group'},
+      {id: 22, title: 'face'},
+      {id: 23, title: 'favorite-border'},
+      {id: 24, title: 'favorite'},
+      {id: 25, title: 'fiber-new'},
+      {id: 26, title: 'fingerprint'},
+      {id: 27, title: 'flag'},
+      {id: 28, title: 'folder-special'},
+      {id: 29, title: 'g-translate'},
+      {id: 30, title: 'gesture'},
+      {id: 41, title: 'gps-fixed'},
+      {id: 42, title: 'golf-course'},
+      {id: 43, title: 'extension'},
+      {id: 44, title: 'headset'},
+      {id: 45, title: 'healing'},
+      {id: 46, title: 'highlight'},
+      {id: 47, title: 'home'},
+      {id: 48, title: 'hot-tub'},
+      {id: 49, title: 'hotel'},
+      {id: 50, title: 'https'},
+    ];
+
+    const curIdx = categories.findIndex(
+      (obj) => Object.keys(obj)[0] === selectedCategory,
     );
+
+    //console.log(Object.values(categories[curIdx])[0]['icon']);
+
+    const [selectedId, setSelectedId] = useState(
+      ICON_DATA.findIndex(
+        (item) => item.title === Object.values(categories[curIdx])[0]['icon'],
+      ) + 1,
+    );
+
+    const Item = ({item, onPress, style, color}) => (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.iconListElement, style]}>
+        <NavIcon focused={true} name={item.title} size={30} color={color} />
+      </TouchableOpacity>
+    );
+
+    const renderItem = ({item}) => {
+      const backgroundColor = item.id === selectedId ? '#95afc0' : 'white';
+      const iconColor = '#487eb0';
+      return (
+        <Item
+          item={item}
+          onPress={() => {
+            setSelectedId(item.id);
+            Alert.alert(
+              '탭 아이콘 변경',
+              '현재 선택된 아이콘으로 변경하시겠습니까?',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    updateCategoryIcon(selectedCategory, item.title);
+                    setIconListModalVisible(!iconListModalVisible);
+                  },
+                },
+              ],
+              {
+                cancelable: false,
+              },
+            );
+          }}
+          style={{backgroundColor}}
+          color={iconColor}
+        />
+      );
+    };
+
+    return (
+      <Modal
+        transparent={true}
+        visible={iconListModalVisible}
+        onRequestClose={() => {
+          setIconListModalVisible(!iconListModalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={[styles.iconListModalView, styles.commonModalView]}>
+            <FlatList
+              data={ICON_DATA}
+              renderItem={renderItem}
+              keyExtractor={(item) => `${item.title}-${item.id}`}
+              extraData={selectedId}
+              numColumns="8"
+            />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const updateCategoryIcon = (category_name, icon_name) => {
+    console.log('updateCategoryIcon');
+    console.log(category_name, icon_name);
+    let newData = _.cloneDeep(categories);
+    newData.map((obj) => {
+      if (category_name === Object.keys(obj)[0]) {
+        Object.values(obj)[0]['icon'] = icon_name;
+      }
+    });
+
+    setCategories(newData);
+    storeData(newData);
   };
 
   const addCategory = (name) => {
@@ -371,13 +471,10 @@ const EditCategory = ({navigation, route}) => {
 
     let newData = _.cloneDeep(categories);
     newIdx = newData.findIndex((obj) => Object.keys(obj)[0] === name);
-    console.log(newIdx);
     newData.splice(newIdx, 1);
-    console.log(newData);
 
     let newDraggableData = _.cloneDeep(draggableData);
     newIdx = newDraggableData.findIndex((item) => item['label'] === name);
-    console.log(newIdx);
     newDraggableData.splice(newIdx, 1);
 
     setDraggableData(newDraggableData);
@@ -413,11 +510,60 @@ const EditCategory = ({navigation, route}) => {
     }
   };
 
+  const renderItem = ({item, index, drag, isActive}) => {
+    return (
+      <View style={styles.draggableItemContainer}>
+        <TouchableOpacity
+          style={{flex: 8, justifyContent: 'center'}}
+          onPress={() => {
+            console.log(item.label);
+            setSelectedCategory(item.label);
+            setEditModalVisible(!editModalVisible);
+          }}>
+          <Text style={styles.draggableItemText}>{item.label}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.draggableItemIcon,
+            {backgroundColor: item.backgroundColor},
+          ]}
+          onPress={() => {
+            console.log(Object.keys(categories[index])[0]);
+            setSelectedCategory(item.label);
+            setIconListModalVisible(!iconListModalVisible);
+          }}>
+          <NavIcon
+            focused={true}
+            name={Object.values(categories[index])[0]['icon']}
+            size={30}
+            color={'#487eb0'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.draggableItemIcon,
+            {
+              backgroundColor: isActive ? '#487eb0' : item.backgroundColor,
+            },
+          ]}
+          onLongPress={drag}>
+          <FontAwesome
+            name="reorder"
+            size={30}
+            color={isActive ? 'white' : '#487eb0'}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <AddCategoryModal />
+      <IconListModal />
       <EditCategoryModal />
       <UpdateCategoryModal />
+
       <DraggableFlatList
         data={draggableData}
         renderItem={renderItem}
@@ -428,7 +574,7 @@ const EditCategory = ({navigation, route}) => {
         }}
       />
       <View>
-        {!addModalVisible && (
+        {!addModalVisible && !updateModalVisible && (
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => {
@@ -448,19 +594,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#dfe6e9',
   },
   centeredView: {
-    //flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: constants.STACK_HEADER_HEIGHT,
     //backgroundColor: 'black',
   },
   modalView: {
-    margin: 20,
+    marginTop: constants.STACK_HEADER_HEIGHT,
     width: '60%',
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
+  },
+  editCategoryModalView: {
+    width: constants.width / 1.5,
+  },
+  iconListModalView: {
+    backgroundColor: 'white',
+    borderColor: '#c8d6e5',
+    borderWidth: 1,
+    height: 185.2,
+  },
+  commonModalView: {
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -469,14 +625,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  },
-  editCategoryModalView: {
-    //margin: 20,
-    //padding: 20,
-    width: '50%',
-    backgroundColor: 'white',
-    borderWidth: 1,
-    alignItems: 'center',
   },
   modalCloseButton: {
     marginBottom: 10,
@@ -540,30 +688,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editModalHeader: {
+    width: constants.width / 1.5,
     fontSize: 16,
-    backgroundColor: '#dfe6e9',
-    color: '#34495e',
-    //paddingVertical: 5,
+    backgroundColor: '#34495e',
+    color: 'white',
+    paddingVertical: 5,
+    paddingLeft: 10,
   },
   editModalItemContainer: {
-    flex: 1,
-    backgroundColor: '#f1f2f6',
+    //flex: 1,
+    backgroundColor: 'white',
     paddingVertical: 10,
-    //paddingLeft: 14,
+    paddingLeft: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#dfe6e9',
   },
   editModalItemText: {
     flex: 1,
     fontSize: 18,
-    //width: 200,
+    color: '#34495e',
   },
-  editModalSelector: {
-    borderBottomColor: '#34495e',
-    borderBottomWidth: 1,
-    marginHorizontal: 5,
-    padding: 10,
-    width: 100,
+  iconListElement: {
+    padding: 2,
+    borderWidth: 1,
+    borderColor: '#c8d6e5',
   },
 });
 
