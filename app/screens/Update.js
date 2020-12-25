@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
+import appStyles from '../styles';
 import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
 import _ from 'lodash';
 
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     paddingTop: 50,
-    backgroundColor: '#dfe6e9',
+    backgroundColor: appStyles.backgroundColor,
   },
   contentsContainer: {
     flexDirection: 'row',

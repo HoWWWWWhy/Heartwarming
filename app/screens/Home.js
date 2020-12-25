@@ -1,10 +1,11 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import MenuButton from '../components/MenuButton';
+import appStyles from '../styles';
 
-import TabNavigation from '../navigation/TabNavigation';
-import Add from '../screens/Add';
-import Setting from '../screens/Setting';
+// import TabNavigation from '../navigation/TabNavigation';
+// import Add from '../screens/Add';
+// import Setting from '../screens/Setting';
 
 const Home = ({navigation}) => {
   return (
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#dfe6e9',
+    backgroundColor: appStyles.backgroundColor,
   },
 });
 

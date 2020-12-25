@@ -8,6 +8,7 @@ import {
   Linking,
   SectionList,
 } from 'react-native';
+import appStyles from '../styles';
 
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
@@ -40,21 +41,21 @@ const Setting = ({navigation}) => {
           name: '내보내기',
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
-            console.log('내보내기');
+            //console.log('내보내기');
           },
         },
         {
           name: '가져오기',
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
-            console.log('가져오기');
+            //console.log('가져오기');
           },
         },
         {
           name: '초기화',
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
-            console.log('초기화');
+            //console.log('초기화');
           },
         },
       ],
@@ -138,20 +139,21 @@ const Setting = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: appStyles.backgroundColor,
   },
   sectionHeader: {
     fontSize: 16,
-    backgroundColor: '#dfe6e9',
-    color: '#34495e',
-    paddingLeft: 15,
+    backgroundColor: appStyles.sectionHeaderColor,
+    color: appStyles.sectionHeaderTextColor,
+    paddingHorizontal: 15,
     paddingVertical: 5,
   },
   sectionItemContainer: {
-    backgroundColor: '#f1f2f6',
+    backgroundColor: appStyles.sectionItemColor,
     paddingVertical: 10,
-    paddingLeft: 14,
+    paddingHorizontal: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#dfe6e9',
+    borderBottomColor: appStyles.borderBottomColor,
   },
   sectionItemText: {
     fontSize: 18,

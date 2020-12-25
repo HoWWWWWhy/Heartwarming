@@ -1,16 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  FlatList,
-} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import appStyles from '../styles';
 
 import Store from '../store';
 import _ from 'lodash';
@@ -26,7 +21,7 @@ const SettingTabList = ({navigation}) => {
 
   const settingEditIcon = {
     name: 'edit',
-    color: '#535c68',
+    color: appStyles.sectionItemTextColor,
   };
 
   useEffect(() => {
@@ -40,6 +35,10 @@ const SettingTabList = ({navigation}) => {
       <View style={styles.buttonContainer}>
         <CheckBox
           disabled={false}
+          tintColors={{
+            true: appStyles.sectionItemTextColor,
+            false: appStyles.sectionItemTextColor,
+          }}
           value={categories[idx][title]['setting'].isSelected}
           onValueChange={() => {
             let newData = _.cloneDeep(categories);
@@ -87,20 +86,22 @@ const SettingTabList = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: appStyles.backgroundColor,
   },
   itemContainer: {
-    backgroundColor: '#f1f2f6',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#dfe6e9',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: appStyles.sectionItemColor,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: appStyles.borderBottomColor,
   },
   itemText: {
-    fontSize: 20,
     fontWeight: 'bold',
+    color: appStyles.sectionItemTextColor,
+    fontSize: 20,
   },
   buttonContainer: {
     flexDirection: 'row',

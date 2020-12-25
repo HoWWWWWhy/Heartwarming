@@ -21,7 +21,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Store from '../store';
 import constants from '../constants';
 import assets from '../default_assets';
+import appStyles from '../styles';
 import _ from 'lodash';
+
+const ICON_COLOR = '#cd84f1';
 
 const EditCategory = ({navigation, route}) => {
   const {categories, setCategories} = useContext(Store);
@@ -102,7 +105,7 @@ const EditCategory = ({navigation, route}) => {
                 ref={categoryNameRef}
               />
               <TouchableHighlight
-                style={styles.addModalButton}
+                style={styles.modalButton}
                 onPress={handleComplete}>
                 <Text style={styles.textStyle}>완료</Text>
               </TouchableHighlight>
@@ -225,7 +228,7 @@ const EditCategory = ({navigation, route}) => {
             setUpdateModalVisible(!updateModalVisible);
           }}>
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+            <View style={[styles.modalView, styles.commonModalView]}>
               <MaterialIcons
                 name="close"
                 size={30}
@@ -247,7 +250,7 @@ const EditCategory = ({navigation, route}) => {
                 ref={categoryNameRef}
               />
               <TouchableHighlight
-                style={styles.addModalButton}
+                style={styles.modalButton}
                 onPress={handleComplete}>
                 <Text style={styles.textStyle}>완료</Text>
               </TouchableHighlight>
@@ -323,8 +326,8 @@ const EditCategory = ({navigation, route}) => {
     );
 
     const renderItem = ({item}) => {
-      const backgroundColor = item.id === selectedId ? '#95afc0' : 'white';
-      const iconColor = '#487eb0';
+      const backgroundColor = item.id === selectedId ? ICON_COLOR : 'white';
+      const iconColor = item.id === selectedId ? 'white' : ICON_COLOR;
       return (
         <Item
           item={item}
@@ -514,7 +517,7 @@ const EditCategory = ({navigation, route}) => {
     return (
       <View style={styles.draggableItemContainer}>
         <TouchableOpacity
-          style={{flex: 8, justifyContent: 'center'}}
+          style={styles.draggableItemTextContainer}
           onPress={() => {
             console.log(item.label);
             setSelectedCategory(item.label);
@@ -536,21 +539,23 @@ const EditCategory = ({navigation, route}) => {
             focused={true}
             name={Object.values(categories[index])[0]['icon']}
             size={30}
-            color={'#487eb0'}
+            color={appStyles.sectionItemTextColor}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.draggableItemIcon,
             {
-              backgroundColor: isActive ? '#487eb0' : item.backgroundColor,
+              backgroundColor: isActive
+                ? appStyles.sectionItemTextColor
+                : item.backgroundColor,
             },
           ]}
           onLongPress={drag}>
           <FontAwesome
             name="reorder"
             size={30}
-            color={isActive ? 'white' : '#487eb0'}
+            color={isActive ? 'white' : appStyles.sectionItemTextColor}
           />
         </TouchableOpacity>
       </View>
@@ -580,7 +585,12 @@ const EditCategory = ({navigation, route}) => {
             onPress={() => {
               setAddModalVisible(true);
             }}>
-            <NavIcon focused={true} name={'add'} size={40} color={'#487eb0'} />
+            <NavIcon
+              focused={true}
+              name={'add'}
+              size={40}
+              color={appStyles.sectionItemTextColor}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -591,7 +601,7 @@ const EditCategory = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#dfe6e9',
+    backgroundColor: appStyles.backgroundColor,
   },
   centeredView: {
     flex: 1,
@@ -630,8 +640,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-end',
   },
-  addModalButton: {
-    backgroundColor: '#34495e',
+  modalButton: {
+    backgroundColor: appStyles.sectionItemTextColor,
     borderRadius: 5,
     marginTop: 10,
     marginHorizontal: 5,
@@ -665,32 +675,33 @@ const styles = StyleSheet.create({
     right: 20,
   },
   draggableItemContainer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: appStyles.sectionItemColor,
+    paddingVertical: 10,
     paddingHorizontal: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#c8d6e5',
-    backgroundColor: '#f1f2f6',
+    borderBottomColor: appStyles.borderBottomColor,
+  },
+  draggableItemTextContainer: {
+    flex: 8,
+    justifyContent: 'center',
   },
   draggableItemText: {
-    //flex: 8,
     fontWeight: 'bold',
-    color: '#34495e',
+    color: appStyles.sectionItemTextColor,
     fontSize: 20,
-    //textAlignVertical: 'center',
-    //backgroundColor: 'green',
   },
   draggableItemIcon: {
     flex: 1,
-    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   editModalHeader: {
     width: constants.width / 1.5,
     fontSize: 16,
-    backgroundColor: '#34495e',
+    backgroundColor: appStyles.sectionHeaderColor,
     color: 'white',
     paddingVertical: 5,
     paddingLeft: 10,
@@ -701,17 +712,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#dfe6e9',
+    borderBottomColor: appStyles.borderBottomColor,
   },
   editModalItemText: {
     flex: 1,
     fontSize: 18,
-    color: '#34495e',
+    color: appStyles.sectionItemTextColor,
   },
   iconListElement: {
     padding: 2,
     borderWidth: 1,
-    borderColor: '#c8d6e5',
+    borderColor: ICON_COLOR,
   },
 });
 

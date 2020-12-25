@@ -18,7 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
-
+import appStyles from '../styles';
 import Palette from '../components/Palette';
 import constants from '../constants';
 import assets from '../default_assets';
@@ -397,8 +397,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 5,
-    backgroundColor: '#dfe6e9',
-    //backgroundColor: 'yellow',
+    backgroundColor: appStyles.backgroundColor,
   },
   text: {
     fontSize: 16,
