@@ -380,8 +380,8 @@ const EditCategory = ({navigation, route}) => {
   };
 
   const updateCategoryIcon = (category_name, icon_name) => {
-    console.log('updateCategoryIcon');
-    console.log(category_name, icon_name);
+    //console.log('updateCategoryIcon');
+    //console.log(category_name, icon_name);
     let newData = _.cloneDeep(categories);
     newData.map((obj) => {
       if (category_name === Object.keys(obj)[0]) {
@@ -437,7 +437,7 @@ const EditCategory = ({navigation, route}) => {
   };
 
   const updateCategory = (name) => {
-    console.log('UpdateCategory', name);
+    //console.log('UpdateCategory', name);
     let newData = _.cloneDeep(categories);
     newData.map((obj) => {
       if (selectedCategory === Object.keys(obj)[0]) {
@@ -455,8 +455,8 @@ const EditCategory = ({navigation, route}) => {
       }
     });
     //console.log(newData);
-    console.log(newDraggableData);
-    console.log(draggableData);
+    //console.log(newDraggableData);
+    //console.log(draggableData);
 
     setDraggableData(newDraggableData);
     setCategories(newData);
@@ -464,8 +464,8 @@ const EditCategory = ({navigation, route}) => {
   };
 
   const deleteCategory = (name) => {
-    console.log('DeleteCategory', name);
-    console.log(categories);
+    //console.log('DeleteCategory', name);
+    //console.log(categories);
 
     let newIdx;
 

@@ -43,9 +43,7 @@ const EditTabScreen = ({route}) => {
     // console.log(RNFS.CachesDirectoryPath);
     // console.log(RNFS.TemporaryDirectoryPath);
     // console.log(RNFS.ExternalDirectoryPath);
-    // console.log("EditTabScreen Mounted, categoryIdx:", categoryIdx);
-    // console.log("selectedBgColor", selectedBgColor);
-    // console.log("selectedTextColor", selectedTextColor);
+
     if (categoryIdx <= -1) {
       const newIdx = categories.findIndex(
         (category) => Object.keys(category)[0] === screenName,
@@ -53,46 +51,25 @@ const EditTabScreen = ({route}) => {
 
       setCategoryIdx(newIdx);
     } else {
-      let newData = _.cloneDeep(categories);
-
       if (categories[categoryIdx][screenName]['setting'].useBgImage) {
         pickImageButtonFadeIn();
       } else {
         pickImageButtonFadeOut();
       }
-      if (selectedBgColor === '') {
-        setSelectedBgColor(
-          categories[categoryIdx][screenName]['setting'].bgColor,
-        );
-      } else {
-        if (
-          newData[categoryIdx][screenName]['setting'].bgColor != selectedBgColor
-        ) {
-          newData[categoryIdx][screenName]['setting'].bgColor = selectedBgColor;
-          setCategories(newData);
-        }
-      }
-      if (selectedTextColor === '') {
-        setSelectedTextColor(
-          categories[categoryIdx][screenName]['setting'].textColor,
-        );
-      } else {
-        if (
-          newData[categoryIdx][screenName]['setting'].textColor !=
-          selectedTextColor
-        ) {
-          newData[categoryIdx][screenName][
-            'setting'
-          ].textColor = selectedTextColor;
-          setCategories(newData);
-        }
-      }
+
+      setSelectedBgColor(
+        categories[categoryIdx][screenName]['setting'].bgColor,
+      );
+      setSelectedTextColor(
+        categories[categoryIdx][screenName]['setting'].textColor,
+      );
     }
-    return () => {
-      //console.log("EditTabScreen Cleanup");
-      storeData(categories);
-    };
-  }, [categoryIdx, categories, selectedBgColor, selectedTextColor]);
+    // return () => {
+    //   //console.log("EditTabScreen Cleanup");
+    //   storeData(categories);
+    // };
+    //}, [categoryIdx, categories, selectedBgColor, selectedTextColor]);
+  }, [categoryIdx, selectedBgColor, selectedTextColor]);
 
   const pickImageButtonFadeIn = () => {
     Animated.timing(animation, {
@@ -123,6 +100,25 @@ const EditTabScreen = ({route}) => {
       pickImageButtonFadeOut();
     }
     setCategories(newData);
+    storeData(newData);
+  };
+
+  const changeBgColor = (color) => {
+    let newData = _.cloneDeep(categories);
+    newData[categoryIdx][screenName]['setting'].bgColor = color;
+
+    setSelectedBgColor(color);
+    setCategories(newData);
+    storeData(newData);
+  };
+
+  const changeTextColor = (color) => {
+    let newData = _.cloneDeep(categories);
+    newData[categoryIdx][screenName]['setting'].textColor = color;
+
+    setSelectedTextColor(color);
+    setCategories(newData);
+    storeData(newData);
   };
 
   const onPickImage = async (screen_name) => {
@@ -152,6 +148,7 @@ const EditTabScreen = ({route}) => {
       newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
       setCategories(newData);
+      storeData(newData);
     } catch (e) {
       // saving error
       console.log(e);
@@ -183,6 +180,7 @@ const EditTabScreen = ({route}) => {
       newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
       setCategories(newData);
+      storeData(newData);
     } catch (e) {
       // saving error
       console.log(e);
@@ -197,6 +195,7 @@ const EditTabScreen = ({route}) => {
     newData[categoryIdx][screen_name]['setting'].bgImageBlur = newBlurRadius;
 
     setCategories(newData);
+    storeData(newData);
   };
 
   const onInitializeImage = (screen_name) => {
@@ -206,6 +205,16 @@ const EditTabScreen = ({route}) => {
     newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
     setCategories(newData);
+    storeData(newData);
+  };
+
+  const storeData = async (data) => {
+    try {
+      await AsyncStorage.setItem('@Data', JSON.stringify(data));
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
   };
 
   const renderPickImageButton = (screen_name) => {
@@ -268,15 +277,6 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const storeData = async (data) => {
-    try {
-      await AsyncStorage.setItem('@Data', JSON.stringify(data));
-    } catch (e) {
-      // saving error
-      console.log(e);
-    }
-  };
-
   return (
     <View style={styles.container}>
       {categoryIdx > -1 ? (
@@ -298,17 +298,11 @@ const EditTabScreen = ({route}) => {
           <View style={styles.paletteContainer}>
             <View style={styles.bgPaletteContainer}>
               <Text style={styles.text}>배경색 선택</Text>
-              <Palette
-                setting={setSelectedBgColor}
-                selected={selectedBgColor}
-              />
+              <Palette setting={changeBgColor} selected={selectedBgColor} />
             </View>
             <View style={styles.textPaletteContainer}>
               <Text style={styles.text}>글씨색 선택</Text>
-              <Palette
-                setting={setSelectedTextColor}
-                selected={selectedTextColor}
-              />
+              <Palette setting={changeTextColor} selected={selectedTextColor} />
             </View>
           </View>
           <View style={styles.previewContainer}>

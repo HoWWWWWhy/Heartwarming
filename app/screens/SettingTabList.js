@@ -31,8 +31,7 @@ const SettingTabList = ({navigation}) => {
 
   useEffect(() => {
     console.log('SettingTabList Mounted');
-    //console.log(categories);
-  }, [categories]);
+  }, []);
 
   const Item = ({title, idx}) => (
     <View style={styles.itemContainer}>
