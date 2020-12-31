@@ -25,7 +25,7 @@ const SettingTabList = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('SettingTabList Mounted');
+    //console.log('SettingTabList Mounted');
   }, []);
 
   const Item = ({title, idx}) => (

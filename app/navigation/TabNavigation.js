@@ -7,6 +7,7 @@ import CategoryNavigation from './CategoryNavigation';
 import NavIcon from '../components/NavIcon';
 import {TapGestureHandler} from 'react-native-gesture-handler';
 import Store from '../store';
+import appStyles from '../styles';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -54,10 +55,22 @@ const TabNavigation = () => {
       )}
     </Tab.Navigator>
   ) : (
-    <View>
-      <Text>선택된 카테고리가 없습니다.</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>선택된 카테고리가 없습니다.</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: appStyles.backgroundColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 16,
+  },
+});
 
 export default TabNavigation;

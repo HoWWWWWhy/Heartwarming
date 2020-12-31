@@ -73,8 +73,8 @@ const MainNavigation = () => {
     //console.log('MainNavigation Mounted');
 
     const storeData = async (data) => {
-      console.log('storeData');
-      console.log(data);
+      //console.log('storeData');
+      //console.log(data);
       try {
         await AsyncStorage.setItem('@Data', JSON.stringify(data));
       } catch (e) {
@@ -88,7 +88,7 @@ const MainNavigation = () => {
         const all_data = await AsyncStorage.getItem('@Data');
         if (all_data !== null) {
           // value previously stored
-          console.log('all_data:', all_data);
+          //console.log('all_data:', all_data);
           setCategories(JSON.parse(all_data));
           //await AsyncStorage.removeItem('@Data');
         } else {
@@ -100,7 +100,7 @@ const MainNavigation = () => {
           const movie_data = await AsyncStorage.getItem('@Movie');
           if (movie_data !== null) {
             // value previously stored
-            console.log('movie_data:', movie_data);
+            //console.log('movie_data:', movie_data);
 
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Movie',
@@ -110,7 +110,7 @@ const MainNavigation = () => {
           }
           const movie_setting = await AsyncStorage.getItem('@MovieSetting');
           if (movie_setting !== null) {
-            console.log('movie_setting:', movie_setting);
+            //console.log('movie_setting:', movie_setting);
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Movie',
             );
@@ -138,7 +138,7 @@ const MainNavigation = () => {
           const lyrics_data = await AsyncStorage.getItem('@Lyrics');
           if (lyrics_data !== null) {
             // value previously stored
-            console.log('lyrics_data:', lyrics_data);
+            //console.log('lyrics_data:', lyrics_data);
 
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Lyrics',
@@ -148,7 +148,7 @@ const MainNavigation = () => {
           }
           const lyrics_setting = await AsyncStorage.getItem('@LyricsSetting');
           if (lyrics_setting !== null) {
-            console.log('lyrics_setting:', lyrics_setting);
+            //console.log('lyrics_setting:', lyrics_setting);
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Lyrics',
             );
@@ -177,7 +177,7 @@ const MainNavigation = () => {
           const book_data = await AsyncStorage.getItem('@Book');
           if (book_data !== null) {
             // value previously stored
-            console.log('book_data:', book_data);
+            //console.log('book_data:', book_data);
 
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Book',
@@ -187,7 +187,7 @@ const MainNavigation = () => {
           }
           const book_setting = await AsyncStorage.getItem('@BookSetting');
           if (book_setting !== null) {
-            console.log('book_setting:', book_setting);
+            //console.log('book_setting:', book_setting);
 
             const newIdx = newData.findIndex(
               (category) => Object.keys(category)[0] === 'Book',
