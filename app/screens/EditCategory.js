@@ -359,12 +359,12 @@ const EditCategory = ({navigation, route}) => {
     let newCategory = {};
     newCategory[name] = {
       data: [],
-      icon: 'person',
+      icon: ICON_DATA[0].title,
       setting: {
         useBgImage: true,
         bgColor: 'white',
         textColor: 'black',
-        bgImage: assets.defaultNewBgImage,
+        bgImage: assets.defaultNewBgImage[0],
         bgImageBlur: 0,
         isSelected: true,
       },

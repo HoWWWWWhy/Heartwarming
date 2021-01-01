@@ -200,8 +200,14 @@ const EditTabScreen = ({route}) => {
 
   const onInitializeImage = (screen_name) => {
     let newData = _.cloneDeep(categories);
+
+    const bgImageNum = assets.defaultNewBgImage.findIndex(
+      (image) => image === newData[categoryIdx][screen_name]['setting'].bgImage,
+    );
     newData[categoryIdx][screen_name]['setting'].bgImage =
-      assets.defaultNewBgImage;
+      assets.defaultNewBgImage[
+        (bgImageNum + 1) % assets.defaultNewBgImage.length
+      ];
     newData[categoryIdx][screen_name]['setting'].bgImageBlur = 0;
 
     setCategories(newData);
