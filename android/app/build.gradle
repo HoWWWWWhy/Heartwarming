@@ -132,7 +132,7 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
+        versionCode 24
         versionName "1.4.0"
         missingDimensionStrategy 'react-native-camera', 'mlkit'
         multiDexEnabled true
@@ -169,14 +169,19 @@ android {
         release {
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
+            shrinkResources true
             minifyEnabled true
 
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
+            //minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
         }
     }
 
