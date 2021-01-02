@@ -475,6 +475,7 @@ const styles = StyleSheet.create({
   previewText: {
     fontSize: 14,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   imageControlButton: {
     width: 60,

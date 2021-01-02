@@ -54,13 +54,14 @@ const Add = ({navigation, route}) => {
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   useEffect(() => {
+    //console.log('Add Mounted');
     if (typeof route.params !== 'undefined') {
       setInsertFlag(true);
       setItemId(route.params.itemId);
       setScreenName(route.params.screenName);
       setCategory(route.params.screenName);
     }
-  }, [category]);
+  }, []);
 
   const storeData = async () => {
     const new_data = {

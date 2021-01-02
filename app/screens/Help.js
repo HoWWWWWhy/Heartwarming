@@ -28,7 +28,11 @@ const Help = () => {
           안드로이드 버전이 낮은 경우 스마트폰이 꺼질 수도 있습니다 :(
         </Text>
         <Text style={styles.text}>
-          5. [View] 에서는 화면의 맨 위쪽 부분을 살짝 위에서 아래로
+          5. [Add Phrase]에서 내용을 추가하시면 해당 카테고리의 맨 뒤에, 해당
+          탭에서 +로 내용을 추가하시면 현재 화면의 앞에 삽입됩니다.
+        </Text>
+        <Text style={styles.text}>
+          6. [View] 에서는 화면의 맨 위쪽 부분을 살짝 위에서 아래로
           쓸어내려주시면 메뉴 화면으로 갈 수 있습니다.
         </Text>
       </ScrollView>
