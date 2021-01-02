@@ -7,7 +7,9 @@ import {
   Keyboard,
 } from 'react-native';
 
-import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -181,66 +183,77 @@ const Update = ({navigation, route}) => {
   };
   return (
     <DismissKeyboard>
-      <View style={styles.container}>
-        <View style={styles.contentsContainer}>
-          <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
-          <TouchableOpacity
-            onPress={() => setCameraOn(true)}
-            style={styles.cameraButton}>
-            <Icon name="photo-camera" size={20} color={'#34495e'} />
-          </TouchableOpacity>
-          <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
-        </View>
-        <TextInput
-          style={styles.textInput}
-          value={contents}
-          multiline
-          editable
-          returnKeyLabel="done"
-          onChangeText={(text) => setContents(text)}
-        />
-        <View style={styles.preposContainer}>
-          <TouchableOpacity onPress={changeList}>
-            <Text style={[styles.textTitle, styles.textPrepos]}>{prepos}</Text>
-          </TouchableOpacity>
-          <Text style={styles.textComment}>
-            {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
-          </Text>
-        </View>
-        <TextInput
-          style={styles.textInput}
-          value={source}
-          multiline
-          editable
-          onChangeText={(text) => setSource(text)}
-        />
-        <Text style={styles.textTitle}>카테고리</Text>
-        <Picker
-          selectedValue={category}
-          style={styles.picker}
-          onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-          {categoryList.map((item) => (
-            <Picker.Item key={item} label={item} value={item} />
-          ))}
-        </Picker>
-        <TouchableOpacity style={styles.updateButton} onPress={storeData}>
-          <Text style={styles.textButton}>수정하기</Text>
-        </TouchableOpacity>
-        {cameraOn && (
-          <OcrCamera
-            cameraType={RNCameraConstants.Type.back}
-            flashMode={RNCameraConstants.FlashMode.off}
-            autoFocus={RNCameraConstants.AutoFocus.on}
-            whiteBalance={RNCameraConstants.WhiteBalance.auto}
-            ratio={'4:3'}
-            quality={0.8}
-            imageWidth={800}
-            enabledOCR={true}
-            onCapture={(data, recogonizedText) => onOCRCapture(recogonizedText)}
-            onClose={() => setCameraOn(false)}
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <View style={styles.contentsContainer}>
+            <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
+            <TouchableOpacity
+              onPress={() => setCameraOn(true)}
+              style={styles.cameraButton}>
+              <Icon name="photo-camera" size={20} color={'#34495e'} />
+            </TouchableOpacity>
+            <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
+          </View>
+          <TextInput
+            style={[styles.textInput, styles.textInputContents]}
+            value={contents}
+            multiline
+            editable
+            returnKeyLabel="done"
+            onChangeText={(text) => setContents(text)}
           />
-        )}
-      </View>
+          <View style={styles.preposContainer}>
+            <TouchableOpacity onPress={changeList}>
+              <Text style={[styles.textTitle, styles.textPrepos]}>
+                {prepos}
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.textComment}>
+              {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
+            </Text>
+          </View>
+          <TextInput
+            style={[styles.textInput, styles.textInputSource]}
+            value={source}
+            multiline
+            editable
+            onChangeText={(text) => setSource(text)}
+          />
+          <Text style={styles.textTitle}>카테고리</Text>
+          <View style={styles.pickerView}>
+            <Picker
+              selectedValue={category}
+              style={styles.picker}
+              mode={'dialog'}
+              //prompt={'카테고리'}
+              dropdownIconColor={appStyles.commonButtonColor}
+              onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
+              {categoryList.map((item) => (
+                <Picker.Item key={item} label={item} value={item} />
+              ))}
+            </Picker>
+          </View>
+          <TouchableOpacity style={styles.updateButton} onPress={storeData}>
+            <Text style={styles.textButton}>수정하기</Text>
+          </TouchableOpacity>
+          {cameraOn && (
+            <OcrCamera
+              cameraType={RNCameraConstants.Type.back}
+              flashMode={RNCameraConstants.FlashMode.off}
+              autoFocus={RNCameraConstants.AutoFocus.on}
+              whiteBalance={RNCameraConstants.WhiteBalance.auto}
+              ratio={'4:3'}
+              quality={0.8}
+              imageWidth={800}
+              enabledOCR={true}
+              onCapture={(data, recogonizedText) =>
+                onOCRCapture(recogonizedText)
+              }
+              onClose={() => setCameraOn(false)}
+            />
+          )}
+        </View>
+      </KeyboardAwareScrollView>
     </DismissKeyboard>
   );
 };
@@ -252,7 +265,7 @@ const styles = StyleSheet.create({
     height: constants.height,
     width: constants.width,
     paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingVertical: 30,
     backgroundColor: appStyles.backgroundColor,
   },
   contentsContainer: {
@@ -279,15 +292,29 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   textInput: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-    marginBottom: 10,
+    //borderBottomColor: 'black',
+    //borderBottomWidth: 1,
+    marginVertical: 10,
+    backgroundColor: '#f1f2f6',
+    fontSize: 15,
+    textAlignVertical: 'center',
+  },
+  textInputContents: {
+    height: constants.height * 0.3,
+  },
+  textInputSource: {
+    height: 50,
   },
   picker: {
     height: 50,
   },
+  pickerView: {
+    height: 50,
+    marginTop: 10,
+    backgroundColor: '#f1f2f6',
+  },
   updateButton: {
-    backgroundColor: '#34495e',
+    backgroundColor: appStyles.commonButtonColor,
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,

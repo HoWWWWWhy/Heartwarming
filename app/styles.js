@@ -1,5 +1,6 @@
 export default {
   backgroundColor: '#dfe6e9',
+  commonButtonColor: '#34495e',
   sectionHeaderColor: '#34495e',
   sectionHeaderTextColor: 'white',
   sectionItemColor: '#f1f2f6',

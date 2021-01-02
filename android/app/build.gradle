@@ -132,7 +132,7 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
+        versionCode 21
         versionName "1.4.0"
         missingDimensionStrategy 'react-native-camera', 'mlkit'
         multiDexEnabled true
