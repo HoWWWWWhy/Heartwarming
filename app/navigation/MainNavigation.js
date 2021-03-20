@@ -17,6 +17,7 @@ import EditTabScreen from '../screens/EditTabScreen';
 import SettingTabList from '../screens/SettingTabList';
 import Help from '../screens/Help';
 
+import linking from '../linking';
 import constants from '../constants';
 import assets from '../default_assets';
 import _ from 'lodash';
@@ -229,7 +230,7 @@ const MainNavigation = () => {
   return (
     <>
       <Store.Provider value={providerValues}>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Home"

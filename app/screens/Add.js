@@ -55,11 +55,20 @@ const Add = ({navigation, route}) => {
 
   useEffect(() => {
     //console.log('Add Mounted');
+    console.log(route.params);
+
     if (typeof route.params !== 'undefined') {
-      setInsertFlag(true);
-      setItemId(route.params.itemId);
-      setScreenName(route.params.screenName);
-      setCategory(route.params.screenName);
+      if (route.params.from === 'link') {
+        console.log('This is from deeplink');
+        setContents(route.params.contents);
+        //setPrepos(preposList[1]);
+        setSource(route.params.source);
+      } else {
+        setInsertFlag(true);
+        setItemId(route.params.itemId);
+        setScreenName(route.params.screenName);
+        setCategory(route.params.screenName);
+      }
     }
   }, []);
 
@@ -201,6 +210,7 @@ const Add = ({navigation, route}) => {
           <TextInput
             style={[styles.textInput, styles.textInputSource]}
             placeholder={defaultSource}
+            defaultValue={source}
             multiline
             editable
             onChangeText={(text) => setSource(text)}
