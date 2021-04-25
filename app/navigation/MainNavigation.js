@@ -318,7 +318,6 @@ const MainNavigation = () => {
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
-
             <Stack.Screen
               name="TabNavigation"
               component={TabNavigation}

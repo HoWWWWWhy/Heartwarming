@@ -55,11 +55,13 @@ const Add = ({navigation, route}) => {
 
   useEffect(() => {
     //console.log('Add Mounted');
-    console.log(route.params);
-
+    //console.log(route.params);
+    //console.log('categoryList', categoryList);
+    //console.log('categories', categories);
     if (typeof route.params !== 'undefined') {
       if (route.params.from === 'link') {
-        console.log('This is from deeplink');
+        //console.log('This is from deeplink');
+        //console.log(categoryList);
         setContents(route.params.contents);
         //setPrepos(preposList[1]);
         setSource(route.params.source);
@@ -99,12 +101,14 @@ const Add = ({navigation, route}) => {
       await AsyncStorage.setItem('@Data', JSON.stringify(newData));
       setCategories(newData);
 
-      navigation.goBack();
-      // if (insertFlag) {
-      //   navigation.goBack();
-      // } else {
-      //   navigation.navigate('Home');
-      // }
+      //navigation.goBack();
+
+      if (typeof route.params !== 'undefined') {
+        if (route.params.from === 'link') {
+          console.log('This is Store from deeplink');
+          navigation.navigate('Home');
+        }
+      }
     } catch (e) {
       // saving error
       console.log(e);

@@ -1,10 +1,10 @@
 const config = {
   screens: {
+    initialRouteName: 'Home',
     Home: 'home',
     Setting: 'setting',
     Add: {
       path: 'add/:from/:contents/:source',
-      initialRouteName: 'home',
       parse: {
         from: (from) => `${from}`,
         contents: (contents) => `${contents}`,
