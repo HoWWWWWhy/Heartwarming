@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,20 @@ import {
   SectionList,
 } from 'react-native';
 import appStyles from '../styles';
+import Store from '../store';
+import realm, {
+  getAllCategories,
+  deleteAllCategories,
+  closeRealm,
+} from '../database/schema';
 
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
   const URL_GOOGLEPLAY =
     'https://play.google.com/store/apps/details?id=com.howwwwwhy.heartwarming';
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
+
+  const {categories, setCategories} = useContext(Store);
 
   const DATA = [
     {
@@ -40,8 +48,68 @@ const Setting = ({navigation}) => {
         {
           name: '내보내기',
           action: () => {
-            Alert.alert('준비 중인 기능입니다 :)');
-            //console.log('내보내기');
+            console.log('내보내기');
+            //Alert.alert('준비 중인 기능입니다 :)');
+            const testKey = Object.keys(categories[0])[0];
+            const testIcon =
+              categories[0][Object.keys(categories[0])[0]]['icon'];
+            const testData =
+              categories[0][Object.keys(categories[0])[0]]['data'];
+            const testSetting =
+              categories[0][Object.keys(categories[0])[0]]['setting'];
+
+            categories.map((category, idx) => {
+              const curTitle = Object.keys(category)[0];
+              const curIcon = category[Object.keys(category)[0]]['icon'];
+              const curData = category[Object.keys(category)[0]]['data'];
+              const curSetting = category[Object.keys(category)[0]]['setting'];
+              const curCategory = {
+                icon: curIcon,
+                data: curData,
+                setting: curSetting,
+              };
+              console.log(idx, curTitle, curIcon);
+              //console.log(curCategory);
+
+              realm.write(() => {
+                const createdData = realm.create('Heartwarming', {
+                  _id: idx,
+                  createdDate: new Date(),
+                  categoryTitle: curTitle,
+                  categoryContents: curCategory,
+                });
+              });
+            });
+            //console.log(testKey);
+            //console.log(testIcon);
+            //console.log(testSetting);
+            //console.log(testData);
+
+            /*
+            realm.write(() => {
+              const testCategory = {
+                icon: testIcon,
+                data: testData,
+                setting: testSetting,
+              };
+              const test = realm.create('Heartwarming', {
+                _id: 1,
+                createdDate: new Date(),
+                categoryTitle: testKey,
+                categoryContents: testCategory,
+              });
+            });
+            */
+            /*
+            realm.write(() => {
+              const test = realm.create('Category', {
+                icon: 'testIcon',
+                data: testData,
+                setting: testSetting,
+              });
+            });
+*/
+            closeRealm();
           },
         },
         {
@@ -49,6 +117,8 @@ const Setting = ({navigation}) => {
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
             //console.log('가져오기');
+            const testCategory = getAllCategories();
+            console.log(testCategory);
           },
         },
         {
@@ -56,6 +126,7 @@ const Setting = ({navigation}) => {
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
             //console.log('초기화');
+            //deleteAllCategories();
           },
         },
       ],
