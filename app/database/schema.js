@@ -1,4 +1,5 @@
 import Realm from 'realm';
+
 const HEARTWARMING_SCHEMA = 'Heartwarming';
 const CATEGORY_SCHEMA = 'Category';
 const SETTING_SCHEMA = 'Setting';
@@ -49,23 +50,42 @@ const HeartwarmingSchema = {
 };
 
 const realm = new Realm({
-  path: 'test1',
+  path: 'test1.realm',
   schema: [HeartwarmingSchema, CategorySchema, SettingSchema, DataSchema],
 });
+
+const addCategory = (id, title, contents) => {
+  let createdData;
+
+  realm.write(() => {
+    createdData = realm.create('Heartwarming', {
+      _id: id,
+      createdDate: new Date(),
+      categoryTitle: title,
+      categoryContents: contents,
+    });
+  });
+};
 
 const getAllCategories = () => {
   return realm.objects(HEARTWARMING_SCHEMA);
 };
 
 const deleteAllCategories = () => {
-  const allCategories = getAllCategories();
-  realm.delete(allCategories);
+  //const allCategories = getAllCategories();
+  //realm.delete(allCategories);
+  realm.write(() => {
+    // Delete all objects from the realm.
+    realm.deleteAll();
+  });
 };
 
 const closeRealm = () => {
+  console.log('CLOSE');
+
   realm.close();
 };
 
 export default realm;
 
-export {getAllCategories, deleteAllCategories, closeRealm};
+export {addCategory, getAllCategories, deleteAllCategories, closeRealm};

@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 import appStyles from '../styles';
 import Store from '../store';
+
+import RNFS from 'react-native-fs';
 import realm, {
+  addCategory,
   getAllCategories,
   deleteAllCategories,
   closeRealm,
@@ -47,16 +50,9 @@ const Setting = ({navigation}) => {
       data: [
         {
           name: '내보내기',
-          action: () => {
+          action: async () => {
             console.log('내보내기');
             //Alert.alert('준비 중인 기능입니다 :)');
-            const testKey = Object.keys(categories[0])[0];
-            const testIcon =
-              categories[0][Object.keys(categories[0])[0]]['icon'];
-            const testData =
-              categories[0][Object.keys(categories[0])[0]]['data'];
-            const testSetting =
-              categories[0][Object.keys(categories[0])[0]]['setting'];
 
             categories.map((category, idx) => {
               const curTitle = Object.keys(category)[0];
@@ -71,45 +67,23 @@ const Setting = ({navigation}) => {
               console.log(idx, curTitle, curIcon);
               //console.log(curCategory);
 
-              realm.write(() => {
-                const createdData = realm.create('Heartwarming', {
-                  _id: idx,
-                  createdDate: new Date(),
-                  categoryTitle: curTitle,
-                  categoryContents: curCategory,
-                });
-              });
-            });
-            //console.log(testKey);
-            //console.log(testIcon);
-            //console.log(testSetting);
-            //console.log(testData);
+              addCategory(idx, curTitle, curCategory);
 
-            /*
-            realm.write(() => {
-              const testCategory = {
-                icon: testIcon,
-                data: testData,
-                setting: testSetting,
-              };
-              const test = realm.create('Heartwarming', {
-                _id: 1,
-                createdDate: new Date(),
-                categoryTitle: testKey,
-                categoryContents: testCategory,
-              });
             });
-            */
-            /*
-            realm.write(() => {
-              const test = realm.create('Category', {
-                icon: 'testIcon',
-                data: testData,
-                setting: testSetting,
-              });
-            });
-*/
-            closeRealm();
+
+           
+
+            try {            
+              await RNFS.copyFile(
+              '//data//data//com.howwwwwhy.heartwarming//files//test1.realm',
+              RNFS.DownloadDirectoryPath + '//test1.realm',
+            );
+            } catch (err) {
+              console.log(err);
+            }
+            deleteAllCategories();
+            
+            //closeRealm();
           },
         },
         {
