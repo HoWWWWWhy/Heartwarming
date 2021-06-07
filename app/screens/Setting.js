@@ -11,14 +11,17 @@ import {
 import appStyles from '../styles';
 import Store from '../store';
 
+import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
+import DocumentPicker from 'react-native-document-picker';
+/*
 import realm, {
   addCategory,
   getAllCategories,
   deleteAllCategories,
   closeRealm,
 } from '../database/schema';
-
+*/
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
   const URL_GOOGLEPLAY =
@@ -51,9 +54,30 @@ const Setting = ({navigation}) => {
         {
           name: '내보내기',
           action: async () => {
-            console.log('내보내기');
+            //console.log('내보내기');
             //Alert.alert('준비 중인 기능입니다 :)');
+            const filePath = RNFS.DownloadDirectoryPath + '/test.json';
 
+            try {
+              const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+              });
+              await RNFS.writeFile(filePath, JSON.stringify(categories));
+              console.log('FILE CREATED!!!', res.uri);
+            }
+            catch (err) {
+              if (DocumentPicker.isCancel(err)) {
+                // User cancelled the picker, exit any dialogs or menus and move on
+                console.log("cancelled");
+              } else {
+                //throw err;
+                console.log(err);
+                Alert.alert(err);
+              }
+            }
+            
+
+/*
             categories.map((category, idx) => {
               const curTitle = Object.keys(category)[0];
               const curIcon = category[Object.keys(category)[0]]['icon'];
@@ -84,15 +108,75 @@ const Setting = ({navigation}) => {
             deleteAllCategories();
             
             //closeRealm();
+            */
           },
         },
         {
           name: '가져오기',
-          action: () => {
-            Alert.alert('준비 중인 기능입니다 :)');
+          action: async () => {
             //console.log('가져오기');
+            //Alert.alert('준비 중인 기능입니다 :)');
+
+            // Pick a single file
+            try {
+              const filePath = RNFS.DownloadDirectoryPath + '/test.json';
+              
+              
+              const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+              });
+              console.log(
+                res.uri,
+              );
+
+              RNFS.readFile(res.uri).then(data => {
+                console.log(JSON.parse(data));
+                setCategories(JSON.parse(data));
+                
+                AsyncStorage.setItem('@Data', data);
+                
+              }).catch(err => {
+                console.log(err);
+                Alert.alert("확장자가 json인 파일을 선택하세요");
+              });
+
+            } catch (err) {
+              if (DocumentPicker.isCancel(err)) {
+                // User cancelled the picker, exit any dialogs or menus and move on
+                console.log("cancelled");
+              } else {
+                //throw err;
+                console.log(err);
+                Alert.alert(err[0]);
+              }
+            }
+            /*
             const testCategory = getAllCategories();
             console.log(testCategory);
+
+            // Pick a single file
+            try {
+              const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+              });
+              console.log(
+                res.uri,
+              );
+              await RNFS.copyFile(res.uri,
+                '//data//data//com.howwwwwhy.heartwarming//files//test1.realm');
+
+                const testCategory1 = getAllCategories();
+                console.log(testCategory1);
+            } catch (err) {
+              if (DocumentPicker.isCancel(err)) {
+                // User cancelled the picker, exit any dialogs or menus and move on
+                console.log("cancelled");
+              } else {
+                //throw err;
+                console.log(err);
+                Alert.alert(err);
+              }
+            }*/
           },
         },
         {
@@ -100,7 +184,7 @@ const Setting = ({navigation}) => {
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
             //console.log('초기화');
-            //deleteAllCategories();
+
           },
         },
       ],

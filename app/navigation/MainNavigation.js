@@ -78,9 +78,9 @@ const MainNavigation = () => {
       //console.log(data);
       try {
         await AsyncStorage.setItem('@Data', JSON.stringify(data));
-      } catch (e) {
+      } catch (err) {
         // saving error
-        console.log(e);
+        console.log(err);
       }
     };
 
@@ -90,6 +90,7 @@ const MainNavigation = () => {
         if (all_data !== null) {
           // value previously stored
           //console.log('all_data:', all_data);
+          //console.log('all_data:', JSON.parse(all_data));
           setCategories(JSON.parse(all_data));
           //await AsyncStorage.removeItem('@Data');
         } else {
@@ -214,9 +215,9 @@ const MainNavigation = () => {
           setCategories(newData);
           storeData(newData);
         }
-      } catch (e) {
+      } catch (err) {
         // error reading value
-        console.log('error:', e);
+        console.log('error:', err);
       }
     };
     getData();
