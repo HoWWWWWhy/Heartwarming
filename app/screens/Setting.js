@@ -1,19 +1,25 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useState, useContext, useRef} from 'react';
 import {
   View,
   Text,
+  TextInput,
   StyleSheet,
   TouchableOpacity,
+  TouchableHighlight,
   Alert,
   Linking,
   SectionList,
+  Modal,
+  KeyboardAvoidingView,
 } from 'react-native';
+
 import appStyles from '../styles';
 import Store from '../store';
+import constants from '../constants';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
+import {writeFile} from '../utils/FileManager';
 /*
 import realm, {
   addCategory,
@@ -22,6 +28,7 @@ import realm, {
   closeRealm,
 } from '../database/schema';
 */
+
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
   const URL_GOOGLEPLAY =
@@ -29,6 +36,45 @@ const Setting = ({navigation}) => {
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
 
   const {categories, setCategories} = useContext(Store);
+  const [modalVisible, setModalVisible] = useState(false);
+  const fileNameRef = useRef();
+
+  const FileSaveModal = () => {
+    const [fileName, setFileName] = useState('heartwarming');
+
+    const handleSave = () => {};
+    return (
+      <KeyboardAvoidingView behavior={'height'}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            //setCategoryName('');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.bottomView}>
+            <View style={[styles.modalView, styles.commonModalView]}>
+              <TextInput
+                style={styles.modalTextInput}
+                onChangeText={(text) => {
+                  setFileName(text);
+                }}
+                value={fileName}
+                underlineColorAndroid="black"
+                ref={fileNameRef}
+              />
+              <TouchableHighlight
+                style={styles.modalButton}
+                onPress={handleSave}>
+                <Text style={styles.textStyle}>저장</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
+    );
+  };
 
   const DATA = [
     {
@@ -53,31 +99,14 @@ const Setting = ({navigation}) => {
       data: [
         {
           name: '내보내기',
-          action: async () => {
+          action: () => {
             //console.log('내보내기');
             //Alert.alert('준비 중인 기능입니다 :)');
-            const filePath = RNFS.DownloadDirectoryPath + '/test.json';
+            const filePath = RNFS.DownloadDirectoryPath + '/test1.json';
+            setModalVisible(true);
+            writeFile(filePath, JSON.stringify(categories));
 
-            try {
-              const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-              });
-              await RNFS.writeFile(filePath, JSON.stringify(categories));
-              console.log('FILE CREATED!!!', res.uri);
-            }
-            catch (err) {
-              if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker, exit any dialogs or menus and move on
-                console.log("cancelled");
-              } else {
-                //throw err;
-                console.log(err);
-                Alert.alert(err);
-              }
-            }
-            
-
-/*
+            /*
             categories.map((category, idx) => {
               const curTitle = Object.keys(category)[0];
               const curIcon = category[Object.keys(category)[0]]['icon'];
@@ -120,30 +149,27 @@ const Setting = ({navigation}) => {
             // Pick a single file
             try {
               const filePath = RNFS.DownloadDirectoryPath + '/test.json';
-              
-              
+
               const res = await DocumentPicker.pick({
                 type: [DocumentPicker.types.allFiles],
               });
-              console.log(
-                res.uri,
-              );
+              console.log(res.uri);
 
-              RNFS.readFile(res.uri).then(data => {
-                console.log(JSON.parse(data));
-                setCategories(JSON.parse(data));
-                
-                AsyncStorage.setItem('@Data', data);
-                
-              }).catch(err => {
-                console.log(err);
-                Alert.alert("확장자가 json인 파일을 선택하세요");
-              });
+              RNFS.readFile(res.uri)
+                .then((data) => {
+                  console.log(JSON.parse(data));
+                  setCategories(JSON.parse(data));
 
+                  AsyncStorage.setItem('@Data', data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  Alert.alert('확장자가 json인 파일을 선택하세요');
+                });
             } catch (err) {
               if (DocumentPicker.isCancel(err)) {
                 // User cancelled the picker, exit any dialogs or menus and move on
-                console.log("cancelled");
+                console.log('cancelled');
               } else {
                 //throw err;
                 console.log(err);
@@ -184,7 +210,6 @@ const Setting = ({navigation}) => {
           action: () => {
             Alert.alert('준비 중인 기능입니다 :)');
             //console.log('초기화');
-
           },
         },
       ],
@@ -261,6 +286,7 @@ const Setting = ({navigation}) => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
       />
+      {modalVisible ? <FileSaveModal /> : null}
     </View>
   );
 };
@@ -286,6 +312,48 @@ const styles = StyleSheet.create({
   },
   sectionItemText: {
     fontSize: 18,
+  },
+  bottomView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    //backgroundColor: 'black',
+  },
+  modalView: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  commonModalView: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalButton: {
+    backgroundColor: appStyles.sectionItemTextColor,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    padding: 10,
+  },
+  modalText: {
+    textAlign: 'center',
+  },
+  modalTextInput: {
+    width: '80%',
+    height: 50,
+
+    //borderColor: 'gray',
+    //borderBottomWidth: 1,
+    marginVertical: 5,
+    marginRight: 5,
   },
 });
 

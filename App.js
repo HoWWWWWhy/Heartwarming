@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import MainNavigation from './app/navigation/MainNavigation';
 import SplashScreen from 'react-native-splash-screen';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = () => {
   useEffect(() => {
@@ -11,7 +12,11 @@ const App = () => {
     */
     SplashScreen.hide();
   }, []);
-  return <MainNavigation />;
+  return (
+    <SafeAreaProvider>
+      <MainNavigation />
+    </SafeAreaProvider>
+  );
 };
 
 export default App;
