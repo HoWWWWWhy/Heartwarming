@@ -42,7 +42,11 @@ const Setting = ({navigation}) => {
   const FileSaveModal = () => {
     const [fileName, setFileName] = useState('heartwarming');
 
-    const handleSave = () => {};
+    const handleSave = () => {
+      const filePath = RNFS.DownloadDirectoryPath + '/' + fileName + '.json';
+      setModalVisible(!modalVisible);
+      writeFile(filePath, JSON.stringify(categories));
+    };
     return (
       <KeyboardAvoidingView behavior={'height'}>
         <Modal
@@ -102,10 +106,9 @@ const Setting = ({navigation}) => {
           action: () => {
             //console.log('내보내기');
             //Alert.alert('준비 중인 기능입니다 :)');
-            const filePath = RNFS.DownloadDirectoryPath + '/test1.json';
+            //const filePath = RNFS.DownloadDirectoryPath + '/test2.json';
             setModalVisible(true);
-            writeFile(filePath, JSON.stringify(categories));
-
+            //writeFile(filePath, JSON.stringify(categories));
             /*
             categories.map((category, idx) => {
               const curTitle = Object.keys(category)[0];
