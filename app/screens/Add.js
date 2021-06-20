@@ -101,7 +101,7 @@ const Add = ({navigation, route}) => {
       await AsyncStorage.setItem('@Data', JSON.stringify(newData));
       setCategories(newData);
 
-      //navigation.goBack();
+      navigation.goBack();
 
       if (typeof route.params !== 'undefined') {
         if (route.params.from === 'link') {

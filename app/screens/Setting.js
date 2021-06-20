@@ -15,19 +15,8 @@ import {
 
 import appStyles from '../styles';
 import Store from '../store';
-import constants from '../constants';
 
-import AsyncStorage from '@react-native-community/async-storage';
-import RNFS from 'react-native-fs';
-import {writeFile} from '../utils/FileManager';
-/*
-import realm, {
-  addCategory,
-  getAllCategories,
-  deleteAllCategories,
-  closeRealm,
-} from '../database/schema';
-*/
+import {exportData, importData} from '../utils/FileManager';
 
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
@@ -43,9 +32,8 @@ const Setting = ({navigation}) => {
     const [fileName, setFileName] = useState('heartwarming');
 
     const handleSave = () => {
-      const filePath = RNFS.DownloadDirectoryPath + '/' + fileName + '.json';
       setModalVisible(!modalVisible);
-      writeFile(filePath, JSON.stringify(categories));
+      exportData(fileName, JSON.stringify(categories));
     };
     return (
       <KeyboardAvoidingView behavior={'height'}>
@@ -54,7 +42,6 @@ const Setting = ({navigation}) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            //setCategoryName('');
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.bottomView}>
@@ -106,113 +93,22 @@ const Setting = ({navigation}) => {
           action: () => {
             //console.log('내보내기');
             //Alert.alert('준비 중인 기능입니다 :)');
-            //const filePath = RNFS.DownloadDirectoryPath + '/test2.json';
             setModalVisible(true);
-            //writeFile(filePath, JSON.stringify(categories));
-            /*
-            categories.map((category, idx) => {
-              const curTitle = Object.keys(category)[0];
-              const curIcon = category[Object.keys(category)[0]]['icon'];
-              const curData = category[Object.keys(category)[0]]['data'];
-              const curSetting = category[Object.keys(category)[0]]['setting'];
-              const curCategory = {
-                icon: curIcon,
-                data: curData,
-                setting: curSetting,
-              };
-              console.log(idx, curTitle, curIcon);
-              //console.log(curCategory);
-
-              addCategory(idx, curTitle, curCategory);
-
-            });
-
-           
-
-            try {            
-              await RNFS.copyFile(
-              '//data//data//com.howwwwwhy.heartwarming//files//test1.realm',
-              RNFS.DownloadDirectoryPath + '//test1.realm',
-            );
-            } catch (err) {
-              console.log(err);
-            }
-            deleteAllCategories();
-            
-            //closeRealm();
-            */
           },
         },
         {
           name: '가져오기',
-          action: async () => {
+          action: () => {
             //console.log('가져오기');
             //Alert.alert('준비 중인 기능입니다 :)');
-
-            // Pick a single file
-            try {
-              const filePath = RNFS.DownloadDirectoryPath + '/test.json';
-
-              const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-              });
-              console.log(res.uri);
-
-              RNFS.readFile(res.uri)
-                .then((data) => {
-                  console.log(JSON.parse(data));
-                  setCategories(JSON.parse(data));
-
-                  AsyncStorage.setItem('@Data', data);
-                })
-                .catch((err) => {
-                  console.log(err);
-                  Alert.alert('확장자가 json인 파일을 선택하세요');
-                });
-            } catch (err) {
-              if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker, exit any dialogs or menus and move on
-                console.log('cancelled');
-              } else {
-                //throw err;
-                console.log(err);
-                Alert.alert(err[0]);
-              }
-            }
-            /*
-            const testCategory = getAllCategories();
-            console.log(testCategory);
-
-            // Pick a single file
-            try {
-              const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-              });
-              console.log(
-                res.uri,
-              );
-              await RNFS.copyFile(res.uri,
-                '//data//data//com.howwwwwhy.heartwarming//files//test1.realm');
-
-                const testCategory1 = getAllCategories();
-                console.log(testCategory1);
-            } catch (err) {
-              if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker, exit any dialogs or menus and move on
-                console.log("cancelled");
-              } else {
-                //throw err;
-                console.log(err);
-                Alert.alert(err);
-              }
-            }*/
+            importData(setCategories);
           },
         },
         {
           name: '초기화',
           action: () => {
-            Alert.alert('준비 중인 기능입니다 :)');
             //console.log('초기화');
+            Alert.alert('준비 중인 기능입니다 :)');
           },
         },
       ],
