@@ -2,6 +2,7 @@ import {Alert, Platform, PermissionsAndroid} from 'react-native';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-community/async-storage';
+import {RNDocumentCreator} from './NativeModules';
 
 /* ----- saved json format start -----
 {
@@ -11,6 +12,8 @@ import AsyncStorage from '@react-native-community/async-storage';
    ----- saved json format end ------- */
 
 const exportData = async (fileName, data) => {
+  await RNDocumentCreator.createDocument(fileName, 'json');
+  /*
   let filePath = RNFS.DownloadDirectoryPath;
   try {
     if (Platform.OS === 'android') {
@@ -46,6 +49,7 @@ const exportData = async (fileName, data) => {
       Alert.alert(JSON.stringify(err['message']));
     }
   }
+  */
 };
 
 // 앱으로부터 만들어진 파일인지 체크하는 기능 추가. symbol 체크
