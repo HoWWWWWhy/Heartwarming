@@ -9,6 +9,8 @@ import {
   SectionList,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 import appStyles from '../styles';
 import Store from '../store';
 
@@ -50,15 +52,21 @@ const Setting = ({navigation}) => {
             //Alert.alert('준비 중인 기능입니다 :)');
             const createdFileName = createFileName('heartwarming');
             console.log(createdFileName);
-            exportData(createdFileName, JSON.stringify(categories));
+            //exportData(createdFileName, JSON.stringify(categories));
+            exportData(createdFileName, categories);
           },
         },
         {
           name: '가져오기',
-          action: () => {
+          action: async () => {
             //console.log('가져오기');
             //Alert.alert('준비 중인 기능입니다 :)');
-            importData(setCategories);
+            const importedData = await importData(setCategories);
+            console.log('imported data:', importedData);
+            if (importedData.length > 0) {
+              setCategories(importedData);
+              AsyncStorage.setItem('@Data', JSON.stringify(importedData));
+            }
           },
         },
         {

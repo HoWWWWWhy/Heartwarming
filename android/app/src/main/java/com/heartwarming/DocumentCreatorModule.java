@@ -23,11 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
-import android.content.ActivityNotFoundException;
-
-import org.w3c.dom.CDATASection;
-
-
 public class DocumentCreatorModule extends ReactContextBaseJavaModule {
 
     private static final String NAME = "RNDocumentCreator";
@@ -44,7 +39,6 @@ public class DocumentCreatorModule extends ReactContextBaseJavaModule {
     private static final int FAILURE = 1;
 
     private Promise mPromise;
-    private FileOutputStream fileOutputStream;
 
     protected String DocumentData = null;
 
@@ -94,7 +88,6 @@ public class DocumentCreatorModule extends ReactContextBaseJavaModule {
             }
             DocumentData = data;
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            Bundle bundle = new Bundle();
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType(documentMimeType);
             intent.putExtra(Intent.EXTRA_TITLE, fullFileName);
