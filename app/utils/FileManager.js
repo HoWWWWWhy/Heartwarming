@@ -12,44 +12,11 @@ import {RNDocumentCreator} from './NativeModules';
    ----- saved json format end ------- */
 
 const exportData = async (fileName, data) => {
-  await RNDocumentCreator.createDocument(fileName, 'json');
-  /*
-  let filePath = RNFS.DownloadDirectoryPath;
   try {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Permission Granted: WRITE_EXTERNAL_STORAGE');
-        console.log('Platform Version is:', Platform.Version);
-        if (Platform.Version >= 21) {
-          const selectedDir = await DocumentPicker.pickDirectory();
-          console.log(selectedDir['uri']);
-          //filePath = selectedDir['uri'];
-
-          console.log('converted filepath:', RNFS.stat(selectedDir['uri']));
-        }
-
-        filePath = filePath + '/' + fileName + '.json';
-        console.log('final path:', filePath);
-
-        //await RNFS.writeFile(filePath, data);
-        //console.log('FILE CREATED!!!', res.uri); -> Toast message로 보여주기
-      } else {
-        console.log('Permission Denied: WRITE_EXTERNAL_STORAGE');
-      }
-    }
+    await RNDocumentCreator.createDocument(fileName, 'json', data);
   } catch (err) {
     console.log(err);
-    if (DocumentPicker.isCancel(err)) {
-      // User cancelled the picker, exit any dialogs or menus and move on
-      console.log('cancelled');
-    } else {
-      Alert.alert(JSON.stringify(err['message']));
-    }
   }
-  */
 };
 
 // 앱으로부터 만들어진 파일인지 체크하는 기능 추가. symbol 체크
