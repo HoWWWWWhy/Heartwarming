@@ -36,7 +36,7 @@ const Add = ({navigation, route}) => {
   //'The Waiter Rule';
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in', '-', ''];
-  const [preposIndex, setProposIndex] = useState(1);
+  const [preposIndex, setPreposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
 
@@ -60,10 +60,16 @@ const Add = ({navigation, route}) => {
     //console.log('categories', categories);
     if (typeof route.params !== 'undefined') {
       if (route.params.from === 'link') {
-        //console.log('This is from deeplink');
-        //console.log(categoryList);
+        //console.log('App is opened by app-link!');
         setContents(route.params.contents);
-        //setPrepos(preposList[1]);
+        const idx = preposList.findIndex((x) => x === route.params.prepos);
+        if (route.params.prepos === 'blank' || idx === -1) {
+          setPreposIndex(0);
+          setPrepos(preposList[preposList.length]);
+        } else {
+          setPreposIndex(idx + 1);
+          setPrepos(route.params.prepos);
+        }
         setSource(route.params.source);
       } else {
         setInsertFlag(true);
@@ -116,9 +122,9 @@ const Add = ({navigation, route}) => {
   };
 
   const changeList = () => {
-    setProposIndex((prevIndex) => prevIndex + 1);
+    setPreposIndex((prevIndex) => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
-      setProposIndex(0);
+      setPreposIndex(0);
     }
 
     setPrepos(preposList[preposIndex]);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import MenuButton from '../components/MenuButton';
 import appStyles from '../styles';
@@ -7,7 +7,23 @@ import appStyles from '../styles';
 // import Add from '../screens/Add';
 // import Setting from '../screens/Setting';
 
-const Home = ({navigation}) => {
+const Home = ({navigation, route}) => {
+  useEffect(() => {
+    console.log(JSON.stringify(route));
+    if (typeof route.params !== 'undefined') {
+      console.log('App is opened by app-link!');
+      if (route.params.from === 'link' && route.params.to === 'add') {
+        //navigation.navigate('Add');
+        navigation.navigate('Add', {
+          from: route.params.from,
+          contents: route.params.contents,
+          prepos: route.params.prepos,
+          source: route.params.source,
+        });
+      }
+    }
+  });
+
   return (
     <View style={styles.container}>
       <MenuButton

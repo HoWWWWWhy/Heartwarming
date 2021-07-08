@@ -1,13 +1,12 @@
 const config = {
   screens: {
-    initialRouteName: 'Home',
-    Home: 'home',
-    Setting: 'setting',
-    Add: {
-      path: 'add/:from/:contents/:source',
+    Home: {
+      path: 'home/:from/:to/:contents/:prepos/:source',
       parse: {
         from: (from) => `${from}`,
+        to: (to) => `${to}`,
         contents: (contents) => `${contents}`,
+        prepos: (prepos) => `${prepos}`,
         source: (source) => `${source}`,
       },
     },

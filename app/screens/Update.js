@@ -31,7 +31,7 @@ const Update = ({navigation, route}) => {
 
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in', '-', ''];
-  const [preposIndex, setProposIndex] = useState(1);
+  const [preposIndex, setPreposIndex] = useState(1);
   const [prepos, setPrepos] = useState(preposList[0]);
   const [source, setSource] = useState('');
 
@@ -62,9 +62,9 @@ const Update = ({navigation, route}) => {
         preposList.length >
       preposList.length - 2
     ) {
-      setProposIndex(0);
+      setPreposIndex(0);
     } else {
-      setProposIndex(
+      setPreposIndex(
         preposList.indexOf(
           categories[newIdx][screenName]['data'][itemId]['prepos'],
         ) + 1,
@@ -117,9 +117,9 @@ const Update = ({navigation, route}) => {
 
   const changeList = () => {
     //console.log(preposIndex);
-    setProposIndex((prevIndex) => prevIndex + 1);
+    setPreposIndex((prevIndex) => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
-      setProposIndex(0);
+      setPreposIndex(0);
     }
 
     setPrepos(preposList[preposIndex]);
