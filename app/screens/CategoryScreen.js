@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, ImageBackground, Share} from 'react-native';
+import {StyleSheet, View, ImageBackground, Share, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-community/clipboard';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Store from '../store';
 import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
+import FloatingShareButton from '../components/FloatingShareButton';
 import constants from '../constants';
 import _ from 'lodash';
 
@@ -147,9 +148,11 @@ ${source}`,
     setCopiedText(text);
   };
 
-  const onShare = async () => {
+  const onShareByText = async () => {
+    //console.log('onShareByText');
     try {
       const result = await Share.share({
+        title: 'Heartwarming에서 전하는 메시지',
         message:
           prepos.length > 0
             ? `${contents}
@@ -160,17 +163,32 @@ ${prepos} ${source}`
 ${source}`,
       });
       if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
+        //console.log(result.action);
       }
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const onShareByGift = async () => {
+    console.log('onShareByGift');
+    try {
+      const result = await Share.share({
+        title: 'Heartwarming에서 전하는 메시지',
+        message: `heartwarming://home/link/add/${contents}/${prepos}/${source}`,
+        //home/:from/:to/:contents/:prepos/:source
+      });
+      if (result.action === Share.sharedAction) {
+        //console.log(result.action);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const onShareByImage = () => {
+    //console.log('onShareByImage');
+    Alert.alert('준비 중인 기능입니다 :)');
   };
 
   const onCreate = () => {
@@ -246,29 +264,38 @@ ${source}`,
                 <Icon name="content-copy" size={30} color={'white'} />
               </View>
             </TouchableOpacity>
+            <FloatingShareButton
+              onShareByGift={onShareByGift}
+              onShareByText={onShareByText}
+              onShareByImage={onShareByImage}
+            />
+            {/*
             <TouchableOpacity onPress={onShare}>
               <View style={[styles.leftButtons, styles.shareButton]}>
                 <Icon name="share" size={30} color={'white'} />
               </View>
             </TouchableOpacity>
+            */}
           </View>
-          <FloatingActionButton
-            onCreate={onCreate}
-            onUpdate={onUpdate}
-            onDelete={onDelete}
-            updateDisabled={
-              categoryIdx > -1 &&
-              categories[categoryIdx][screenName]['data'].length > 0
-                ? false
-                : true
-            }
-            deleteDisabled={
-              categoryIdx > -1 &&
-              categories[categoryIdx][screenName]['data'].length > 0
-                ? false
-                : true
-            }
-          />
+          <View style={styles.rightButtonContainer}>
+            <FloatingActionButton
+              onCreate={onCreate}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+              updateDisabled={
+                categoryIdx > -1 &&
+                categories[categoryIdx][screenName]['data'].length > 0
+                  ? false
+                  : true
+              }
+              deleteDisabled={
+                categoryIdx > -1 &&
+                categories[categoryIdx][screenName]['data'].length > 0
+                  ? false
+                  : true
+              }
+            />
+          </View>
         </View>
       </>
     );
@@ -319,14 +346,24 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    bottom: 20,
+    //bottom: 20,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'center',
+    //alignItems: 'center',
+    //backgroundColor: 'yellow',
   },
   leftButtonContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     width: Math.round(constants.width / 2.0) - 20,
+    //backgroundColor: 'green',
+  },
+  rightButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: Math.round(constants.width / 2.0) - 20,
+    //backgroundColor: 'blue',
   },
   leftButtons: {
     width: 60,

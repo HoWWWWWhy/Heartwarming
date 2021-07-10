@@ -5,11 +5,12 @@ import {
   Animated,
   TouchableWithoutFeedback,
 } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import constants from '../constants';
 import appStyles from '../styles';
 
-const FloatingActionButton = (props) => {
+const FloatingShareButton = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const animation = useRef(new Animated.Value(0)).current;
@@ -26,7 +27,7 @@ const FloatingActionButton = (props) => {
     setMenuOpen(!menuOpen);
   };
 
-  const addAnimatedStyle = {
+  const giftAnimatedStyle = {
     transform: [
       {
         scale: animation,
@@ -34,47 +35,7 @@ const FloatingActionButton = (props) => {
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -65],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 5],
-        }),
-      },
-    ],
-  };
-
-  const updateAnimatedStyle = {
-    transform: [
-      {
-        scale: animation,
-      },
-      {
-        translateX: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -45],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -45],
-        }),
-      },
-    ],
-  };
-
-  const deleteAnimatedStyle = {
-    transform: [
-      {
-        scale: animation,
-      },
-      {
-        translateX: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 8],
+          outputRange: [0, -8],
         }),
       },
       {
@@ -85,53 +46,81 @@ const FloatingActionButton = (props) => {
       },
     ],
   };
+
+  const textAnimatedStyle = {
+    transform: [
+      {
+        scale: animation,
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 45],
+        }),
+      },
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -45],
+        }),
+      },
+    ],
+  };
+
+  const imageAnimatedStyle = {
+    transform: [
+      {
+        scale: animation,
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 65],
+        }),
+      },
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 5],
+        }),
+      },
+    ],
+  };
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={props.onCreate}>
+      <TouchableWithoutFeedback onPress={props.onShareByGift}>
         <Animated.View
-          style={[styles.button, styles.secondary, addAnimatedStyle]}>
-          <MaterialIcons
-            name="add"
+          style={[styles.button, styles.secondary, giftAnimatedStyle]}>
+          <FontAwesome
+            name="gift"
             size={30}
-            color={appStyles.actionButtonColor}
+            color={appStyles.shareButtonColor}
           />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
-        disabled={props.updateDisabled}
-        onPress={props.onUpdate}>
+      <TouchableWithoutFeedback onPress={props.onShareByText}>
         <Animated.View
-          style={[styles.button, styles.secondary, updateAnimatedStyle]}>
+          style={[styles.button, styles.secondary, textAnimatedStyle]}>
           <MaterialIcons
-            name="create"
+            name="text-fields"
             size={30}
-            color={
-              props.updateDisabled ? '#c8d6e5' : appStyles.actionButtonColor
-            }
+            color={appStyles.shareButtonColor}
           />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback
-        disabled={props.deleteDisabled}
-        onPress={props.onDelete}>
+      <TouchableWithoutFeedback onPress={props.onShareByImage}>
         <Animated.View
-          style={[styles.button, styles.secondary, deleteAnimatedStyle]}>
-          <MaterialIcons
-            name="delete"
+          style={[styles.button, styles.secondary, imageAnimatedStyle]}>
+          <FontAwesome
+            name="picture-o"
             size={30}
-            color={
-              props.deleteDisabled ? '#c8d6e5' : appStyles.actionButtonColor
-            }
+            color={appStyles.shareButtonColor}
           />
         </Animated.View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={toggleMenu}>
         <View style={[styles.button, styles.menu]}>
-          {menuOpen ? (
-            <MaterialIcons name="menu" size={30} color="white" />
-          ) : (
-            <MaterialIcons name="apps" size={30} color="white" />
-          )}
+          <MaterialIcons name="share" size={30} color="white" />
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -140,7 +129,7 @@ const FloatingActionButton = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     width: Math.round(constants.width / 2.0) - 20,
   },
@@ -153,7 +142,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: appStyles.actionButtonColor,
+    backgroundColor: appStyles.shareButtonColor,
   },
   secondary: {
     width: 48,
@@ -163,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FloatingActionButton;
+export default FloatingShareButton;
