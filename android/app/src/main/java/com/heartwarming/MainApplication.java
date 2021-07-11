@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import com.rnfs.RNFSPackage;
+import com.reactnativecommunity.cameraroll.CameraRollPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 

@@ -1,7 +1,17 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, ImageBackground, Share, Alert} from 'react-native';
+import React, {useContext, useEffect, useState, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  ImageBackground,
+  Share,
+  Alert,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-community/clipboard';
+import CameraRoll from '@react-native-community/cameraroll';
+import ViewShot from 'react-native-view-shot';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -31,6 +41,8 @@ const CategoryScreen = ({route, navigation}) => {
   const [nextButtonColor, setNextButtonColor] = useState(BUTTON_INACTIVE_COLOR);
 
   const [copiedText, setCopiedText] = useState('');
+
+  const imageRef = useRef(null);
 
   useEffect(() => {
     //console.log('useEffect', screenName, itemId, navigation);
@@ -186,9 +198,32 @@ ${source}`,
     }
   };
 
-  const onShareByImage = () => {
+  const onShareByImage = async () => {
     //console.log('onShareByImage');
-    Alert.alert('준비 중인 기능입니다 :)');
+    //Alert.alert('준비 중인 기능입니다 :)');
+    try {
+      const imageUri = await imageRef.current.capture();
+      console.log(imageUri);
+      const hasPermission = await hasAndroidPermission();
+      if (Platform.OS === 'android' && hasPermission) {
+        const result = await CameraRoll.save(imageUri);
+        console.log(result);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const hasAndroidPermission = async () => {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
   };
 
   const onCreate = () => {
@@ -237,15 +272,16 @@ ${source}`,
             }>
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
-
-          <Card
-            contents={contents}
-            prepos={prepos}
-            source={source}
-            textColor={
-              categories[categoryIdx][screenName]['setting']['textColor']
-            }
-          />
+          <ViewShot ref={imageRef} options={{format: 'png', quality: 1.0}}>
+            <Card
+              contents={contents}
+              prepos={prepos}
+              source={source}
+              textColor={
+                categories[categoryIdx][screenName]['setting']['textColor']
+              }
+            />
+          </ViewShot>
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>

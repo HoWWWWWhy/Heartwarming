@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-community/cameraroll": "^4.0.4",
     "@react-native-community/checkbox": "^0.4.1",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/masked-view": "^0.1.10",
@@ -35,6 +36,7 @@
     "react-native-tab-view": "^2.15.1",
     "react-native-vector-icons": "^8.1.0",
     "react-native-version-check": "^3.4.2",
+    "react-native-view-shot": "^3.1.2",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {
