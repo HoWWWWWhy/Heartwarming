@@ -20,55 +20,14 @@ import Help from '../screens/Help';
 import linking from '../linking';
 import constants from '../constants';
 import assets from '../default_assets';
+import {init_categories} from '../database/schema';
+
 import _ from 'lodash';
 
 const Stack = createStackNavigator();
 
 const MainNavigation = () => {
-  const [categories, setCategories] = useState([
-    {
-      Movie: {
-        icon: 'movie',
-        data: [],
-        setting: {
-          useBgImage: true,
-          bgColor: 'white',
-          textColor: 'black',
-          bgImage: assets.defaultMovieBgImage,
-          bgImageBlur: 0,
-          isSelected: true,
-        },
-      },
-    },
-    {
-      Lyrics: {
-        icon: 'library-music',
-        data: [],
-        setting: {
-          useBgImage: true,
-          bgColor: 'white',
-          textColor: 'black',
-          bgImage: assets.defaultLyricsBgImage,
-          bgImageBlur: 0,
-          isSelected: true,
-        },
-      },
-    },
-    {
-      Book: {
-        icon: 'library-books',
-        data: [],
-        setting: {
-          useBgImage: true,
-          bgColor: 'white',
-          textColor: 'black',
-          bgImage: assets.defaultBookBgImage,
-          bgImageBlur: 0,
-          isSelected: true,
-        },
-      },
-    },
-  ]);
+  const [categories, setCategories] = useState(init_categories);
 
   useEffect(() => {
     //console.log('MainNavigation Mounted');
@@ -90,7 +49,7 @@ const MainNavigation = () => {
         if (all_data !== null) {
           // value previously stored
           //console.log('all_data:', all_data);
-          //console.log('all_data:', JSON.parse(all_data));
+          console.log('all_data:', JSON.parse(all_data));
           setCategories(JSON.parse(all_data));
           //await AsyncStorage.removeItem('@Data');
         } else {

@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import appStyles from '../styles';
 import Store from '../store';
+import {init_categories} from '../database/schema';
 
 import {exportData, importData} from '../utils/FileManager';
 
@@ -49,7 +50,6 @@ const Setting = ({navigation}) => {
           name: '내보내기',
           action: () => {
             //console.log('내보내기');
-            //Alert.alert('준비 중인 기능입니다 :)');
             const createdFileName = createFileName('heartwarming');
             console.log(createdFileName);
             //exportData(createdFileName, JSON.stringify(categories));
@@ -60,7 +60,6 @@ const Setting = ({navigation}) => {
           name: '가져오기',
           action: async () => {
             //console.log('가져오기');
-            //Alert.alert('준비 중인 기능입니다 :)');
             const importedData = await importData(setCategories);
             console.log('imported data:', importedData);
             if (importedData.length > 0) {
@@ -73,7 +72,38 @@ const Setting = ({navigation}) => {
           name: '초기화',
           action: () => {
             //console.log('초기화');
-            Alert.alert('준비 중인 기능입니다 :)');
+            console.log('init:', init_categories);
+
+            Alert.alert(
+              '데이터 초기화',
+              '모든 데이터가 삭제되고 복구될 수 없습니다. <내보내기> 기능을 먼저 이용하시면 데이터 복구가 가능합니다. 계속 진행할까요?',
+              [
+                {
+                  text: 'Cancel',
+                  //onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: async () => {
+                    //console.log('OK Pressed');
+                    try {
+                      await AsyncStorage.setItem(
+                        '@Data',
+                        JSON.stringify(init_categories),
+                      );
+                      setCategories(init_categories);
+                    } catch (err) {
+                      // saving error
+                      console.log(err);
+                    }
+                  },
+                },
+              ],
+              {
+                cancelable: false,
+              },
+            );
           },
         },
       ],

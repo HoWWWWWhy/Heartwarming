@@ -9,7 +9,7 @@ import appStyles from '../styles';
 
 const Home = ({navigation, route}) => {
   useEffect(() => {
-    console.log(JSON.stringify(route));
+    console.log('Home Mounted', JSON.stringify(route));
     if (typeof route.params !== 'undefined') {
       console.log('App is opened by app-link!');
       if (route.params.from === 'link' && route.params.to === 'add') {

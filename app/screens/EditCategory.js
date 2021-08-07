@@ -283,7 +283,7 @@ const EditCategory = ({navigation, route}) => {
       </TouchableOpacity>
     );
 
-    const renderItem = ({item}) => {
+    const renderIcons = ({item}) => {
       const backgroundColor = item.id === selectedId ? ICON_COLOR : 'white';
       const iconColor = item.id === selectedId ? 'white' : ICON_COLOR;
       return (
@@ -329,7 +329,7 @@ const EditCategory = ({navigation, route}) => {
           <View style={[styles.iconListModalView, styles.commonModalView]}>
             <FlatList
               data={ICON_DATA}
-              renderItem={renderItem}
+              renderItem={renderIcons}
               keyExtractor={(item) => `${item.title}-${item.id}`}
               extraData={selectedId}
               numColumns="8"

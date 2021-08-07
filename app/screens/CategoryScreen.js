@@ -7,11 +7,13 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-community/clipboard';
-import CameraRoll from '@react-native-community/cameraroll';
-import ViewShot from 'react-native-view-shot';
+//import CameraRoll from '@react-native-community/cameraroll';
+//import ViewShot from 'react-native-view-shot';
+
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -42,7 +44,8 @@ const CategoryScreen = ({route, navigation}) => {
 
   const [copiedText, setCopiedText] = useState('');
 
-  const imageRef = useRef(null);
+  //const imageRef = useRef(null);
+  //const hideShot = true;
 
   useEffect(() => {
     //console.log('useEffect', screenName, itemId, navigation);
@@ -184,10 +187,17 @@ ${source}`,
 
   const onShareByGift = async () => {
     console.log('onShareByGift');
+    console.log('contents length:', contents.length);
+    console.log('prepos length:', prepos.length);
+    console.log('source length:', source.length);
     try {
       const result = await Share.share({
         title: 'Heartwarming에서 전하는 메시지',
-        message: `heartwarming://home/link/add/${contents}/${prepos}/${source}`,
+        message: `heartwarming://home/link/add/${
+          contents.length > 0 ? contents : '-'
+        }/${prepos.length > 0 ? prepos : 'blank'}/${
+          source.length > 0 ? source : '-'
+        }`,
         //home/:from/:to/:contents/:prepos/:source
       });
       if (result.action === Share.sharedAction) {
@@ -200,10 +210,15 @@ ${source}`,
 
   const onShareByImage = async () => {
     //console.log('onShareByImage');
-    //Alert.alert('준비 중인 기능입니다 :)');
+    Alert.alert('준비 중인 기능입니다 :)');
+    /*          <ViewShot
+    ref={imageRef}
+    options={{format: 'png', quality: 1.0}}></ViewShot>*/
+    /*
     try {
       const imageUri = await imageRef.current.capture();
       console.log(imageUri);
+
       const hasPermission = await hasAndroidPermission();
       if (Platform.OS === 'android' && hasPermission) {
         const result = await CameraRoll.save(imageUri);
@@ -212,8 +227,9 @@ ${source}`,
     } catch (error) {
       alert(error.message);
     }
+    */
   };
-
+  /*
   const hasAndroidPermission = async () => {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
@@ -225,7 +241,7 @@ ${source}`,
     const status = await PermissionsAndroid.request(permission);
     return status === 'granted';
   };
-
+*/
   const onCreate = () => {
     navigation.navigate('Add', {itemId: itemId, screenName: screenName});
   };
@@ -272,16 +288,16 @@ ${source}`,
             }>
             <Icon name="chevron-left" size={40} color={prevButtonColor} />
           </TouchableOpacity>
-          <ViewShot ref={imageRef} options={{format: 'png', quality: 1.0}}>
-            <Card
-              contents={contents}
-              prepos={prepos}
-              source={source}
-              textColor={
-                categories[categoryIdx][screenName]['setting']['textColor']
-              }
-            />
-          </ViewShot>
+
+          <Card
+            contents={contents}
+            prepos={prepos}
+            source={source}
+            textColor={
+              categories[categoryIdx][screenName]['setting']['textColor']
+            }
+          />
+
           <TouchableOpacity
             disabled={nextButtonDisable}
             onPress={() =>
@@ -339,8 +355,8 @@ ${source}`,
 
   return (
     <View style={styles.container}>
-      {categoryIdx > -1 ? (
-        categories[categoryIdx][screenName]['setting'].useBgImage ? (
+      {categoryIdx > -1 &&
+        (categories[categoryIdx][screenName]['setting'].useBgImage ? (
           <ImageBackground
             source={categories[categoryIdx][screenName]['setting'].bgImage}
             blurRadius={
@@ -358,8 +374,7 @@ ${source}`,
             }}>
             {renderInnerContainer()}
           </View>
-        )
-      ) : null}
+        ))}
     </View>
   );
 };
