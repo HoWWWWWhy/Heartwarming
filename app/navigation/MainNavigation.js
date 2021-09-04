@@ -32,7 +32,7 @@ const MainNavigation = () => {
   useEffect(() => {
     //console.log('MainNavigation Mounted');
 
-    const storeData = async (data) => {
+    const storeData = async data => {
       //console.log('storeData');
       //console.log(data);
       try {
@@ -64,7 +64,7 @@ const MainNavigation = () => {
             //console.log('movie_data:', movie_data);
 
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Movie',
+              category => Object.keys(category)[0] === 'Movie',
             );
             newData[newIdx]['Movie']['data'] = JSON.parse(movie_data);
             //setMovies(JSON.parse(movie_data));
@@ -73,7 +73,7 @@ const MainNavigation = () => {
           if (movie_setting !== null) {
             //console.log('movie_setting:', movie_setting);
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Movie',
+              category => Object.keys(category)[0] === 'Movie',
             );
             newData[newIdx]['Movie']['setting'] = JSON.parse(movie_setting);
             //let parsed_movie_setting = JSON.parse(movie_setting);
@@ -102,7 +102,7 @@ const MainNavigation = () => {
             //console.log('lyrics_data:', lyrics_data);
 
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Lyrics',
+              category => Object.keys(category)[0] === 'Lyrics',
             );
             newData[newIdx]['Lyrics']['data'] = JSON.parse(lyrics_data);
             //setLyrics(JSON.parse(lyrics_data));
@@ -111,7 +111,7 @@ const MainNavigation = () => {
           if (lyrics_setting !== null) {
             //console.log('lyrics_setting:', lyrics_setting);
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Lyrics',
+              category => Object.keys(category)[0] === 'Lyrics',
             );
             newData[newIdx]['Lyrics']['setting'] = JSON.parse(lyrics_setting);
             //let parsed_lyrics_setting = JSON.parse(lyrics_setting);
@@ -141,7 +141,7 @@ const MainNavigation = () => {
             //console.log('book_data:', book_data);
 
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Book',
+              category => Object.keys(category)[0] === 'Book',
             );
             newData[newIdx]['Book']['data'] = JSON.parse(book_data);
             //setBooks(JSON.parse(book_data));
@@ -151,7 +151,7 @@ const MainNavigation = () => {
             //console.log('book_setting:', book_setting);
 
             const newIdx = newData.findIndex(
-              (category) => Object.keys(category)[0] === 'Book',
+              category => Object.keys(category)[0] === 'Book',
             );
             newData[newIdx]['Book']['setting'] = JSON.parse(book_setting);
             //let parsed_book_setting = JSON.parse(book_setting);
@@ -205,7 +205,6 @@ const MainNavigation = () => {
               options={{
                 title: '설정하기',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -217,7 +216,6 @@ const MainNavigation = () => {
               options={({route}) => ({
                 title: '배경 설정 [ ' + route.params.screenName + ' ]',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               })}
@@ -229,7 +227,6 @@ const MainNavigation = () => {
               options={{
                 title: '추가하기',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -240,7 +237,6 @@ const MainNavigation = () => {
               options={{
                 title: '수정하기',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -251,7 +247,6 @@ const MainNavigation = () => {
               options={{
                 title: '카테고리 편집',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -262,7 +257,6 @@ const MainNavigation = () => {
               options={{
                 title: '탭 디자인 설정',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -273,7 +267,6 @@ const MainNavigation = () => {
               options={{
                 title: '도움말',
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
@@ -285,7 +278,6 @@ const MainNavigation = () => {
                 title: 'View',
                 headerShown: false,
                 gestureEnabled: true,
-                gestureResponseDistance: 'horizontal',
                 gestureDirection: 'vertical',
               }}
             />

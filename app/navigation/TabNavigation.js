@@ -32,13 +32,13 @@ const TabNavigation = () => {
     <Tab.Navigator
       tabBarPosition="bottom"
       backBehavior="none"
-      tabBarOptions={{
-        showIcon: true,
-        labelStyle: {fontSize: 12},
-        tabStyle: {height: 60},
+      screenOptions={{
+        tabBarShowIcon: true,
+        tabBarLabelStyle: {fontSize: 10},
+        tabBarStyle: {height: 60},
       }}>
       {TabInfo.map(
-        (tabObj) =>
+        tabObj =>
           tabObj.checked && (
             <Tab.Screen
               key={tabObj.name}

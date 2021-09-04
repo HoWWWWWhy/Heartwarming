@@ -7,6 +7,7 @@ import {
   Alert,
   Linking,
   SectionList,
+  LogBox,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,6 +17,11 @@ import Store from '../store';
 import {init_categories} from '../database/schema';
 
 import {exportData, importData} from '../utils/FileManager';
+
+// temporary code
+LogBox.ignoreLogs([
+  'ReactNativeFiberHostComponent: Calling getNode() on the ref of an Animated component is no longer necessary. You can now directly use the ref instead. This method will be removed in a future release.',
+]);
 
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';
@@ -146,7 +152,7 @@ const Setting = ({navigation}) => {
   ];
 
   useEffect(() => {
-    //console.log('Setting Mounted');
+    console.log('Setting Mounted');
   }, []);
 
   const Item = ({item}) => (
@@ -157,7 +163,7 @@ const Setting = ({navigation}) => {
     </View>
   );
 
-  const onPressURL = async (url) => {
+  const onPressURL = async url => {
     // Checking if the link is supported for links with custom URL scheme.
     const supported = await Linking.canOpenURL(url);
 
@@ -170,7 +176,7 @@ const Setting = ({navigation}) => {
     }
   };
 
-  const createFileName = (header) => {
+  const createFileName = header => {
     const paddingSize = 2;
     const paddingChar = '0';
 

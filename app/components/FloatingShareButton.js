@@ -10,7 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import constants from '../constants';
 import appStyles from '../styles';
 
-const FloatingShareButton = (props) => {
+const FloatingShareButton = props => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const animation = useRef(new Animated.Value(0)).current;
@@ -114,7 +114,8 @@ const FloatingShareButton = (props) => {
           <FontAwesome
             name="picture-o"
             size={30}
-            color={appStyles.shareButtonColor}
+            //color={appStyles.shareButtonColor}
+            color={'#c8d6e5'} //temporarily disabled
           />
         </Animated.View>
       </TouchableWithoutFeedback>

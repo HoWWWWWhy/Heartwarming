@@ -11,11 +11,14 @@ const CategoryNavigation = ({route, navigation}) => {
   //console.log('CategoryNavigation', screenName);
   return (
     <>
-      <Stack.Navigator headerMode="none">
+      <Stack.Navigator>
         <Stack.Screen
           name="CategoryScreen"
           component={CategoryScreen}
           initialParams={{itemId: 0, screenName}}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </>
