@@ -11,11 +11,11 @@ const savedJsonFormat = {
 };
 /* ----- saved json format end ------- */
 
-const putData = (data) => {
+const putData = data => {
   savedJsonFormat['data'] = data;
 };
 
-const checkAppData = (data) => {
+const checkAppData = data => {
   const hasKeySymbol = data.hasOwnProperty('symbol');
   const hasKeyData = data.hasOwnProperty('data');
   let checkSymbol = false;
@@ -55,8 +55,8 @@ const pickJsonFile = () => {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.json],
       });
-      console.log(res.uri);
-      resolve(res.uri);
+      console.log('res.uri:', res[0].uri);
+      resolve(res[0].uri);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on

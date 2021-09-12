@@ -152,7 +152,7 @@ const Setting = ({navigation}) => {
   ];
 
   useEffect(() => {
-    console.log('Setting Mounted');
+    //console.log('Setting Mounted');
   }, []);
 
   const Item = ({item}) => (

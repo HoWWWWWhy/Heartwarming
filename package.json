@@ -21,7 +21,7 @@
     "react": "17.0.2",
     "react-native": "0.65.0",
     "react-native-camera": "^4.0.3",
-    "react-native-document-picker": "^5.0.4",
+    "react-native-document-picker": "^6.0.4",
     "react-native-draggable-flatlist": "^2.6.2",
     "react-native-elements": "^3.4.2",
     "react-native-fs": "^2.18.0",
