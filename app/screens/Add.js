@@ -41,7 +41,7 @@ const Add = ({navigation, route}) => {
   const [source, setSource] = useState('');
 
   const categoryList = categories.map(
-    (cur_category) => Object.keys(cur_category)[0],
+    cur_category => Object.keys(cur_category)[0],
   );
 
   const [category, setCategory] = useState(categoryList[0]);
@@ -62,10 +62,11 @@ const Add = ({navigation, route}) => {
       if (route.params.from === 'link') {
         //console.log('App is opened by app-link!');
         setContents(route.params.contents);
-        const idx = preposList.findIndex((x) => x === route.params.prepos);
+        const idx = preposList.findIndex(x => x === route.params.prepos);
         if (route.params.prepos === 'blank' || idx === -1) {
+          //console.log('Add route.params.prepos: blank');
           setPreposIndex(0);
-          setPrepos(preposList[preposList.length]);
+          setPrepos(preposList[preposList.length - 1]);
         } else {
           setPreposIndex(idx + 1);
           setPrepos(route.params.prepos);
@@ -94,7 +95,7 @@ const Add = ({navigation, route}) => {
       let cur_data = [];
       let newData = _.cloneDeep(categories);
       const newIdx = categories.findIndex(
-        (cur_category) => Object.keys(cur_category)[0] === category,
+        cur_category => Object.keys(cur_category)[0] === category,
       );
       cur_data = newData[newIdx][category]['data'];
 
@@ -122,7 +123,7 @@ const Add = ({navigation, route}) => {
   };
 
   const changeList = () => {
-    setPreposIndex((prevIndex) => prevIndex + 1);
+    setPreposIndex(prevIndex => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
       setPreposIndex(0);
     }
@@ -130,7 +131,7 @@ const Add = ({navigation, route}) => {
     setPrepos(preposList[preposIndex]);
   };
 
-  const onOCRCapture = (recogonized_text) => {
+  const onOCRCapture = recogonized_text => {
     if (
       recogonized_text &&
       recogonized_text.textBlocks &&
@@ -205,7 +206,7 @@ const Add = ({navigation, route}) => {
             multiline
             editable
             returnKeyLabel="done"
-            onChangeText={(text) => setContents(text)}
+            onChangeText={text => setContents(text)}
           />
           <View style={styles.preposContainer}>
             <TouchableOpacity onPress={changeList}>
@@ -223,7 +224,7 @@ const Add = ({navigation, route}) => {
             defaultValue={source}
             multiline
             editable
-            onChangeText={(text) => setSource(text)}
+            onChangeText={text => setSource(text)}
           />
           <Text style={styles.textTitle}>카테고리</Text>
           <View style={styles.pickerView}>
@@ -237,7 +238,7 @@ const Add = ({navigation, route}) => {
                 insertFlag ? '#a4b0be' : appStyles.commonButtonColor
               }
               onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-              {categoryList.map((item) => (
+              {categoryList.map(item => (
                 <Picker.Item key={item} label={item} value={item} />
               ))}
             </Picker>

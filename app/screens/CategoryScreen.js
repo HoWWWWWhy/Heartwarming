@@ -10,7 +10,7 @@ import {
   Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 //import CameraRoll from '@react-native-community/cameraroll';
 //import ViewShot from 'react-native-view-shot';
 
@@ -53,7 +53,7 @@ const CategoryScreen = ({route, navigation}) => {
 
     if (categoryIdx <= -1) {
       const newIdx = categories.findIndex(
-        (category) => Object.keys(category)[0] === screenName,
+        category => Object.keys(category)[0] === screenName,
       );
       setCategoryIdx(newIdx);
     } else {
@@ -131,7 +131,7 @@ const CategoryScreen = ({route, navigation}) => {
     return nextId;
   };
 
-  const storeData = async (data) => {
+  const storeData = async data => {
     let newData = _.cloneDeep(categories);
     newData[categoryIdx][screenName]['data'] = data;
 
