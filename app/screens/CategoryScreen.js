@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-clipboard/clipboard';
+//import {RNKakaoLink} from '../utils/NativeModules';
+import KakaoShareLink from 'react-native-kakao-share-link';
 //import CameraRoll from '@react-native-community/cameraroll';
 //import ViewShot from 'react-native-view-shot';
 
@@ -156,6 +158,7 @@ ${prepos} ${source}`,
 ${source}`,
         );
     fetchCopiedText();
+    //console.log('copyToClipboard');
   };
 
   const fetchCopiedText = async () => {
@@ -168,14 +171,11 @@ ${source}`,
     try {
       const result = await Share.share({
         title: 'Heartwarming에서 전하는 메시지',
-        message:
-          prepos.length > 0
-            ? `${contents}
+        message: `
+        
+${contents}
     
-${prepos} ${source}`
-            : `${contents}
-
-${source}`,
+${prepos} ${source}`,
       });
       if (result.action === Share.sharedAction) {
         //console.log(result.action);
@@ -187,9 +187,13 @@ ${source}`,
 
   const onShareByGift = async () => {
     console.log('onShareByGift');
-    console.log('contents length:', contents.length);
-    console.log('prepos length:', prepos.length);
-    console.log('source length:', source.length);
+    // console.log('contents length:', contents.length);
+    // console.log('contents:', contents);
+    // console.log('prepos length:', prepos.length);
+    // console.log('source length:', source.length);
+
+    //RNKakaoLink.printTestLog('onShareByGift from ReactNative');
+    /*
     try {
       const result = await Share.share({
         title: 'Heartwarming에서 전하는 메시지',
@@ -205,6 +209,62 @@ ${source}`,
       }
     } catch (error) {
       alert(error.message);
+    }
+    */
+
+    try {
+      // url encoding
+      const contentsValue =
+        contents.length > 0 ? encodeURIComponent(contents) : '-';
+
+      const preposValue =
+        prepos.length > 0 ? encodeURIComponent(prepos) : 'blank';
+
+      const sourceValue = source.length > 0 ? encodeURIComponent(source) : '-';
+
+      //contents.length > 0 ? (contents.replace(/(\n|\r\n)/g, '%0a').replace('$', "") : '-';
+
+      const response = await KakaoShareLink.sendFeed({
+        content: {
+          title: 'Heartwarming에서 선물이\n도착했습니다♡',
+          imageUrl:
+            'https://play-lh.googleusercontent.com/jK5vscIO0bz9gC9N-byOvAWIHvmJac91KuGC89rYGPaUcdGK__2i-_w7jpyEACmrQc6m=s360-rw',
+          link: {
+            webUrl:
+              'https://play.google.com/store/apps/details?id=com.howwwwwhy.heartwarming',
+            mobileWebUrl:
+              'https://play.google.com/store/apps/details?id=com.howwwwwhy.heartwarming',
+          },
+          //description: 'Heartwarming에서 선물이 도착했습니다♡',
+        },
+        buttons: [
+          {
+            title: '선물 받기',
+            link: {
+              androidExecutionParams: [
+                {key: 'from', value: 'link'},
+                {key: 'to', value: 'add'},
+                {
+                  key: 'contents',
+                  value: contentsValue,
+                },
+                {
+                  key: 'prepos',
+                  value: preposValue,
+                },
+                {
+                  key: 'source',
+                  value: sourceValue,
+                },
+              ],
+            },
+          },
+        ],
+      });
+      //console.log(response);
+    } catch (err) {
+      alert(err.message);
+      console.error(err.message);
     }
   };
 
@@ -317,6 +377,12 @@ ${source}`,
               </View>
             </TouchableOpacity>
             <FloatingShareButton
+              disabled={
+                categoryIdx > -1 &&
+                categories[categoryIdx][screenName]['data'].length > 0
+                  ? false
+                  : true
+              }
               onShareByGift={onShareByGift}
               onShareByText={onShareByText}
               onShareByImage={onShareByImage}
@@ -427,9 +493,11 @@ const styles = StyleSheet.create({
   copyButton: {
     backgroundColor: '#7f8fa6',
   },
+  /*
   shareButton: {
     backgroundColor: '#40739e',
   },
+  */
 });
 
 export default CategoryScreen;

@@ -8,4 +8,5 @@ export default {
   borderBottomColor: '#dfe6e9',
   shareButtonColor: '#40739e',
   actionButtonColor: '#10ac84',
+  buttonDisabledColor: '#c8d6e5',
 };

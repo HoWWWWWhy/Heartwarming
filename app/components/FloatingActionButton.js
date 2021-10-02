@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import constants from '../constants';
 import appStyles from '../styles';
 
-const FloatingActionButton = (props) => {
+const FloatingActionButton = props => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const animation = useRef(new Animated.Value(0)).current;
@@ -106,7 +106,9 @@ const FloatingActionButton = (props) => {
             name="create"
             size={30}
             color={
-              props.updateDisabled ? '#c8d6e5' : appStyles.actionButtonColor
+              props.updateDisabled
+                ? appStyles.buttonDisabledColor
+                : appStyles.actionButtonColor
             }
           />
         </Animated.View>
@@ -120,7 +122,9 @@ const FloatingActionButton = (props) => {
             name="delete"
             size={30}
             color={
-              props.deleteDisabled ? '#c8d6e5' : appStyles.actionButtonColor
+              props.deleteDisabled
+                ? appStyles.buttonDisabledColor
+                : appStyles.actionButtonColor
             }
           />
         </Animated.View>

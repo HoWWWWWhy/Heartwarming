@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 import com.android.build.OutputFile
 
 /**
@@ -120,6 +120,15 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false)
 
+/*
+def getApiKey() {
+    Properties properties = new Properties()
+    //properties.load(new FileInputStream(new File('local.properties')))
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties['KAKAO_NATIVE_APP_KEY']
+}
+*/
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -128,10 +137,12 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
+        versionCode 35
         versionName "1.5.0"
         missingDimensionStrategy 'react-native-camera', 'mlkit'
-        multiDexEnabled true
+        //multiDexEnabled true
+        //manifestPlaceholders = [KAKAO_NATIVE_APP_KEY:getApiKey()]
+        resValue "string", "build_config_package", "com.heartwarming"
     }   
     splits {
         abi {
@@ -200,6 +211,8 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+' // From node_modules
+    implementation project(':react-native-config')
+    implementation project(':react-native-kakao-share-link')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
@@ -227,6 +240,9 @@ dependencies {
 
     implementation project(':react-native-fs')
     //implementation project(':@react-native-community_cameraroll')
+    implementation "com.kakao.sdk:v2-link:2.8.0" // 메시지(카카오링크)
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 
 }
 
@@ -236,6 +252,8 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.implementation
     into 'libs'
 }
+
+
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 

@@ -60,5 +60,6 @@ buck-out/
 
 # My Ignore
 gradle.properties
+*.env
 *.bak
 *.hprof

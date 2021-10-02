@@ -115,12 +115,21 @@ const FloatingShareButton = props => {
             name="picture-o"
             size={30}
             //color={appStyles.shareButtonColor}
-            color={'#c8d6e5'} //temporarily disabled
+            color={appStyles.buttonDisabledColor} //temporarily disabled
           />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={toggleMenu}>
-        <View style={[styles.button, styles.menu]}>
+      <TouchableWithoutFeedback onPress={toggleMenu} disabled={props.disabled}>
+        <View
+          style={[
+            styles.button,
+            styles.menu,
+            {
+              backgroundColor: props.disabled
+                ? appStyles.buttonDisabledColor
+                : appStyles.shareButtonColor,
+            },
+          ]}>
           <MaterialIcons name="share" size={30} color="white" />
         </View>
       </TouchableWithoutFeedback>
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: appStyles.shareButtonColor,
+    //backgroundColor: appStyles.shareButtonColor,
   },
   secondary: {
     width: 48,

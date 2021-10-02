@@ -22,6 +22,7 @@ public class MyReactNativePackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new DocumentCreatorModule(reactContext));
+        //modules.add(new KakaoLinkModule(reactContext));
 
         return modules;
     }

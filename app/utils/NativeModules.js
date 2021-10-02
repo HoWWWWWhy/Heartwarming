@@ -9,5 +9,6 @@
 import {NativeModules} from 'react-native';
 
 const {RNDocumentCreator} = NativeModules;
+const {RNKakaoLink} = NativeModules;
 
-export {RNDocumentCreator};
+export {RNDocumentCreator, RNKakaoLink};
