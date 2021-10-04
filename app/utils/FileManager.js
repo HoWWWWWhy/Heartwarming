@@ -55,8 +55,21 @@ const pickJsonFile = () => {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.json],
       });
+      console.log('res:', res);
       console.log('res.uri:', res[0].uri);
-      resolve(res[0].uri);
+      try {
+        const splitUri = res[0].name.split('.');
+        const checkJSON = splitUri[splitUri.length - 1] === 'json';
+        if (checkJSON) {
+          resolve(res[0].uri);
+        } else {
+          Alert.alert('확장자가 json인 파일을 선택하세요.');
+          resolve(null);
+        }
+      } catch (error) {
+        Alert.alert(JSON.stringify(err['message']));
+        resolve(null);
+      }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -96,18 +109,12 @@ const importData = async () => {
       const pickedJsonFile = await pickJsonFile();
       if (pickedJsonFile !== null) {
         try {
-          const splitUri = pickedJsonFile.split('.');
-          const checkJSON = splitUri[splitUri.length - 1] === 'json';
-          if (checkJSON) {
-            const pickedData = await RNFS.readFile(pickedJsonFile);
-            const parsedData = JSON.parse(pickedData);
-            const isAppData = checkAppData(parsedData);
-            //console.log(parsedData, isAppData);
-            if (isAppData) {
-              data = parsedData['data'];
-            }
-          } else {
-            Alert.alert('확장자가 json인 파일을 선택하세요.');
+          const pickedData = await RNFS.readFile(pickedJsonFile);
+          const parsedData = JSON.parse(pickedData);
+          const isAppData = checkAppData(parsedData);
+          //console.log(parsedData, isAppData);
+          if (isAppData) {
+            data = parsedData['data'];
           }
         } catch (err) {
           Alert.alert(JSON.stringify(err['message']));

@@ -4,9 +4,12 @@
     <queries>
         <package android:name="com.kakao.talk" />
         <intent>
-            <action android:name="android.intent.action.GET_CONTENT" />
-            <!-- If you don't know the MIME type in advance, set "mimeType" to "*/*". -->
-            <data android:mimeType="application/octet-stream" />
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto"/>
         </intent>
     </queries>
 
