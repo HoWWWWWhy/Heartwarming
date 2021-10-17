@@ -27,7 +27,7 @@
     "react-native-elements": "^3.4.2",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
-    "react-native-image-crop-picker": "^0.34.1",
+    "react-native-image-crop-picker": "^0.36.4",
     "react-native-kakao-share-link": "^1.0.4",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-pager-view": "^5.4.0",

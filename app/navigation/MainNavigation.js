@@ -266,8 +266,8 @@ const MainNavigation = () => {
               component={Help}
               options={{
                 title: '도움말',
-                gestureEnabled: true,
-                gestureDirection: 'horizontal',
+                //gestureEnabled: true,
+                //gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />

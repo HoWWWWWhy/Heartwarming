@@ -164,6 +164,7 @@ ${source}`,
   const fetchCopiedText = async () => {
     const text = await Clipboard.getString();
     setCopiedText(text);
+    //console.log('copied text:', text);
   };
 
   const onShareByText = async () => {

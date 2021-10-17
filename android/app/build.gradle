@@ -137,8 +137,9 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 37
+        versionCode 38
         versionName "1.5.0"
+        vectorDrawables.useSupportLibrary = true // added by react-native-image-crop-picker
         missingDimensionStrategy 'react-native-camera', 'mlkit'
         //multiDexEnabled true
         //manifestPlaceholders = [KAKAO_NATIVE_APP_KEY:getApiKey()]

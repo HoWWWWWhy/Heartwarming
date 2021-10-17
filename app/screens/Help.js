@@ -1,7 +1,65 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import appStyles from '../styles';
+import Carousel from '../components/Carousel';
+import constants from '../constants';
+import assets from '../default_assets';
 
+const PAGES = [
+  {
+    title: 1,
+    color: '#86E3CE',
+    image: require('../assets/Help_EditCategory.png'),
+  },
+  {
+    title: 2,
+    color: '#D0E6A5',
+    image: require('../assets/Help_SettingTabList.png'),
+  },
+  {
+    title: 3,
+    color: '#FFDD94',
+    image: require('../assets/Help_EditTabScreen.png'),
+  },
+  {
+    title: 4,
+    color: '#FA897B',
+    image: require('../assets/Help_Setting.png'),
+  },
+  {
+    title: 5,
+    color: '#FA897B',
+    image: require('../assets/Help_Add.png'),
+  },
+  {
+    title: 6,
+    color: '#86E3CE',
+    image: require('../assets/Help_ViewExample1.png'),
+  },
+  {
+    title: 7,
+    color: '#D0E6A5',
+    image: require('../assets/Help_ViewExample2.png'),
+  },
+];
+
+const Help = () => {
+  const GAP = 20;
+  const OFFSET = 0;
+
+  return (
+    <View style={styles.container}>
+      <Carousel
+        gap={GAP}
+        offset={OFFSET}
+        pageWidth={constants.width - (GAP + OFFSET) * 2}
+        pages={PAGES}
+      />
+    </View>
+  );
+};
+
+/*
 const Help = () => {
   return (
     <View style={styles.container}>
@@ -39,11 +97,11 @@ const Help = () => {
     </View>
   );
 };
-
+*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
+    //paddingHorizontal: 20,
     paddingVertical: 30,
     backgroundColor: appStyles.backgroundColor,
   },
