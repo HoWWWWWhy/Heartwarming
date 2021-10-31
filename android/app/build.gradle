@@ -137,7 +137,7 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 38
+        versionCode 39
         versionName "1.5.0"
         vectorDrawables.useSupportLibrary = true // added by react-native-image-crop-picker
         missingDimensionStrategy 'react-native-camera', 'mlkit'
