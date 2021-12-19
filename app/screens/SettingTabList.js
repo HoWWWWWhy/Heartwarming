@@ -5,13 +5,15 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import Store from '../store';
 import appStyles from '../styles';
 
-import Store from '../store';
+import {MyBannerAd} from '../components/GoogleAdmob';
+
 import _ from 'lodash';
 
 const SettingTabList = ({navigation}) => {
-  const {categories, setCategories} = useContext(Store);
+  const {categories, setCategories, isPremiumUser} = useContext(Store);
 
   const DATA = categories.map((category, idx) => ({
     id: `setting-${Object.keys(category)[0]}`,
@@ -63,7 +65,7 @@ const SettingTabList = ({navigation}) => {
     </View>
   );
 
-  const storeData = async (data) => {
+  const storeData = async data => {
     try {
       await AsyncStorage.setItem('@Data', JSON.stringify(data));
     } catch (e) {
@@ -74,11 +76,19 @@ const SettingTabList = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={DATA}
-        keyExtractor={(item) => item.id}
-        renderItem={({item}) => <Item title={item.title} idx={item.idx} />}
-      />
+      <View style={styles.listContainer}>
+        <FlatList
+          data={DATA}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => <Item title={item.title} idx={item.idx} />}
+        />
+      </View>
+
+      {!isPremiumUser && (
+        <View style={styles.bannerAdContainer}>
+          <MyBannerAd />
+        </View>
+      )}
     </View>
   );
 };
@@ -108,6 +118,14 @@ const styles = StyleSheet.create({
     width: 60,
     justifyContent: 'space-between',
     //backgroundColor: 'yellow',
+  },
+  listContainer: {
+    flex: 1,
+  },
+  bannerAdContainer: {
+    marginTop: 0,
+    //width: 300,
+    height: 50,
   },
 });
 

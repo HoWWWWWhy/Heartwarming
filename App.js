@@ -4,6 +4,8 @@ import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = () => {
+  const PremiumUser = false;
+
   useEffect(() => {
     /*
     setTimeout(() => {
@@ -14,7 +16,7 @@ const App = () => {
   }, []);
   return (
     <SafeAreaProvider>
-      <MainNavigation />
+      <MainNavigation isPremiumUser={PremiumUser} />
     </SafeAreaProvider>
   );
 };

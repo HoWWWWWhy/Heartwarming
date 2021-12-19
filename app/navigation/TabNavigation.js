@@ -36,6 +36,7 @@ const TabNavigation = () => {
         tabBarShowIcon: true,
         tabBarLabelStyle: {fontSize: 10},
         tabBarStyle: {height: 60},
+        swipeEnabled: false,
       }}>
       {TabInfo.map(
         tabObj =>

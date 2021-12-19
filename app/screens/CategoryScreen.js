@@ -8,6 +8,7 @@ import {
   Platform,
   PermissionsAndroid,
   Text,
+  //TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-clipboard/clipboard';

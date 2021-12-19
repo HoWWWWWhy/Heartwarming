@@ -7,7 +7,7 @@ import {
   Alert,
   Linking,
   SectionList,
-  LogBox,
+  //LogBox,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,9 +19,9 @@ import {init_categories} from '../database/schema';
 import {exportData, importData} from '../utils/FileManager';
 
 // temporary code
-LogBox.ignoreLogs([
-  'ReactNativeFiberHostComponent: Calling getNode() on the ref of an Animated component is no longer necessary. You can now directly use the ref instead. This method will be removed in a future release.',
-]);
+// LogBox.ignoreLogs([
+//   'ReactNativeFiberHostComponent: Calling getNode() on the ref of an Animated component is no longer necessary. You can now directly use the ref instead. This method will be removed in a future release.',
+// ]);
 
 const Setting = ({navigation}) => {
   const URL_EMAIL = 'mailto:howwwwwhy@gmail.com';

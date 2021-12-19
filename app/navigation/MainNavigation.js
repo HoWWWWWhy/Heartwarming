@@ -26,7 +26,7 @@ import _ from 'lodash';
 
 const Stack = createStackNavigator();
 
-const MainNavigation = () => {
+const MainNavigation = ({isPremiumUser}) => {
   const [categories, setCategories] = useState(init_categories);
 
   useEffect(() => {
@@ -185,6 +185,7 @@ const MainNavigation = () => {
   const providerValues = {
     categories,
     setCategories,
+    isPremiumUser,
   };
 
   return (

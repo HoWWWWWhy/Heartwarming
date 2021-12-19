@@ -63,3 +63,4 @@ gradle.properties
 *.env
 *.bak
 *.hprof
+firebase.json

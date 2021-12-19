@@ -11,6 +11,7 @@ import {
   SectionList,
   FlatList,
   KeyboardAvoidingView,
+  LogBox,
 } from 'react-native';
 import NavIcon from '../components/NavIcon';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -23,12 +24,20 @@ import constants from '../constants';
 import assets from '../default_assets';
 import ICON_DATA from '../tab_icons';
 import appStyles from '../styles';
+import {MyBannerAd} from '../components/GoogleAdmob';
+
 import _ from 'lodash';
+
+// temporary code
+// LogBox.ignoreLogs([
+//   '`new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.',
+//   '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
+// ]);
 
 const ICON_COLOR = '#353b48';
 
 const EditCategory = ({navigation, route}) => {
-  const {categories, setCategories} = useContext(Store);
+  const {categories, setCategories, isPremiumUser} = useContext(Store);
 
   const draggableList = categories.map((category, idx) => ({
     label: Object.keys(category)[0],
@@ -57,7 +66,7 @@ const EditCategory = ({navigation, route}) => {
     const handleComplete = () => {
       const blankRemovedStr = categoryName.replace(/(\s*)/gi, ''); //모든 공백 제거
       const foundIdx = categories.findIndex(
-        (category) => Object.keys(category)[0] === categoryName.trim(),
+        category => Object.keys(category)[0] === categoryName.trim(),
       );
 
       if (blankRemovedStr.length === 0) {
@@ -98,7 +107,7 @@ const EditCategory = ({navigation, route}) => {
               <Text style={styles.modalText}>새 카테고리명</Text>
               <TextInput
                 style={styles.modalTextInput}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   setCategoryName(text);
                 }}
                 value={categoryName}
@@ -202,7 +211,7 @@ const EditCategory = ({navigation, route}) => {
     const handleComplete = () => {
       const blankRemovedStr = categoryName.replace(/(\s*)/gi, ''); //모든 공백 제거
       const foundIdx = categories.findIndex(
-        (category) => Object.keys(category)[0] === categoryName.trim(),
+        category => Object.keys(category)[0] === categoryName.trim(),
       );
 
       if (blankRemovedStr.length === 0) {
@@ -243,7 +252,7 @@ const EditCategory = ({navigation, route}) => {
               <Text style={styles.modalText}>수정할 카테고리명</Text>
               <TextInput
                 style={styles.modalTextInput}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   setCategoryName(text);
                 }}
                 value={categoryName}
@@ -264,14 +273,14 @@ const EditCategory = ({navigation, route}) => {
 
   const IconListModal = () => {
     const curIdx = categories.findIndex(
-      (obj) => Object.keys(obj)[0] === selectedCategory,
+      obj => Object.keys(obj)[0] === selectedCategory,
     );
 
     //console.log(Object.values(categories[curIdx])[0]['icon']);
 
     const [selectedId, setSelectedId] = useState(
       ICON_DATA.findIndex(
-        (item) => item.title === Object.values(categories[curIdx])[0]['icon'],
+        item => item.title === Object.values(categories[curIdx])[0]['icon'],
       ) + 1,
     );
 
@@ -330,7 +339,7 @@ const EditCategory = ({navigation, route}) => {
             <FlatList
               data={ICON_DATA}
               renderItem={renderIcons}
-              keyExtractor={(item) => `${item.title}-${item.id}`}
+              keyExtractor={item => `${item.title}-${item.id}`}
               extraData={selectedId}
               numColumns="8"
             />
@@ -344,7 +353,7 @@ const EditCategory = ({navigation, route}) => {
     //console.log('updateCategoryIcon');
     //console.log(category_name, icon_name);
     let newData = _.cloneDeep(categories);
-    newData.map((obj) => {
+    newData.map(obj => {
       if (category_name === Object.keys(obj)[0]) {
         Object.values(obj)[0]['icon'] = icon_name;
       }
@@ -354,7 +363,7 @@ const EditCategory = ({navigation, route}) => {
     storeData(newData);
   };
 
-  const addCategory = (name) => {
+  const addCategory = name => {
     let newData = [];
     let newCategory = {};
     newCategory[name] = {
@@ -397,10 +406,10 @@ const EditCategory = ({navigation, route}) => {
     }
   };
 
-  const updateCategory = (name) => {
+  const updateCategory = name => {
     //console.log('UpdateCategory', name);
     let newData = _.cloneDeep(categories);
-    newData.map((obj) => {
+    newData.map(obj => {
       if (selectedCategory === Object.keys(obj)[0]) {
         //console.log(obj);
         renameKey(obj, selectedCategory, name);
@@ -408,7 +417,7 @@ const EditCategory = ({navigation, route}) => {
     });
 
     let newDraggableData = _.cloneDeep(draggableData);
-    newDraggableData.map((obj) => {
+    newDraggableData.map(obj => {
       //console.log(obj['label']);
       if (selectedCategory === obj['label']) {
         //console.log(obj);
@@ -424,18 +433,18 @@ const EditCategory = ({navigation, route}) => {
     storeData(newData);
   };
 
-  const deleteCategory = (name) => {
+  const deleteCategory = name => {
     //console.log('DeleteCategory', name);
     //console.log(categories);
 
     let newIdx;
 
     let newData = _.cloneDeep(categories);
-    newIdx = newData.findIndex((obj) => Object.keys(obj)[0] === name);
+    newIdx = newData.findIndex(obj => Object.keys(obj)[0] === name);
     newData.splice(newIdx, 1);
 
     let newDraggableData = _.cloneDeep(draggableData);
-    newIdx = newDraggableData.findIndex((item) => item['label'] === name);
+    newIdx = newDraggableData.findIndex(item => item['label'] === name);
     newDraggableData.splice(newIdx, 1);
 
     setDraggableData(newDraggableData);
@@ -443,16 +452,16 @@ const EditCategory = ({navigation, route}) => {
     storeData(newData);
   };
 
-  const reorderCategories = (draggable_data) => {
+  const reorderCategories = draggable_data => {
     let newData = [];
 
     //console.log(draggable_data);
     //console.log(categories);
     let newIdx;
 
-    draggable_data.map((item) => {
+    draggable_data.map(item => {
       newIdx = categories.findIndex(
-        (category) => Object.keys(category)[0] === item['label'],
+        category => Object.keys(category)[0] === item['label'],
       );
       newData.push(categories[newIdx]);
     });
@@ -460,7 +469,7 @@ const EditCategory = ({navigation, route}) => {
     storeData(newData);
   };
 
-  const storeData = async (data) => {
+  const storeData = async data => {
     //console.log('storeData');
     //console.log(data);
     try {
@@ -526,16 +535,18 @@ const EditCategory = ({navigation, route}) => {
       {iconListModalVisible ? <IconListModal /> : null}
       {editModalVisible ? <EditCategoryModal /> : null}
       {updateModalVisible ? <UpdateCategoryModal /> : null}
+      <View style={styles.listContainer}>
+        <DraggableFlatList
+          data={draggableData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `draggable-item-${item.key}`}
+          onDragEnd={({data}) => {
+            setDraggableData(data);
+            reorderCategories(data);
+          }}
+        />
+      </View>
 
-      <DraggableFlatList
-        data={draggableData}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `draggable-item-${item.key}`}
-        onDragEnd={({data}) => {
-          setDraggableData(data);
-          reorderCategories(data);
-        }}
-      />
       <View>
         {!addModalVisible && !updateModalVisible && (
           <TouchableOpacity
@@ -552,6 +563,11 @@ const EditCategory = ({navigation, route}) => {
           </TouchableOpacity>
         )}
       </View>
+      {!isPremiumUser && (
+        <View style={styles.bannerAdContainer}>
+          <MyBannerAd />
+        </View>
+      )}
     </View>
   );
 };
@@ -681,6 +697,14 @@ const styles = StyleSheet.create({
     padding: 2,
     borderWidth: 1,
     borderColor: ICON_COLOR,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  bannerAdContainer: {
+    marginTop: 0,
+    //width: 300,
+    height: 50,
   },
 });
 

@@ -78,7 +78,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: true,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -214,6 +214,7 @@ dependencies {
     implementation 'com.facebook.react:react-native:+' // From node_modules
     implementation project(':react-native-config')
     implementation project(':react-native-kakao-share-link')
+    implementation 'com.google.android.gms:play-services-ads:+'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
