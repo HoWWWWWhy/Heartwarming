@@ -13,6 +13,8 @@ const adUnitId = __DEV__
   ? TestIds.BANNER
   : Config.GOOGLE_ADMOB_BOTTOMBANNER_UNIT_ID;
 
+const BannerAdMaxHeight = 100;
+
 const MyBannerAd = () => {
   const [showBanner, setShowBanner] = useState(false);
 
@@ -55,12 +57,12 @@ const MyBannerAd = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderStyle: 'solid',
-    borderWidth: 1,
+    //borderStyle: 'solid',
+    //borderWidth: 1,
     borderColor: 'black',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 });
 
-export {MyBannerAd};
+export {MyBannerAd, BannerAdMaxHeight};

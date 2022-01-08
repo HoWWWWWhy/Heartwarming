@@ -1,3 +1,5 @@
+const ICON_COLOR = '#353b48';
+
 const ICON_DATA = [
   {id: 1, title: 'movie'},
   {id: 2, title: 'library-music'},
@@ -41,4 +43,4 @@ const ICON_DATA = [
   {id: 50, title: 'https'},
 ];
 
-export default ICON_DATA;
+export {ICON_COLOR, ICON_DATA};

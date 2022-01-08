@@ -22,9 +22,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Store from '../store';
 import constants from '../constants';
 import assets from '../default_assets';
-import ICON_DATA from '../tab_icons';
+import {ICON_COLOR, ICON_DATA} from '../tab_icons';
 import appStyles from '../styles';
-import {MyBannerAd} from '../components/GoogleAdmob';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
@@ -33,8 +33,6 @@ import _ from 'lodash';
 //   '`new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.',
 //   '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
 // ]);
-
-const ICON_COLOR = '#353b48';
 
 const EditCategory = ({navigation, route}) => {
   const {categories, setCategories, isPremiumUser} = useContext(Store);
@@ -598,7 +596,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: '#c8d6e5',
     borderWidth: 1,
-    height: 185.2,
+    height: 187,
   },
   commonModalView: {
     shadowColor: '#000',
@@ -631,7 +629,8 @@ const styles = StyleSheet.create({
   },
   modalTextInput: {
     width: 100,
-    height: 40,
+    //height: 40,
+    color: 'black',
     borderColor: 'gray',
     borderBottomWidth: 1,
     marginVertical: 15,
@@ -647,6 +646,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     bottom: 20,
     right: 20,
+    //marginVertical: 10,
   },
   draggableItemContainer: {
     flexDirection: 'row',
@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
   bannerAdContainer: {
     marginTop: 0,
     //width: 300,
-    height: 50,
+    height: BannerAdMaxHeight,
   },
 });
 

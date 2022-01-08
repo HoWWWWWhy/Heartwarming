@@ -27,7 +27,9 @@ const DismissKeyboard = ({children}) => (
 );
 
 const Add = ({navigation, route}) => {
-  const {categories, setCategories} = useContext(Store);
+  const {categories, setCategories, appTheme, onChangeAppTheme} = useContext(
+    Store,
+  );
 
   const defaultContents =
     '하지만 우린 나아가야 한다.\n의심을 인생철학으로 선택하는 것은,\n운송수단으로 "정지"를 선택하는 것과 비슷하다.';
@@ -54,10 +56,13 @@ const Add = ({navigation, route}) => {
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   useEffect(() => {
+    //console.log('App Theme', appTheme);
     //console.log('Add Mounted');
     //console.log(route.params);
     //console.log('categoryList', categoryList);
     //console.log('categories', categories);
+
+    onChangeAppTheme();
     if (typeof route.params !== 'undefined') {
       if (route.params.from === 'link') {
         //console.log('App is opened by app-link!');
@@ -200,7 +205,16 @@ const Add = ({navigation, route}) => {
             <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
           </View>
           <TextInput
-            style={[styles.textInput, styles.textInputContents]}
+            style={[
+              styles.textInput,
+              styles.textInputContents,
+              {
+                backgroundColor:
+                  appTheme === 'dark'
+                    ? appStyles.themes.dark.textInputBackgroundColor
+                    : appStyles.themes.light.textInputBackgroundColor,
+              },
+            ]}
             placeholder={defaultContents}
             defaultValue={contents}
             multiline
@@ -219,7 +233,16 @@ const Add = ({navigation, route}) => {
             </Text>
           </View>
           <TextInput
-            style={[styles.textInput, styles.textInputSource]}
+            style={[
+              styles.textInput,
+              styles.textInputSource,
+              {
+                backgroundColor:
+                  appTheme === 'dark'
+                    ? appStyles.themes.dark.textInputBackgroundColor
+                    : appStyles.themes.light.textInputBackgroundColor,
+              },
+            ]}
             placeholder={defaultSource}
             defaultValue={source}
             multiline
@@ -231,15 +254,41 @@ const Add = ({navigation, route}) => {
             <Picker
               selectedValue={category}
               enabled={insertFlag ? false : true}
-              style={styles.picker}
+              style={[
+                styles.picker,
+                {
+                  backgroundColor:
+                    appTheme === 'dark'
+                      ? appStyles.themes.dark.pickerBackgroundColor
+                      : appStyles.themes.light.pickerBackgroundColor,
+                  color:
+                    appTheme === 'dark'
+                      ? appStyles.themes.dark.pickerTextColor
+                      : appStyles.themes.light.pickerTextColor,
+                },
+              ]}
               mode={'dialog'}
               //prompt={'카테고리'}
               dropdownIconColor={
-                insertFlag ? '#a4b0be' : appStyles.commonButtonColor
+                insertFlag
+                  ? '#a4b0be'
+                  : appTheme === 'dark'
+                  ? appStyles.themes.dark.pickerTextColor
+                  : appStyles.themes.light.pickerTextColor
               }
               onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
               {categoryList.map(item => (
-                <Picker.Item key={item} label={item} value={item} />
+                <Picker.Item
+                  key={item}
+                  label={item}
+                  value={item}
+                  style={{
+                    color:
+                      appTheme === 'dark'
+                        ? appStyles.themes.dark.pickerTextColor
+                        : appStyles.themes.light.pickerTextColor,
+                  }}
+                />
               ))}
             </Picker>
           </View>
@@ -307,7 +356,7 @@ const styles = StyleSheet.create({
     //borderBottomColor: 'black',
     //borderBottomWidth: 1,
     marginVertical: 10,
-    backgroundColor: '#f1f2f6',
+    //backgroundColor: '#f1f2f6',
     fontSize: 15,
     textAlignVertical: 'center',
   },
@@ -319,6 +368,8 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
+    //backgroundColor: 'yellow',
+    //color: 'black',
   },
   pickerView: {
     height: 50,
@@ -329,7 +380,7 @@ const styles = StyleSheet.create({
     backgroundColor: appStyles.commonButtonColor,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
+    //height: 40,
     borderRadius: 5,
     padding: 10,
     marginTop: 30,

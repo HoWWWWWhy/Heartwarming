@@ -1,4 +1,18 @@
+const themes = {
+  light: {
+    textInputBackgroundColor: '#f1f2f6',
+    pickerBackgroundColor: '#f1f2f6',
+    pickerTextColor: 'black',
+  },
+  dark: {
+    textInputBackgroundColor: '#2f3542',
+    pickerBackgroundColor: '#2f3542',
+    pickerTextColor: 'white',
+  },
+};
+
 export default {
+  themes,
   backgroundColor: '#dfe6e9',
   commonButtonColor: '#34495e',
   sectionHeaderColor: '#34495e',

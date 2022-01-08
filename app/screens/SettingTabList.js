@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Store from '../store';
 import appStyles from '../styles';
 
-import {MyBannerAd} from '../components/GoogleAdmob';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   bannerAdContainer: {
     marginTop: 0,
     //width: 300,
-    height: 50,
+    height: BannerAdMaxHeight,
   },
 });
 

@@ -27,7 +27,9 @@ const DismissKeyboard = ({children}) => (
 );
 
 const Update = ({navigation, route}) => {
-  const {categories, setCategories} = useContext(Store);
+  const {categories, setCategories, appTheme, onChangeAppTheme} = useContext(
+    Store,
+  );
 
   const [contents, setContents] = useState('');
   const preposList = ['By', 'From', 'in', '-', ''];
@@ -36,7 +38,7 @@ const Update = ({navigation, route}) => {
   const [source, setSource] = useState('');
 
   const categoryList = categories.map(
-    (cur_category) => Object.keys(cur_category)[0],
+    cur_category => Object.keys(cur_category)[0],
   );
 
   const [category, setCategory] = useState(categoryList[0]);
@@ -47,8 +49,9 @@ const Update = ({navigation, route}) => {
   const {itemId, screenName} = route.params;
 
   useEffect(() => {
+    onChangeAppTheme();
     const newIdx = categories.findIndex(
-      (cur_category) => Object.keys(cur_category)[0] === screenName,
+      cur_category => Object.keys(cur_category)[0] === screenName,
     );
 
     setContents(categories[newIdx][screenName]['data'][itemId]['contents']);
@@ -86,10 +89,10 @@ const Update = ({navigation, route}) => {
       let added_data = [];
       let newData = _.cloneDeep(categories);
       const oldIdx = categories.findIndex(
-        (cur_category) => Object.keys(cur_category)[0] === screenName,
+        cur_category => Object.keys(cur_category)[0] === screenName,
       );
       const newIdx = categories.findIndex(
-        (cur_category) => Object.keys(cur_category)[0] === category,
+        cur_category => Object.keys(cur_category)[0] === category,
       );
       deleted_data = newData[oldIdx][screenName]['data'];
       added_data = newData[newIdx][category]['data'];
@@ -117,7 +120,7 @@ const Update = ({navigation, route}) => {
 
   const changeList = () => {
     //console.log(preposIndex);
-    setPreposIndex((prevIndex) => prevIndex + 1);
+    setPreposIndex(prevIndex => prevIndex + 1);
     if (preposIndex % preposList.length > preposList.length - 2) {
       setPreposIndex(0);
     }
@@ -126,7 +129,7 @@ const Update = ({navigation, route}) => {
     //console.log(preposIndex);
   };
 
-  const onOCRCapture = (recogonized_text) => {
+  const onOCRCapture = recogonized_text => {
     if (
       recogonized_text &&
       recogonized_text.textBlocks &&
@@ -195,12 +198,21 @@ const Update = ({navigation, route}) => {
             <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
           </View>
           <TextInput
-            style={[styles.textInput, styles.textInputContents]}
+            style={[
+              styles.textInput,
+              styles.textInputContents,
+              {
+                backgroundColor:
+                  appTheme === 'dark'
+                    ? appStyles.themes.dark.textInputBackgroundColor
+                    : appStyles.themes.light.textInputBackgroundColor,
+              },
+            ]}
             value={contents}
             multiline
             editable
             returnKeyLabel="done"
-            onChangeText={(text) => setContents(text)}
+            onChangeText={text => setContents(text)}
           />
           <View style={styles.preposContainer}>
             <TouchableOpacity onPress={changeList}>
@@ -213,23 +225,58 @@ const Update = ({navigation, route}) => {
             </Text>
           </View>
           <TextInput
-            style={[styles.textInput, styles.textInputSource]}
+            style={[
+              styles.textInput,
+              styles.textInputSource,
+              {
+                backgroundColor:
+                  appTheme === 'dark'
+                    ? appStyles.themes.dark.textInputBackgroundColor
+                    : appStyles.themes.light.textInputBackgroundColor,
+              },
+            ]}
             value={source}
             multiline
             editable
-            onChangeText={(text) => setSource(text)}
+            onChangeText={text => setSource(text)}
           />
           <Text style={styles.textTitle}>카테고리</Text>
           <View style={styles.pickerView}>
             <Picker
               selectedValue={category}
-              style={styles.picker}
+              style={[
+                styles.picker,
+                {
+                  backgroundColor:
+                    appTheme === 'dark'
+                      ? appStyles.themes.dark.pickerBackgroundColor
+                      : appStyles.themes.light.pickerBackgroundColor,
+                  color:
+                    appTheme === 'dark'
+                      ? appStyles.themes.dark.pickerTextColor
+                      : appStyles.themes.light.pickerTextColor,
+                },
+              ]}
               mode={'dialog'}
               //prompt={'카테고리'}
-              dropdownIconColor={appStyles.commonButtonColor}
+              dropdownIconColor={
+                appTheme === 'dark'
+                  ? appStyles.themes.dark.pickerTextColor
+                  : appStyles.themes.light.pickerTextColor
+              }
               onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-              {categoryList.map((item) => (
-                <Picker.Item key={item} label={item} value={item} />
+              {categoryList.map(item => (
+                <Picker.Item
+                  key={item}
+                  label={item}
+                  value={item}
+                  style={{
+                    color:
+                      appTheme === 'dark'
+                        ? appStyles.themes.dark.pickerTextColor
+                        : appStyles.themes.light.pickerTextColor,
+                  }}
+                />
               ))}
             </Picker>
           </View>
@@ -295,7 +342,7 @@ const styles = StyleSheet.create({
     //borderBottomColor: 'black',
     //borderBottomWidth: 1,
     marginVertical: 10,
-    backgroundColor: '#f1f2f6',
+    //backgroundColor: '#f1f2f6',
     fontSize: 15,
     textAlignVertical: 'center',
   },
@@ -317,7 +364,7 @@ const styles = StyleSheet.create({
     backgroundColor: appStyles.commonButtonColor,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
+    //height: 40,
     borderRadius: 5,
     padding: 10,
     marginTop: 30,

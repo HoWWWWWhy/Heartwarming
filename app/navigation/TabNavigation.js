@@ -35,7 +35,7 @@ const TabNavigation = () => {
       screenOptions={{
         tabBarShowIcon: true,
         tabBarLabelStyle: {fontSize: 10},
-        tabBarStyle: {height: 60},
+        tabBarStyle: {paddingVertical: 5},
         swipeEnabled: false,
       }}>
       {TabInfo.map(
