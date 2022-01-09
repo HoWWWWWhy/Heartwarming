@@ -42,9 +42,12 @@ const MyBannerAd = () => {
       {showBanner ? (
         <BannerAd
           unitId={adUnitId}
-          size={BannerAdSize.SMART_BANNER}
+          size={BannerAdSize.LARGE_BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: false,
+          }}
+          onAdFailedToLoad={error => {
+            console.log('Advert failed to load: ', error);
           }}
         />
       ) : (
@@ -59,9 +62,10 @@ const styles = StyleSheet.create({
     flex: 1,
     //borderStyle: 'solid',
     //borderWidth: 1,
-    borderColor: 'black',
+    //borderColor: 'black',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    //backgroundColor: 'white',
   },
 });
 

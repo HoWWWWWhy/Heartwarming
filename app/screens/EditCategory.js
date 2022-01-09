@@ -703,7 +703,6 @@ const styles = StyleSheet.create({
   },
   bannerAdContainer: {
     marginTop: 0,
-    //width: 300,
     height: BannerAdMaxHeight,
   },
 });
