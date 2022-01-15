@@ -110,7 +110,7 @@ def enableProguardInReleaseBuilds = false
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
-
+//def jscFlavor = 'org.webkit:android-jsc-intl:+'
 /**
  * Whether to enable the Hermes VM.
  *
@@ -137,8 +137,8 @@ android {
         applicationId "com.howwwwwhy.heartwarming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 39
-        versionName "1.5.0"
+        versionCode 46
+        versionName "1.5.1"
         vectorDrawables.useSupportLibrary = true // added by react-native-image-crop-picker
         missingDimensionStrategy 'react-native-camera', 'mlkit'
         //multiDexEnabled true
@@ -206,15 +206,23 @@ android {
 
         }
     }
+
+    // add the following packagingOptions
+    packagingOptions {
+        pickFirst '**/libjsc.so'
+        pickFirst '**/libc++_shared.so'
+    }
 }
 
 dependencies {
+    implementation "org.webkit:android-jsc:+"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+' // From node_modules
     implementation project(':react-native-config')
     implementation project(':react-native-kakao-share-link')
     implementation 'com.google.android.gms:play-services-ads:+'
+    implementation 'com.facebook.soloader:soloader:0.9.0+'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
