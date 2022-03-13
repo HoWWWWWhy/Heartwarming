@@ -147,6 +147,12 @@ const Setting = ({navigation}) => {
             onPressURL(URL_PRIVACY);
           },
         },
+        {
+          name: '오픈소스 라이선스',
+          action: () => {
+            navigation.navigate('OpenSourceLicenseList');
+          },
+        },
       ],
     },
   ];

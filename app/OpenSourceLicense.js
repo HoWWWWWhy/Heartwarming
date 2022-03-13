@@ -1,4 +1,4 @@
-export const OpenSourceLicense = [
+export default OpenSourceLicense = [
   {
     libraryName: '@react-native-clipboard/clipboard',
     version: '1.8.4',

@@ -20,6 +20,7 @@ import EditCategory from '../screens/EditCategory';
 import EditTabScreen from '../screens/EditTabScreen';
 import SettingTabList from '../screens/SettingTabList';
 import Help from '../screens/Help';
+import OpenSourceLicenseList from '../screens/OpenSourceLicenseList';
 
 import linking from '../linking';
 import constants from '../constants';
@@ -300,6 +301,16 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
               component={Help}
               options={{
                 title: '도움말',
+                //gestureEnabled: true,
+                //gestureDirection: 'horizontal',
+                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+              }}
+            />
+            <Stack.Screen
+              name="OpenSourceLicenseList"
+              component={OpenSourceLicenseList}
+              options={{
+                title: '오픈소스 라이선스',
                 //gestureEnabled: true,
                 //gestureDirection: 'horizontal',
                 headerStyle: {height: constants.STACK_HEADER_HEIGHT},
