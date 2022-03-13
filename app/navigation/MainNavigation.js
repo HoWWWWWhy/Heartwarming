@@ -1,7 +1,11 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 
-import {NavigationContainer} from '@react-navigation/native';
+import analytics from '@react-native-firebase/analytics';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -27,6 +31,9 @@ import _ from 'lodash';
 const Stack = createStackNavigator();
 
 const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef();
+
   const [categories, setCategories] = useState(init_categories);
 
   useEffect(() => {
@@ -193,7 +200,31 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
   return (
     <>
       <Store.Provider value={providerValues}>
-        <NavigationContainer linking={linking}>
+        <NavigationContainer
+          linking={linking}
+          ref={navigationRef}
+          onReady={() =>
+            (routeNameRef.current = navigationRef.current.getCurrentRoute()?.name)
+          }
+          onStateChange={() => {
+            //console.log('onStateChange:', state);
+            const previousRouteName = routeNameRef.current;
+            //const currentRoute = navigationRef.getCurrentRoute();
+            const currentRouteName = navigationRef.getCurrentRoute().name;
+            //console.log('previousRouteName:', previousRouteName);
+            //console.log('currentRouteName:', currentRouteName);
+            //console.log('currentRoute:', currentRoute);
+            if (previousRouteName !== currentRouteName) {
+              //console.log('currentRouteName:', currentRouteName);
+              analytics().logScreenView({
+                screen_class: currentRouteName,
+                screen_name: currentRouteName,
+              });
+              //analytics().setCurrentScreen(currentRouteName, currentRouteName);
+            }
+            // Save the current route name for later comparison
+            routeNameRef.current = currentRouteName;
+          }}>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Home"

@@ -51,7 +51,7 @@ const CategoryScreen = ({route, navigation}) => {
   //const hideShot = true;
 
   useEffect(() => {
-    //console.log('useEffect', screenName, itemId, navigation);
+    //console.log('CategoryScreen', screenName, itemId, navigation);
     //console.log('useEffect:', screenName, categories);
 
     if (categoryIdx <= -1) {
