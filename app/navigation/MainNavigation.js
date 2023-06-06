@@ -207,7 +207,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
           onReady={() =>
             (routeNameRef.current = navigationRef.current.getCurrentRoute()?.name)
           }
-          onStateChange={() => {
+          onStateChange={async () => {
             //console.log('onStateChange:', state);
             const previousRouteName = routeNameRef.current;
             //const currentRoute = navigationRef.getCurrentRoute();
@@ -216,8 +216,8 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
             //console.log('currentRouteName:', currentRouteName);
             //console.log('currentRoute:', currentRoute);
             if (previousRouteName !== currentRouteName) {
-              //console.log('currentRouteName:', currentRouteName);
-              analytics().logScreenView({
+              console.log('currentRouteName:', currentRouteName);
+              await analytics().logScreenView({
                 screen_class: currentRouteName,
                 screen_name: currentRouteName,
               });

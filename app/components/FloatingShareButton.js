@@ -114,8 +114,8 @@ const FloatingShareButton = props => {
           <FontAwesome
             name="picture-o"
             size={30}
-            //color={appStyles.shareButtonColor}
-            color={appStyles.buttonDisabledColor} //temporarily disabled
+            color={appStyles.shareButtonColor}
+            //color={appStyles.buttonDisabledColor} //temporarily disabled
           />
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    width: Math.round(constants.width / 2.0) - 20,
+    //width: Math.round(constants.width / 2.0) - 20,
   },
   button: {
     position: 'absolute',

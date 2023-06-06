@@ -128,4 +128,32 @@ const importData = async () => {
   return data;
 };
 
-export {exportData, importData};
+const createFileName = header => {
+  const paddingSize = 2;
+  const paddingChar = '0';
+
+  const year = new Date().getFullYear().toString(); //To get the Current Year
+
+  let month = new Date().getMonth() + 1; //To get the Current Month
+  month = month.toString().padStart(paddingSize, paddingChar);
+
+  let date = new Date().getDate(); //To get the Current Date
+  date = date.toString().padStart(paddingSize, paddingChar);
+
+  let hour = new Date().getHours(); //To get the Current Hours
+  hour = hour.toString().padStart(paddingSize, paddingChar);
+
+  let min = new Date().getMinutes(); //To get the Current Minutes
+  min = min.toString().padStart(paddingSize, paddingChar);
+
+  let sec = new Date().getSeconds(); //To get the Current Seconds
+  sec = sec.toString().padStart(paddingSize, paddingChar);
+
+  const createdFileName = header + '_' + year + month + date + hour + min + sec;
+
+  //console.log(createdFileName);
+
+  return createdFileName;
+};
+
+export {exportData, importData, createFileName};

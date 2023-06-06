@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-end',
     justifyContent: 'center',
-    width: Math.round(constants.width / 2.0) - 20,
+    //width: Math.round(constants.width / 2.0) - 20,
   },
   button: {
     position: 'absolute',

@@ -49,17 +49,17 @@ const OCR_Camera = ({
     });
   }, []);
 
-  const changeFlashMode = (flash_mode) => {
+  const changeFlashMode = flash_mode => {
     switch (flash_mode) {
       case RNCameraConstants.FlashMode.off:
-        setCameraSetting((prevState) => ({
+        setCameraSetting(prevState => ({
           ...prevState,
           flashMode: RNCameraConstants.FlashMode.auto,
         }));
         break;
 
       case RNCameraConstants.FlashMode.auto:
-        setCameraSetting((prevState) => ({
+        setCameraSetting(prevState => ({
           ...prevState,
           flashMode: RNCameraConstants.FlashMode.on,
         }));
@@ -67,7 +67,7 @@ const OCR_Camera = ({
         break;
 
       case RNCameraConstants.FlashMode.on:
-        setCameraSetting((prevState) => ({
+        setCameraSetting(prevState => ({
           ...prevState,
           flashMode: RNCameraConstants.FlashMode.off,
         }));
@@ -92,16 +92,16 @@ const OCR_Camera = ({
     }
   };
 
-  const textRecognized = (data) => {
+  const textRecognized = data => {
     if (enabledOCR) {
-      //console.log('onTextRecognized', data);
+      console.log('onTextRecognized', data);
       if (data && data.textBlocks && data.textBlocks.length > 0) {
-        setCameraSetting((prevState) => ({
+        setCameraSetting(prevState => ({
           ...prevState,
           recognizedText: data,
         }));
       } else {
-        setCameraSetting((prevState) => ({
+        setCameraSetting(prevState => ({
           ...prevState,
           recognizedText: null,
         }));
@@ -128,7 +128,7 @@ const OCR_Camera = ({
             buttonNegative: 'Cancel',
           }}
           onTextRecognized={
-            enabledOCR ? (data) => textRecognized(data) : undefined
+            enabledOCR ? data => textRecognized(data) : undefined
           }
         />
       </View>

@@ -6,6 +6,7 @@ import CategoryNavigation from './CategoryNavigation';
 
 import NavIcon from '../components/NavIcon';
 import {TapGestureHandler} from 'react-native-gesture-handler';
+import constants from '../constants';
 import Store from '../store';
 import appStyles from '../styles';
 
@@ -35,7 +36,11 @@ const TabNavigation = () => {
       screenOptions={{
         tabBarShowIcon: true,
         tabBarLabelStyle: {fontSize: 10},
-        tabBarStyle: {paddingVertical: 5},
+        tabBarStyle: {
+          paddingVertical: 5,
+          height: constants.TAB_BAR_HEIGHT,
+          justifyContent: 'center',
+        },
         swipeEnabled: false,
       }}>
       {TabInfo.map(

@@ -1,5 +1,4 @@
 import React from 'react';
-import {ScrollView} from 'react-native';
 import styled from 'styled-components';
 import constants from '../constants';
 
@@ -28,8 +27,7 @@ const Card = ({contents, prepos, source, textColor = 'black'}) => {
 
 const Container = styled.View`
   flex: 1;
-  margin: 10px;
-  width: ${Math.round(constants.width / 2.0) + 'px'};
+  width: 100%;
 `;
 
 const Text = styled.Text`
@@ -40,5 +38,8 @@ const Text = styled.Text`
   margin-top: 15px;
 `;
 
-const CardView = styled.ScrollView``;
+const CardView = styled.ScrollView`
+  margin-bottom: 76px;
+`;
+
 export default Card;

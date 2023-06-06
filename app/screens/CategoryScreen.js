@@ -1,4 +1,10 @@
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,8 +20,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Clipboard from '@react-native-clipboard/clipboard';
 //import {RNKakaoLink} from '../utils/NativeModules';
 import KakaoShareLink from 'react-native-kakao-share-link';
+import ImageShare from 'react-native-share';
+import RNFS from 'react-native-fs';
 //import CameraRoll from '@react-native-community/cameraroll';
-//import ViewShot from 'react-native-view-shot';
+import ViewShot from 'react-native-view-shot';
+import {createFileName} from '../utils/FileManager';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -47,7 +56,8 @@ const CategoryScreen = ({route, navigation}) => {
 
   const [copiedText, setCopiedText] = useState('');
 
-  //const imageRef = useRef(null);
+  const captureRef = useRef();
+
   //const hideShot = true;
 
   useEffect(() => {
@@ -169,7 +179,7 @@ ${source}`,
   };
 
   const onShareByText = async () => {
-    //console.log('onShareByText');
+    console.log('onShareByText');
     try {
       const result = await Share.share({
         title: 'Heartwarming에서 전하는 메시지',
@@ -264,33 +274,44 @@ ${prepos} ${source}`,
         ],
       });
       //console.log(response);
-    } catch (err) {
-      alert(err.message);
-      console.error(err.message);
+    } catch (error) {
+      alert(error.message);
+      console.error(error.message);
     }
   };
 
   const onShareByImage = async () => {
     //console.log('onShareByImage');
-    Alert.alert('준비 중인 기능입니다 :)');
-    /*          <ViewShot
-    ref={imageRef}
-    options={{format: 'png', quality: 1.0}}></ViewShot>*/
-    /*
-    try {
-      const imageUri = await imageRef.current.capture();
-      console.log(imageUri);
 
-      const hasPermission = await hasAndroidPermission();
-      if (Platform.OS === 'android' && hasPermission) {
-        const result = await CameraRoll.save(imageUri);
-        console.log(result);
-      }
+    const uri = await captureRef.current
+      .capture()
+      .catch(error => alert(error.message));
+
+    console.log('screenshot uri: ', uri);
+
+    try {
+      // await ImageShare.open({
+      //   url: uri,
+      // });
+
+      const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+
+      console.log('downloadPath: ' + downloadPath);
+      await RNFS.mkdir(downloadPath);
+
+      //파일이름 만드는 기능을 어떻게 분리할지 고민해보기
+      //앱 다 지우고 권한 초기화 후 확인해보기
+      //공유기능 따로, 저장기능 따로 만들기 (아니면 통합할지?)
+      const savedFileName = createFileName('heartwarming_capture') + '.png';
+      console.log('savedFileName: ', savedFileName);
+
+      await RNFS.copyFile(uri, downloadPath + '/' + savedFileName);
     } catch (error) {
-      alert(error.message);
+      //alert(error.message);
+      console.error(error.message);
     }
-    */
   };
+
   /*
   const hasAndroidPermission = async () => {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -336,113 +357,112 @@ ${prepos} ${source}`,
     }
   };
 
-  const renderInnerContainer = () => {
-    return (
-      <>
-        <View style={styles.innerContainer}>
-          <TouchableOpacity
-            disabled={prevButtonDisable}
-            onPress={() =>
-              navigation.navigate('CategoryScreen', {
-                itemId: setPrevItemId(),
-                screenName,
-              })
-            }>
-            <Icon name="chevron-left" size={40} color={prevButtonColor} />
-          </TouchableOpacity>
-
-          <Card
-            contents={contents}
-            prepos={prepos}
-            source={source}
-            textColor={
-              categories[categoryIdx][screenName]['setting']['textColor']
-            }
-          />
-
-          <TouchableOpacity
-            disabled={nextButtonDisable}
-            onPress={() =>
-              navigation.navigate('CategoryScreen', {
-                itemId: setNextItemId(),
-                screenName,
-              })
-            }>
-            <Icon name="chevron-right" size={40} color={nextButtonColor} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <View style={styles.leftButtonContainer}>
-            <TouchableOpacity onPress={copyToClipboard}>
-              <View style={[styles.leftButtons, styles.copyButton]}>
-                <Icon name="content-copy" size={30} color={'white'} />
-              </View>
-            </TouchableOpacity>
-            <FloatingShareButton
-              disabled={
-                categoryIdx > -1 &&
-                categories[categoryIdx][screenName]['data'].length > 0
-                  ? false
-                  : true
-              }
-              onShareByGift={onShareByGift}
-              onShareByText={onShareByText}
-              onShareByImage={onShareByImage}
-            />
-            {/*
-            <TouchableOpacity onPress={onShare}>
-              <View style={[styles.leftButtons, styles.shareButton]}>
-                <Icon name="share" size={30} color={'white'} />
-              </View>
-            </TouchableOpacity>
-            */}
-          </View>
-          <View style={styles.rightButtonContainer}>
-            <FloatingActionButton
-              onCreate={onCreate}
-              onUpdate={onUpdate}
-              onDelete={onDelete}
-              updateDisabled={
-                categoryIdx > -1 &&
-                categories[categoryIdx][screenName]['data'].length > 0
-                  ? false
-                  : true
-              }
-              deleteDisabled={
-                categoryIdx > -1 &&
-                categories[categoryIdx][screenName]['data'].length > 0
-                  ? false
-                  : true
-              }
-            />
-          </View>
-        </View>
-      </>
-    );
-  };
-
   return (
     <View style={styles.container}>
-      {categoryIdx > -1 &&
-        (categories[categoryIdx][screenName]['setting'].useBgImage ? (
-          <ImageBackground
-            source={categories[categoryIdx][screenName]['setting'].bgImage}
-            blurRadius={
-              categories[categoryIdx][screenName]['setting'].bgImageBlur
-            }
-            style={styles.image}>
-            {renderInnerContainer()}
-          </ImageBackground>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor:
-                categories[categoryIdx][screenName]['setting'].bgColor,
-            }}>
-            {renderInnerContainer()}
+      {categoryIdx > -1 && (
+        <>
+          <View style={styles.prevButton}>
+            <TouchableOpacity
+              disabled={prevButtonDisable}
+              onPress={() =>
+                navigation.navigate('CategoryScreen', {
+                  itemId: setPrevItemId(),
+                  screenName,
+                })
+              }>
+              <Icon name="chevron-left" size={40} color={prevButtonColor} />
+            </TouchableOpacity>
           </View>
-        ))}
+          <View style={styles.nextButton}>
+            <TouchableOpacity
+              disabled={nextButtonDisable}
+              onPress={() =>
+                navigation.navigate('CategoryScreen', {
+                  itemId: setNextItemId(),
+                  screenName,
+                })
+              }>
+              <Icon name="chevron-right" size={40} color={nextButtonColor} />
+            </TouchableOpacity>
+          </View>
+
+          <ViewShot ref={captureRef} style={styles.cardContainer}>
+            {categories[categoryIdx][screenName]['setting'].useBgImage ? (
+              <ImageBackground
+                source={categories[categoryIdx][screenName]['setting'].bgImage}
+                blurRadius={
+                  categories[categoryIdx][screenName]['setting'].bgImageBlur
+                }
+                style={styles.image}>
+                <Card
+                  contents={contents}
+                  prepos={prepos}
+                  source={source}
+                  textColor={
+                    categories[categoryIdx][screenName]['setting']['textColor']
+                  }
+                />
+              </ImageBackground>
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor:
+                    categories[categoryIdx][screenName]['setting'].bgColor,
+                }}>
+                <Card
+                  contents={contents}
+                  prepos={prepos}
+                  source={source}
+                  textColor={
+                    categories[categoryIdx][screenName]['setting']['textColor']
+                  }
+                />
+              </View>
+            )}
+          </ViewShot>
+
+          <View style={styles.buttonContainer}>
+            <View style={styles.leftButtonContainer}>
+              <TouchableOpacity onPress={copyToClipboard}>
+                <View style={styles.copyButton}>
+                  <Icon name="content-copy" size={30} color={'white'} />
+                </View>
+              </TouchableOpacity>
+              <FloatingShareButton
+                disabled={
+                  categoryIdx > -1 &&
+                  categories[categoryIdx][screenName]['data'].length > 0
+                    ? false
+                    : true
+                }
+                onShareByGift={onShareByGift}
+                onShareByText={onShareByText}
+                onShareByImage={onShareByImage}
+              />
+            </View>
+            <View style={styles.rightButtonContainer}>
+              <FloatingActionButton
+                onCreate={onCreate}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
+                updateDisabled={
+                  categoryIdx > -1 &&
+                  categories[categoryIdx][screenName]['data'].length > 0
+                    ? false
+                    : true
+                }
+                deleteDisabled={
+                  categoryIdx > -1 &&
+                  categories[categoryIdx][screenName]['data'].length > 0
+                    ? false
+                    : true
+                }
+              />
+            </View>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -451,11 +471,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  innerContainer: {
-    flex: 9,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+  prevButton: {
+    position: 'absolute',
+    top: Math.round((constants.height - constants.TAB_BAR_HEIGHT * 2) / 2.0),
+    left: 5,
+    zIndex: 1,
+  },
+  nextButton: {
+    position: 'absolute',
+    top: Math.round((constants.height - constants.TAB_BAR_HEIGHT * 2) / 2.0),
+    right: 5,
+    zIndex: 1,
+  },
+  cardContainer: {
+    flex: 1,
   },
   image: {
     flex: 1,
@@ -464,42 +493,39 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   buttonContainer: {
-    flex: 1,
-    //bottom: 20,
-    marginBottom: 20,
+    position: 'absolute',
+    width: '100%',
+    height: 200,
+    bottom: -60,
+    paddingHorizontal: 12,
     flexDirection: 'row',
-    justifyContent: 'center',
-    //alignItems: 'center',
     //backgroundColor: 'yellow',
   },
   leftButtonContainer: {
+    flex: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    width: Math.round(constants.width / 2.0) - 20,
+    justifyContent: 'flex-start',
+    paddingLeft: 10,
     //backgroundColor: 'green',
   },
   rightButtonContainer: {
+    flex: 3,
     flexDirection: 'row',
     alignItems: 'center',
-    width: Math.round(constants.width / 2.0) - 20,
+    justifyContent: 'flex-end',
+    paddingRight: 10,
     //backgroundColor: 'blue',
   },
-  leftButtons: {
+  copyButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 5,
-  },
-  copyButton: {
     backgroundColor: '#7f8fa6',
   },
-  /*
-  shareButton: {
-    backgroundColor: '#40739e',
-  },
-  */
 });
 
 export default CategoryScreen;
