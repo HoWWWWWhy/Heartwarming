@@ -16,7 +16,8 @@ import appStyles from '../styles';
 import Store from '../store';
 import {init_categories} from '../database/schema';
 
-import {exportData, importData} from '../utils/FileManager';
+import {exportData, importData, createFileName} from '../utils/FileManager';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 // temporary code
 // LogBox.ignoreLogs([
@@ -29,7 +30,7 @@ const Setting = ({navigation}) => {
     'https://play.google.com/store/apps/details?id=com.howwwwwhy.heartwarming';
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
 
-  const {categories, setCategories} = useContext(Store);
+  const {categories, setCategories, isPremiumUser} = useContext(Store);
 
   const DATA = [
     {
@@ -56,7 +57,7 @@ const Setting = ({navigation}) => {
           name: '내보내기',
           action: () => {
             //console.log('내보내기');
-            const createdFileName = createFileName('heartwarming');
+            const createdFileName = createFileName('heartwarming_config');
             console.log(createdFileName);
             //exportData(createdFileName, JSON.stringify(categories));
             exportData(createdFileName, categories);
@@ -182,45 +183,24 @@ const Setting = ({navigation}) => {
     }
   };
 
-  const createFileName = header => {
-    const paddingSize = 2;
-    const paddingChar = '0';
-
-    const year = new Date().getFullYear().toString(); //To get the Current Year
-
-    let month = new Date().getMonth() + 1; //To get the Current Month
-    month = month.toString().padStart(paddingSize, paddingChar);
-
-    let date = new Date().getDate(); //To get the Current Date
-    date = date.toString().padStart(paddingSize, paddingChar);
-
-    let hour = new Date().getHours(); //To get the Current Hours
-    hour = hour.toString().padStart(paddingSize, paddingChar);
-
-    let min = new Date().getMinutes(); //To get the Current Minutes
-    min = min.toString().padStart(paddingSize, paddingChar);
-
-    let sec = new Date().getSeconds(); //To get the Current Seconds
-    sec = sec.toString().padStart(paddingSize, paddingChar);
-
-    const createdFileName =
-      header + '_' + year + month + date + hour + min + sec;
-
-    //console.log(createdFileName);
-
-    return createdFileName;
-  };
-
   return (
     <View style={styles.container}>
-      <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => <Item item={item} />}
-        renderSectionHeader={({section: {title}}) => (
-          <Text style={styles.sectionHeader}>{title}</Text>
-        )}
-      />
+      <View style={styles.listContainer}>
+        <SectionList
+          sections={DATA}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({item}) => <Item item={item} />}
+          renderSectionHeader={({section: {title}}) => (
+            <Text style={styles.sectionHeader}>{title}</Text>
+          )}
+        />
+      </View>
+
+      {!isPremiumUser && (
+        <View style={styles.bannerAdContainer}>
+          <MyBannerAd />
+        </View>
+      )}
     </View>
   );
 };
@@ -246,6 +226,13 @@ const styles = StyleSheet.create({
   },
   sectionItemText: {
     fontSize: 18,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  bannerAdContainer: {
+    marginTop: 0,
+    height: BannerAdMaxHeight,
   },
 });
 

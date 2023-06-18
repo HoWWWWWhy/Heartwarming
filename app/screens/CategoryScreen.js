@@ -290,24 +290,21 @@ ${prepos} ${source}`,
     console.log('screenshot uri: ', uri);
 
     try {
-      // await ImageShare.open({
-      //   url: uri,
-      // });
+      await ImageShare.open({
+        url: uri,
+      });
 
       const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
 
       console.log('downloadPath: ' + downloadPath);
       await RNFS.mkdir(downloadPath);
 
-      //파일이름 만드는 기능을 어떻게 분리할지 고민해보기
-      //앱 다 지우고 권한 초기화 후 확인해보기
-      //공유기능 따로, 저장기능 따로 만들기 (아니면 통합할지?)
-      const savedFileName = createFileName('heartwarming_capture') + '.png';
-      console.log('savedFileName: ', savedFileName);
+      const createdFileName = createFileName('heartwarming_capture') + '.png';
+      console.log('createdFileName: ', createdFileName);
 
-      await RNFS.copyFile(uri, downloadPath + '/' + savedFileName);
+      await RNFS.copyFile(uri, downloadPath + '/' + createdFileName);
     } catch (error) {
-      //alert(error.message);
+      alert(error.message);
       console.error(error.message);
     }
   };
