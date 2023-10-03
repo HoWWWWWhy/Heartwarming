@@ -290,21 +290,31 @@ ${prepos} ${source}`,
     console.log('screenshot uri: ', uri);
 
     try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const createdFileName = createFileName('heartwarming_capture') + '.png';
+        console.log('createdFileName: ', createdFileName);
+
+        const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+        console.log('downloadPath: ' + downloadPath);
+
+        await RNFS.mkdir(downloadPath);
+        console.log('directory succesfully created!');
+
+        await RNFS.copyFile(uri, downloadPath + '/' + createdFileName);
+      } else {
+        //alert('Permission denied!!! 이미지를 저장하려면 권한을 허용해주세요');
+      }
+
       await ImageShare.open({
+        failOnCancel: true,
         url: uri,
+        subject: 'Heartwarming에서 전하는 메시지',
       });
-
-      const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
-
-      console.log('downloadPath: ' + downloadPath);
-      await RNFS.mkdir(downloadPath);
-
-      const createdFileName = createFileName('heartwarming_capture') + '.png';
-      console.log('createdFileName: ', createdFileName);
-
-      await RNFS.copyFile(uri, downloadPath + '/' + createdFileName);
     } catch (error) {
-      alert(error.message);
+      //alert(error.message);
       console.error(error.message);
     }
   };
