@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,6 +14,16 @@ const FloatingShareButton = props => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const animation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    //console.log('FloatingShareButton Mounted');
+    //console.log('menuOpen: ', menuOpen);
+    //console.log('disabled: ', props.disabled);
+    if (menuOpen && props.disabled) {
+      //ShareButton이 열려있는 상태에서 항목이 전부 지워졌을 때 다시 닫기 위함
+      toggleMenu();
+    }
+  }, [props.disabled]);
 
   const toggleMenu = () => {
     const toValue = menuOpen ? 0 : 1;

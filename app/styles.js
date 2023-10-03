@@ -20,6 +20,7 @@ export default {
   sectionItemColor: '#f1f2f6',
   sectionItemTextColor: '#34495e',
   borderBottomColor: '#dfe6e9',
+  copyButtonColor: '#7f8fa6',
   shareButtonColor: '#40739e',
   actionButtonColor: '#10ac84',
   buttonDisabledColor: '#c8d6e5',

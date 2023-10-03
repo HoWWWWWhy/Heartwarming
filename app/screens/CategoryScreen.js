@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-} from 'react';
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -34,6 +28,7 @@ import Card from '../components/Card';
 import FloatingActionButton from '../components/FloatingActionButton';
 import FloatingShareButton from '../components/FloatingShareButton';
 import constants from '../constants';
+import appStyles from '../styles';
 import _ from 'lodash';
 
 const CategoryScreen = ({route, navigation}) => {
@@ -57,8 +52,6 @@ const CategoryScreen = ({route, navigation}) => {
   const [copiedText, setCopiedText] = useState('');
 
   const captureRef = useRef();
-
-  //const hideShot = true;
 
   useEffect(() => {
     //console.log('CategoryScreen', screenName, itemId, navigation);
@@ -319,19 +312,6 @@ ${prepos} ${source}`,
     }
   };
 
-  /*
-  const hasAndroidPermission = async () => {
-    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-
-    const hasPermission = await PermissionsAndroid.check(permission);
-    if (hasPermission) {
-      return true;
-    }
-
-    const status = await PermissionsAndroid.request(permission);
-    return status === 'granted';
-  };
-*/
   const onCreate = () => {
     navigation.navigate('Add', {itemId: itemId, screenName: screenName});
   };
@@ -431,17 +411,34 @@ ${prepos} ${source}`,
 
           <View style={styles.buttonContainer}>
             <View style={styles.leftButtonContainer}>
-              <TouchableOpacity onPress={copyToClipboard}>
-                <View style={styles.copyButton}>
-                  <Icon name="content-copy" size={30} color={'white'} />
-                </View>
+              <TouchableOpacity
+                style={[
+                  styles.copyButton,
+                  {
+                    backgroundColor: !(
+                      categoryIdx > -1 &&
+                      categories[categoryIdx][screenName]['data'].length > 0
+                    )
+                      ? appStyles.buttonDisabledColor
+                      : appStyles.copyButtonColor,
+                  },
+                ]}
+                onPress={copyToClipboard}
+                disabled={
+                  !(
+                    categoryIdx > -1 &&
+                    categories[categoryIdx][screenName]['data'].length > 0
+                  )
+                }>
+                <Icon name="content-copy" size={30} color={'white'} />
               </TouchableOpacity>
+
               <FloatingShareButton
                 disabled={
-                  categoryIdx > -1 &&
-                  categories[categoryIdx][screenName]['data'].length > 0
-                    ? false
-                    : true
+                  !(
+                    categoryIdx > -1 &&
+                    categories[categoryIdx][screenName]['data'].length > 0
+                  )
                 }
                 onShareByGift={onShareByGift}
                 onShareByText={onShareByText}
@@ -454,16 +451,16 @@ ${prepos} ${source}`,
                 onUpdate={onUpdate}
                 onDelete={onDelete}
                 updateDisabled={
-                  categoryIdx > -1 &&
-                  categories[categoryIdx][screenName]['data'].length > 0
-                    ? false
-                    : true
+                  !(
+                    categoryIdx > -1 &&
+                    categories[categoryIdx][screenName]['data'].length > 0
+                  )
                 }
                 deleteDisabled={
-                  categoryIdx > -1 &&
-                  categories[categoryIdx][screenName]['data'].length > 0
-                    ? false
-                    : true
+                  !(
+                    categoryIdx > -1 &&
+                    categories[categoryIdx][screenName]['data'].length > 0
+                  )
                 }
               />
             </View>
@@ -531,7 +528,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 5,
-    backgroundColor: '#7f8fa6',
   },
 });
 
