@@ -282,33 +282,79 @@ ${prepos} ${source}`,
 
     console.log('screenshot uri: ', uri);
 
+    let granted;
+    let downloadPath;
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      //https://source.android.com/docs/setup/about/build-numbers?hl=ko
+      console.log('Platform Version:', Platform.Version);
+      console.log('Platform:', Platform.constants);
+
+      if (Platform.Version <= 28) {
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+      } else if (Platform.Version <= 32) {
+        granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        ]);
+      } else {
+        // react-native version 0.70.0 이상으로 올려야 요청 가능
+        // 지금 버전에서는 이 기능 비활성화
+        /*
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        );
+        */
+      }
+
+      if (
+        granted === PermissionsAndroid.RESULTS.GRANTED ||
+        (granted['android.permission.READ_EXTERNAL_STORAGE'] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+          granted['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+            PermissionsAndroid.RESULTS.GRANTED)
+      ) {
         const createdFileName = createFileName('heartwarming_capture') + '.png';
         console.log('createdFileName: ', createdFileName);
 
-        const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+        //Android 11 (API level 30)
+        //downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+        downloadPath = `${RNFS.PicturesDirectoryPath}/Heartwarming`;
+        /*
+        if (Platform.Version < 30) {
+          downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+        } else {
+          downloadPath = '/storage/emulated/0/Android/media/Heartwarming';
+        }
+      */
         console.log('downloadPath: ' + downloadPath);
 
         await RNFS.mkdir(downloadPath);
         console.log('directory succesfully created!');
 
-        await RNFS.copyFile(uri, downloadPath + '/' + createdFileName);
-      } else {
-        //alert('Permission denied!!! 이미지를 저장하려면 권한을 허용해주세요');
-      }
+        await RNFS.moveFile(uri, downloadPath + '/' + createdFileName);
+        console.log('image succesfully moved!');
 
+        await RNFS.scanFile(downloadPath + '/' + createdFileName);
+        console.log('image succesfully scanned!');
+      } else {
+        console.log('granted: ', granted);
+        alert('Permission denied!!! 이미지를 저장하려면 권한을 허용해주세요');
+      }
+      /*
       await ImageShare.open({
         failOnCancel: true,
         url: uri,
         subject: 'Heartwarming에서 전하는 메시지',
       });
+    */
     } catch (error) {
       //alert(error.message);
       console.error(error.message);
+      if (Platform.Version > 32) {
+        alert('기능을 준비중입니다.');
+      }
     }
   };
 
@@ -412,25 +458,27 @@ ${prepos} ${source}`,
           <View style={styles.buttonContainer}>
             <View style={styles.leftButtonContainer}>
               <TouchableOpacity
-                style={[
-                  styles.copyButton,
-                  {
-                    backgroundColor: !(
-                      categoryIdx > -1 &&
-                      categories[categoryIdx][screenName]['data'].length > 0
-                    )
-                      ? appStyles.buttonDisabledColor
-                      : appStyles.copyButtonColor,
-                  },
-                ]}
-                onPress={copyToClipboard}
                 disabled={
                   !(
                     categoryIdx > -1 &&
                     categories[categoryIdx][screenName]['data'].length > 0
                   )
-                }>
-                <Icon name="content-copy" size={30} color={'white'} />
+                }
+                onPress={copyToClipboard}>
+                <View
+                  style={[
+                    styles.copyButton,
+                    {
+                      backgroundColor: !(
+                        categoryIdx > -1 &&
+                        categories[categoryIdx][screenName]['data'].length > 0
+                      )
+                        ? appStyles.buttonDisabledColor
+                        : appStyles.copyButtonColor,
+                    },
+                  ]}>
+                  <Icon name="content-copy" size={30} color={'white'} />
+                </View>
               </TouchableOpacity>
 
               <FloatingShareButton
