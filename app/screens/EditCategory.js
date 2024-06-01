@@ -24,7 +24,7 @@ import constants from '../constants';
 import assets from '../default_assets';
 import {ICON_COLOR, ICON_DATA} from '../tab_icons';
 import appStyles from '../styles';
-import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
@@ -561,11 +561,11 @@ const EditCategory = ({navigation, route}) => {
           </TouchableOpacity>
         )}
       </View>
-      {!isPremiumUser && (
+      {/* {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -701,10 +701,10 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  bannerAdContainer: {
-    marginTop: 0,
-    height: BannerAdMaxHeight,
-  },
+  // bannerAdContainer: {
+  //   marginTop: 0,
+  //   height: BannerAdMaxHeight,
+  // },
 });
 
 export default EditCategory;

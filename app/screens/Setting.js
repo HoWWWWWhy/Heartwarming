@@ -17,7 +17,7 @@ import Store from '../store';
 import {init_categories} from '../database/schema';
 
 import {exportData, importData, createFileName} from '../utils/FileManager';
-import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 // temporary code
 // LogBox.ignoreLogs([
@@ -196,11 +196,11 @@ const Setting = ({navigation}) => {
         />
       </View>
 
-      {!isPremiumUser && (
+      {/* {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  bannerAdContainer: {
-    marginTop: 0,
-    height: BannerAdMaxHeight,
-  },
+  // bannerAdContainer: {
+  //   marginTop: 0,
+  //   height: BannerAdMaxHeight,
+  // },
 });
 
 export default Setting;

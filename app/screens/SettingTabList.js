@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Store from '../store';
 import appStyles from '../styles';
 
-import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
@@ -84,11 +84,11 @@ const SettingTabList = ({navigation}) => {
         />
       </View>
 
-      {!isPremiumUser && (
+      {/* {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -122,11 +122,11 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  bannerAdContainer: {
-    marginTop: 0,
-    //width: 300,
-    height: BannerAdMaxHeight,
-  },
+  // bannerAdContainer: {
+  //   marginTop: 0,
+  //   //width: 300,
+  //   height: BannerAdMaxHeight,
+  // },
 });
 
 export default SettingTabList;
