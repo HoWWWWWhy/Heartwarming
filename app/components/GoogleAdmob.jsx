@@ -1,13 +1,12 @@
-/*
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-import admob, {
-  MaxAdContentRating,
+import {
   BannerAd,
   BannerAdSize,
   TestIds,
-} from '@react-native-firebase/admob';
+} from 'react-native-google-mobile-ads';
+
 import Config from 'react-native-config';
 
 const adUnitId = __DEV__
@@ -17,31 +16,14 @@ const adUnitId = __DEV__
 const BannerAdMaxHeight = 100;
 
 const MyBannerAd = () => {
+
   const [showBanner, setShowBanner] = useState(true);
   const [altanativeText, setAltanativeText] = useState('');
+
   useEffect(() => {
     //console.log('MyBannerAd Mounted:', adUnitId);
-    setAdRequestConfig();
+
   }, []);
-
-  const setAdRequestConfig = async () => {
-    //console.log('CALL setConfig');
-    await admob().setRequestConfiguration({
-      // Update all future requests suitable for parental guidance
-      maxAdContentRating: MaxAdContentRating.G,
-
-      // Indicates that you want your content treated as child-directed for purposes of COPPA.
-      tagForChildDirectedTreatment: false,
-
-      // Indicates that you want the ad request to be handled in a
-      // manner suitable for users under the age of consent.
-      tagForUnderAgeOfConsent: true,
-    });
-    // Request config successfully set!
-    //console.log('Show Banner!');
-    //setShowBanner(true);
-    //setAltanativeText('광고 요청 중');
-  };
 
   return (
     <View
@@ -95,4 +77,3 @@ const styles = StyleSheet.create({
 });
 
 export {MyBannerAd, BannerAdMaxHeight};
-*/

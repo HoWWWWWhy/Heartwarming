@@ -10,7 +10,7 @@ import {
   Text,
   //TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Clipboard from '@react-native-clipboard/clipboard';
 //import {RNKakaoLink} from '../utils/NativeModules';
 import KakaoShareLink from 'react-native-kakao-share-link';
@@ -20,7 +20,7 @@ import RNFS from 'react-native-fs';
 import ViewShot from 'react-native-view-shot';
 import {createFileName} from '../utils/FileManager';
 
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Pressable} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
@@ -192,30 +192,6 @@ ${prepos} ${source}`,
 
   const onShareByGift = async () => {
     console.log('onShareByGift');
-    // console.log('contents length:', contents.length);
-    // console.log('contents:', contents);
-    // console.log('prepos length:', prepos.length);
-    // console.log('source length:', source.length);
-
-    //RNKakaoLink.printTestLog('onShareByGift from ReactNative');
-    /*
-    try {
-      const result = await Share.share({
-        title: 'Heartwarming에서 전하는 메시지',
-        message: `heartwarming://home/link/add/${
-          contents.length > 0 ? contents : '-'
-        }/${prepos.length > 0 ? prepos : 'blank'}/${
-          source.length > 0 ? source : '-'
-        }`,
-        //home/:from/:to/:contents/:prepos/:source
-      });
-      if (result.action === Share.sharedAction) {
-        //console.log(result.action);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-    */
 
     try {
       // url encoding
@@ -280,80 +256,75 @@ ${prepos} ${source}`,
       .capture()
       .catch(error => alert(error.message));
 
-    console.log('screenshot uri: ', uri);
+    if (uri) {
+      console.log('screenshot uri: ', uri);
 
-    let granted;
-    let downloadPath;
-    try {
-      //https://source.android.com/docs/setup/about/build-numbers?hl=ko
-      console.log('Platform Version:', Platform.Version);
-      console.log('Platform:', Platform.constants);
+      let granted;
+      let downloadPath;
+      let fullFilePath;
 
-      if (Platform.Version <= 28) {
-        granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-      } else if (Platform.Version <= 32) {
-        granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        ]);
-      } else {
-        // react-native version 0.70.0 이상으로 올려야 요청 가능
-        // 지금 버전에서는 이 기능 비활성화
-        /*
-        granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-        );
-        */
-      }
+      try {
+        //https://source.android.com/docs/setup/about/build-numbers?hl=ko
+        console.log('Platform Version:', Platform.Version);
+        console.log('Platform:', Platform.constants);
 
-      if (
-        granted === PermissionsAndroid.RESULTS.GRANTED ||
-        (granted['android.permission.READ_EXTERNAL_STORAGE'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-          granted['android.permission.WRITE_EXTERNAL_STORAGE'] ===
-            PermissionsAndroid.RESULTS.GRANTED)
-      ) {
-        const createdFileName = createFileName('heartwarming_capture') + '.png';
-        console.log('createdFileName: ', createdFileName);
-
-        //Android 11 (API level 30)
-        //downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
-        downloadPath = `${RNFS.PicturesDirectoryPath}/Heartwarming`;
-        /*
-        if (Platform.Version < 30) {
-          downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Heartwarming`;
+        if (Platform.Version <= 28) {
+          granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          );
+        } else if (Platform.Version <= 32) {
+          granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          );
+        } else if (Platform.Version <= 33) {
+          granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          );
         } else {
-          downloadPath = '/storage/emulated/0/Android/media/Heartwarming';
+          //Android 14 (API level 34) or higher
+          granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_MEDIA_VISUAL_USER_SELECTED,
+          );
         }
-      */
-        console.log('downloadPath: ' + downloadPath);
 
-        await RNFS.mkdir(downloadPath);
-        console.log('directory succesfully created!');
+        if (
+          granted === PermissionsAndroid.RESULTS.GRANTED ||
+          (granted['android.permission.READ_EXTERNAL_STORAGE'] ===
+            PermissionsAndroid.RESULTS.GRANTED &&
+            granted['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+              PermissionsAndroid.RESULTS.GRANTED)
+        ) {
+          const createdFileName =
+            createFileName('heartwarming_capture') + '.png';
+          console.log('createdFileName: ', createdFileName);
 
-        await RNFS.moveFile(uri, downloadPath + '/' + createdFileName);
-        console.log('image succesfully moved!');
+          downloadPath = `${RNFS.PicturesDirectoryPath}/Heartwarming`;
+          fullFilePath = downloadPath + '/' + createdFileName;
 
-        await RNFS.scanFile(downloadPath + '/' + createdFileName);
-        console.log('image succesfully scanned!');
-      } else {
-        console.log('granted: ', granted);
-        alert('Permission denied!!! 이미지를 저장하려면 권한을 허용해주세요');
-      }
-      /*
-      await ImageShare.open({
-        failOnCancel: true,
-        url: uri,
-        subject: 'Heartwarming에서 전하는 메시지',
-      });
-    */
-    } catch (error) {
-      //alert(error.message);
-      console.error(error.message);
-      if (Platform.Version > 32) {
-        alert('기능을 준비중입니다.');
+          console.log('downloadPath: ' + downloadPath);
+
+          await RNFS.mkdir(downloadPath);
+          console.log('directory succesfully created!');
+
+          await RNFS.copyFile(uri, fullFilePath); //moveFile로 하면 uri가 삭제되므로 이미지 Share할 수 없음
+          console.log('image succesfully copied!');
+          //console.log('image succesfully moved!');
+
+          await RNFS.scanFile(fullFilePath);
+          console.log('image succesfully scanned!');
+
+          await ImageShare.open({
+            failOnCancel: false, //취소해도 성공으로 됨됨
+            url: uri,
+          });
+          console.log('image succesfully shared!');
+        } else {
+          console.log('granted: ', granted);
+          alert('Permission denied!!! 이미지를 저장하려면 권한을 허용해주세요');
+        }
+      } catch (error) {
+        //alert(error.message);
+        console.error(error.message);
       }
     }
   };
@@ -395,7 +366,7 @@ ${prepos} ${source}`,
       {categoryIdx > -1 && (
         <>
           <View style={styles.prevButton}>
-            <TouchableOpacity
+            <Pressable
               disabled={prevButtonDisable}
               onPress={() =>
                 navigation.navigate('CategoryScreen', {
@@ -404,10 +375,10 @@ ${prepos} ${source}`,
                 })
               }>
               <Icon name="chevron-left" size={40} color={prevButtonColor} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.nextButton}>
-            <TouchableOpacity
+            <Pressable
               disabled={nextButtonDisable}
               onPress={() =>
                 navigation.navigate('CategoryScreen', {
@@ -416,7 +387,7 @@ ${prepos} ${source}`,
                 })
               }>
               <Icon name="chevron-right" size={40} color={nextButtonColor} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <ViewShot ref={captureRef} style={styles.cardContainer}>
@@ -457,7 +428,7 @@ ${prepos} ${source}`,
 
           <View style={styles.buttonContainer}>
             <View style={styles.leftButtonContainer}>
-              <TouchableOpacity
+              <Pressable
                 disabled={
                   !(
                     categoryIdx > -1 &&
@@ -479,7 +450,7 @@ ${prepos} ${source}`,
                   ]}>
                   <Icon name="content-copy" size={30} color={'white'} />
                 </View>
-              </TouchableOpacity>
+              </Pressable>
 
               <FloatingShareButton
                 disabled={
@@ -536,7 +507,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   cardContainer: {
-    flex: 1,
+    flex: 1.0,
   },
   image: {
     flex: 1,

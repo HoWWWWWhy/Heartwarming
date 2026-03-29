@@ -1,3 +1,4 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React, {useState, useEffect, useContext, useRef} from 'react';
 import {
   StyleSheet,
@@ -17,14 +18,14 @@ import NavIcon from '../components/NavIcon';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DraggableFlatList from 'react-native-draggable-flatlist';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Store from '../store';
 import constants from '../constants';
 import assets from '../default_assets';
 import {ICON_COLOR, ICON_DATA} from '../tab_icons';
 import appStyles from '../styles';
-//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
@@ -35,6 +36,8 @@ import _ from 'lodash';
 // ]);
 
 const EditCategory = ({navigation, route}) => {
+  const insets = useSafeAreaInsets();
+
   const {categories, setCategories, isPremiumUser} = useContext(Store);
 
   const draggableList = categories.map((category, idx) => ({
@@ -55,7 +58,7 @@ const EditCategory = ({navigation, route}) => {
   const categoryNameRef = useRef();
 
   useEffect(() => {
-    //console.log('EditCategory Mounted');
+    console.log('EditCategory Mounted');
   }, []);
 
   const AddCategoryModal = () => {
@@ -478,7 +481,7 @@ const EditCategory = ({navigation, route}) => {
     }
   };
 
-  const renderItem = ({item, index, drag, isActive}) => {
+  const renderItem = ({item, getIndex, drag, isActive}) => {
     return (
       <View style={styles.draggableItemContainer}>
         <TouchableOpacity
@@ -502,7 +505,7 @@ const EditCategory = ({navigation, route}) => {
           }}>
           <NavIcon
             focused={true}
-            name={Object.values(categories[index])[0]['icon']}
+            name={Object.values(categories[getIndex()])[0]['icon']}
             size={30}
             color={appStyles.sectionItemTextColor}
           />
@@ -528,7 +531,7 @@ const EditCategory = ({navigation, route}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingBottom: insets.bottom}]}>
       {addModalVisible ? <AddCategoryModal /> : null}
       {iconListModalVisible ? <IconListModal /> : null}
       {editModalVisible ? <EditCategoryModal /> : null}
@@ -537,7 +540,8 @@ const EditCategory = ({navigation, route}) => {
         <DraggableFlatList
           data={draggableData}
           renderItem={renderItem}
-          keyExtractor={(item, index) => `draggable-item-${item.key}`}
+          //keyExtractor={(item, index) => `draggable-item-${item.key}`}
+          keyExtractor={item => `draggable-item-${item.key}`}
           onDragEnd={({data}) => {
             setDraggableData(data);
             reorderCategories(data);
@@ -561,11 +565,11 @@ const EditCategory = ({navigation, route}) => {
           </TouchableOpacity>
         )}
       </View>
-      {/* {!isPremiumUser && (
+      {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )} */}
+      )}
     </View>
   );
 };
@@ -701,10 +705,10 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  // bannerAdContainer: {
-  //   marginTop: 0,
-  //   height: BannerAdMaxHeight,
-  // },
+  bannerAdContainer: {
+    marginTop: 0,
+    height: BannerAdMaxHeight,
+  },
 });
 
 export default EditCategory;

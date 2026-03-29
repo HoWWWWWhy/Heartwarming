@@ -1,3 +1,4 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React, {useState, useEffect, useContext} from 'react';
 import {
   StyleSheet,
@@ -10,15 +11,17 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import {TextInput, Pressable} from 'react-native-gesture-handler';
 import constants from '../constants';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import appStyles from '../styles';
 import OcrCamera, {RNCameraConstants} from '../components/OcrCamera';
 import _ from 'lodash';
+
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 const DismissKeyboard = ({children}) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -27,9 +30,10 @@ const DismissKeyboard = ({children}) => (
 );
 
 const Add = ({navigation, route}) => {
-  const {categories, setCategories, appTheme, onChangeAppTheme} = useContext(
-    Store,
-  );
+  const insets = useSafeAreaInsets();
+
+  const {categories, setCategories, isPremiumUser, appTheme, onChangeAppTheme} =
+    useContext(Store);
 
   const defaultContents =
     '하지만 우린 나아가야 한다.\n의심을 인생철학으로 선택하는 것은,\n운송수단으로 "정지"를 선택하는 것과 비슷하다.';
@@ -53,6 +57,7 @@ const Add = ({navigation, route}) => {
   const [screenName, setScreenName] = useState('');
 
   const [cameraOn, setCameraOn] = useState(false);
+  const [adOn, setAdOn] = useState(true);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   useEffect(() => {
@@ -146,6 +151,7 @@ const Add = ({navigation, route}) => {
       getElementTextBlocks(recogonized_text, 'BLOCK'); //"BLOCK", "LINE", "ELEMENT"
     }
     setCameraOn(false);
+    setAdOn(true);
   };
 
   const getElementTextBlocks = (data, division_type) => {
@@ -192,140 +198,161 @@ const Add = ({navigation, route}) => {
     //console.log(wordList);
   };
   return (
-    <DismissKeyboard>
-      <KeyboardAwareScrollView>
-        <View style={styles.container}>
-          <View style={styles.contentsContainer}>
-            <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
-            <TouchableOpacity
-              onPress={() => setCameraOn(true)}
-              style={styles.cameraButton}>
-              <Icon name="photo-camera" size={20} color={'#34495e'} />
-            </TouchableOpacity>
-            <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
-          </View>
-          <TextInput
-            style={[
-              styles.textInput,
-              styles.textInputContents,
-              {
-                backgroundColor:
-                  appTheme === 'dark'
-                    ? appStyles.themes.dark.textInputBackgroundColor
-                    : appStyles.themes.light.textInputBackgroundColor,
-              },
-            ]}
-            placeholder={defaultContents}
-            defaultValue={contents}
-            multiline
-            editable
-            returnKeyLabel="done"
-            onChangeText={text => setContents(text)}
-          />
-          <View style={styles.preposContainer}>
-            <TouchableOpacity onPress={changeList}>
-              <Text style={[styles.textTitle, styles.textPrepos]}>
-                {prepos}
-              </Text>
-            </TouchableOpacity>
-            <Text style={styles.textComment}>
-              {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
-            </Text>
-          </View>
-          <TextInput
-            style={[
-              styles.textInput,
-              styles.textInputSource,
-              {
-                backgroundColor:
-                  appTheme === 'dark'
-                    ? appStyles.themes.dark.textInputBackgroundColor
-                    : appStyles.themes.light.textInputBackgroundColor,
-              },
-            ]}
-            placeholder={defaultSource}
-            defaultValue={source}
-            multiline
-            editable
-            onChangeText={text => setSource(text)}
-          />
-          <Text style={styles.textTitle}>카테고리</Text>
-          <View style={styles.pickerView}>
-            <Picker
-              selectedValue={category}
-              enabled={insertFlag ? false : true}
+    <View style={[styles.container, {paddingBottom: insets.bottom}]}>
+      <DismissKeyboard>
+        <KeyboardAwareScrollView>
+          <View style={styles.mainContainer}>
+            <View style={styles.contentsContainer}>
+              <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
+              <Pressable
+                onPress={() => {
+                  setCameraOn(true);
+                  setAdOn(false);
+                }}
+                style={styles.cameraButton}>
+                <Icon name="photo-camera" size={20} color={'#34495e'} />
+              </Pressable>
+              <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
+            </View>
+            <TextInput
               style={[
-                styles.picker,
+                styles.textInput,
+                styles.textInputContents,
                 {
                   backgroundColor:
                     appTheme === 'dark'
-                      ? appStyles.themes.dark.pickerBackgroundColor
-                      : appStyles.themes.light.pickerBackgroundColor,
-                  color:
-                    appTheme === 'dark'
-                      ? appStyles.themes.dark.pickerTextColor
-                      : appStyles.themes.light.pickerTextColor,
+                      ? appStyles.themes.dark.textInputBackgroundColor
+                      : appStyles.themes.light.textInputBackgroundColor,
                 },
               ]}
-              mode={'dialog'}
-              //prompt={'카테고리'}
-              dropdownIconColor={
-                insertFlag
-                  ? '#a4b0be'
-                  : appTheme === 'dark'
-                  ? appStyles.themes.dark.pickerTextColor
-                  : appStyles.themes.light.pickerTextColor
-              }
-              onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
-              {categoryList.map(item => (
-                <Picker.Item
-                  key={item}
-                  label={item}
-                  value={item}
-                  style={{
+              placeholder={defaultContents}
+              defaultValue={contents}
+              multiline
+              editable
+              returnKeyLabel="done"
+              onChangeText={text => setContents(text)}
+            />
+            <View style={styles.preposContainer}>
+              <Pressable onPress={changeList}>
+                <Text style={[styles.textTitle, styles.textPrepos]}>
+                  {prepos}
+                </Text>
+              </Pressable>
+              <Text style={styles.textComment}>
+                {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
+              </Text>
+            </View>
+            <TextInput
+              style={[
+                styles.textInput,
+                styles.textInputSource,
+                {
+                  backgroundColor:
+                    appTheme === 'dark'
+                      ? appStyles.themes.dark.textInputBackgroundColor
+                      : appStyles.themes.light.textInputBackgroundColor,
+                },
+              ]}
+              placeholder={defaultSource}
+              defaultValue={source}
+              multiline
+              editable
+              onChangeText={text => setSource(text)}
+            />
+            <Text style={styles.textTitle}>카테고리</Text>
+            <View style={styles.pickerView}>
+              <Picker
+                selectedValue={category}
+                enabled={insertFlag ? false : true}
+                style={[
+                  styles.picker,
+                  {
+                    backgroundColor:
+                      appTheme === 'dark'
+                        ? appStyles.themes.dark.pickerBackgroundColor
+                        : appStyles.themes.light.pickerBackgroundColor,
                     color:
                       appTheme === 'dark'
                         ? appStyles.themes.dark.pickerTextColor
                         : appStyles.themes.light.pickerTextColor,
-                  }}
-                />
-              ))}
-            </Picker>
+                  },
+                ]}
+                mode={'dialog'}
+                //prompt={'카테고리'}
+                dropdownIconColor={
+                  insertFlag
+                    ? '#a4b0be'
+                    : appTheme === 'dark'
+                      ? appStyles.themes.dark.pickerTextColor
+                      : appStyles.themes.light.pickerTextColor
+                }
+                onValueChange={(itemValue, itemIndex) =>
+                  setCategory(itemValue)
+                }>
+                {categoryList.map(item => (
+                  <Picker.Item
+                    key={item}
+                    label={item}
+                    value={item}
+                    style={{
+                      color:
+                        appTheme === 'dark'
+                          ? appStyles.themes.dark.pickerTextColor
+                          : appStyles.themes.light.pickerTextColor,
+                    }}
+                  />
+                ))}
+              </Picker>
+            </View>
+
+            <Pressable style={styles.addButton} onPress={storeData}>
+              <Text style={styles.textButton}>추가하기</Text>
+            </Pressable>
+
+            {cameraOn && (
+              <OcrCamera
+                cameraType={RNCameraConstants.Type.back}
+                flashMode={RNCameraConstants.FlashMode.off}
+                autoFocus={RNCameraConstants.AutoFocus.on}
+                whiteBalance={RNCameraConstants.WhiteBalance.auto}
+                ratio={'4:3'}
+                quality={0.8}
+                imageWidth={800}
+                enabledOCR={true}
+                onCapture={(data, recogonizedText) =>
+                  onOCRCapture(recogonizedText)
+                }
+                onClose={() => {
+                  setCameraOn(false);
+                  setAdOn(true);
+                }}
+              />
+            )}
           </View>
-          <TouchableOpacity style={styles.addButton} onPress={storeData}>
-            <Text style={styles.textButton}>추가하기</Text>
-          </TouchableOpacity>
-          {cameraOn && (
-            <OcrCamera
-              cameraType={RNCameraConstants.Type.back}
-              flashMode={RNCameraConstants.FlashMode.off}
-              autoFocus={RNCameraConstants.AutoFocus.on}
-              whiteBalance={RNCameraConstants.WhiteBalance.auto}
-              ratio={'4:3'}
-              quality={0.8}
-              imageWidth={800}
-              enabledOCR={true}
-              onCapture={(data, recogonizedText) =>
-                onOCRCapture(recogonizedText)
-              }
-              onClose={() => setCameraOn(false)}
-            />
-          )}
+        </KeyboardAwareScrollView>
+      </DismissKeyboard>
+
+      {!isPremiumUser && adOn && (
+        <View style={styles.bannerAdContainer}>
+          <MyBannerAd />
         </View>
-      </KeyboardAwareScrollView>
-    </DismissKeyboard>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: appStyles.backgroundColor,
+  },
+  mainContainer: {
     marginHorizontal: 0,
     marginTop: 0,
     height: constants.height,
     width: constants.width,
     paddingHorizontal: 30,
     paddingVertical: 30,
-    backgroundColor: appStyles.backgroundColor,
   },
   contentsContainer: {
     flexDirection: 'row',
@@ -336,7 +363,6 @@ const styles = StyleSheet.create({
     //backgroundColor: 'white',
     marginHorizontal: 5,
   },
-
   preposContainer: {
     flexDirection: 'row',
   },
@@ -351,7 +377,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
-
   textInput: {
     //borderBottomColor: 'black',
     //borderBottomWidth: 1,
@@ -389,6 +414,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  bannerAdContainer: {
+    marginTop: 0,
+    //width: 300,
+    height: BannerAdMaxHeight,
   },
 });
 

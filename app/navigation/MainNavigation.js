@@ -1,13 +1,14 @@
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import 'react-native-gesture-handler';
 import React, {useEffect, useState, useRef} from 'react';
 
-import analytics from '@react-native-firebase/analytics';
+import {analytics} from '@react-native-firebase/analytics';
 import {
   NavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Store from '../store';
 import Home from '../screens/Home';
@@ -28,6 +29,7 @@ import assets from '../default_assets';
 import {init_categories} from '../database/schema';
 
 import _ from 'lodash';
+import {View} from 'react-native-reanimated/lib/typescript/Animated';
 
 const Stack = createStackNavigator();
 
@@ -97,9 +99,8 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
               newData[newIdx]['Movie']['setting'].bgImageBlur = 0;
             }
             if (checkbox_states !== null) {
-              newData[newIdx]['Movie']['setting'].isSelected = JSON.parse(
-                checkbox_states,
-              )[0];
+              newData[newIdx]['Movie']['setting'].isSelected =
+                JSON.parse(checkbox_states)[0];
             }
             //setMovieSetting(parsed_movie_setting);
           }
@@ -137,9 +138,8 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
               newData[newIdx]['Lyrics']['setting'].bgImageBlur = 0;
             }
             if (checkbox_states !== null) {
-              newData[newIdx]['Lyrics']['setting'].isSelected = JSON.parse(
-                checkbox_states,
-              )[1];
+              newData[newIdx]['Lyrics']['setting'].isSelected =
+                JSON.parse(checkbox_states)[1];
             }
             //setLyricsSetting(parsed_lyrics_setting);
           }
@@ -173,9 +173,8 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
               newData[newIdx]['Book']['setting'].bgImageBlur = 0;
             }
             if (checkbox_states !== null) {
-              newData[newIdx]['Book']['setting'].isSelected = JSON.parse(
-                checkbox_states,
-              )[2];
+              newData[newIdx]['Book']['setting'].isSelected =
+                JSON.parse(checkbox_states)[2];
             }
             //setBookSetting(parsed_book_setting);
           }
@@ -199,13 +198,14 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
   };
 
   return (
-    <>
+    <SafeAreaProvider>
       <Store.Provider value={providerValues}>
         <NavigationContainer
           linking={linking}
           ref={navigationRef}
           onReady={() =>
-            (routeNameRef.current = navigationRef.current.getCurrentRoute()?.name)
+            (routeNameRef.current =
+              navigationRef.current.getCurrentRoute()?.name)
           }
           onStateChange={async () => {
             //console.log('onStateChange:', state);
@@ -241,10 +241,11 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '설정하기',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                headerStyle: {
+                  //height: constants.STACK_HEADER_HEIGHT,
+                },
               }}
             />
-
             <Stack.Screen
               name="EditTabScreen"
               component={EditTabScreen}
@@ -252,7 +253,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '배경 설정 [ ' + route.params.screenName + ' ]',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               })}
             />
 
@@ -263,7 +264,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '추가하기',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -273,7 +274,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '수정하기',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -283,7 +284,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '카테고리 편집',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -293,7 +294,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '탭 디자인 설정',
                 gestureEnabled: true,
                 gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -303,7 +304,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '도움말',
                 //gestureEnabled: true,
                 //gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -313,7 +314,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
                 title: '오픈소스 라이선스',
                 //gestureEnabled: true,
                 //gestureDirection: 'horizontal',
-                headerStyle: {height: constants.STACK_HEADER_HEIGHT},
+                //headerStyle: {height: constants.STACK_HEADER_HEIGHT},
               }}
             />
             <Stack.Screen
@@ -329,7 +330,7 @@ const MainNavigation = ({isPremiumUser, appTheme, onChangeAppTheme}) => {
           </Stack.Navigator>
         </NavigationContainer>
       </Store.Provider>
-    </>
+    </SafeAreaProvider>
   );
 };
 

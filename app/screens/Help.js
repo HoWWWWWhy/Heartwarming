@@ -1,3 +1,4 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import appStyles from '../styles';
@@ -44,11 +45,13 @@ const PAGES = [
 ];
 
 const Help = () => {
+  const insets = useSafeAreaInsets();
+
   const GAP = 20;
   const OFFSET = 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingBottom: insets.bottom}]}>
       <Carousel
         gap={GAP}
         offset={OFFSET}

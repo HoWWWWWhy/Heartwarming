@@ -1,3 +1,4 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React, {useEffect, useContext} from 'react';
 import {
   View,
@@ -10,14 +11,14 @@ import {
   //LogBox,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import appStyles from '../styles';
 import Store from '../store';
 import {init_categories} from '../database/schema';
 
 import {exportData, importData, createFileName} from '../utils/FileManager';
-//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 // temporary code
 // LogBox.ignoreLogs([
@@ -29,6 +30,8 @@ const Setting = ({navigation}) => {
   const URL_GOOGLEPLAY =
     'https://play.google.com/store/apps/details?id=com.howwwwwhy.heartwarming';
   const URL_PRIVACY = 'https://howwwwwhy.github.io/Heartwarming_privacy';
+
+  const insets = useSafeAreaInsets();
 
   const {categories, setCategories, isPremiumUser} = useContext(Store);
 
@@ -83,7 +86,7 @@ const Setting = ({navigation}) => {
 
             Alert.alert(
               '데이터 초기화',
-              '모든 데이터가 삭제되고 복구될 수 없습니다. \n[내보내기] -> [가져오기] 기능을 통해 데이터 복구가 가능합니다. 계속 진행할까요?',
+              '모든 데이터가 삭제되고 복구될 수 없습니다. \n데이터 초기화 전 [내보내기]를 하시면 [가져오기]를 통해 데이터 복구가 가능합니다. 계속 진행할까요?',
               [
                 {
                   text: 'Cancel',
@@ -184,7 +187,7 @@ const Setting = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingBottom: insets.bottom}]}>
       <View style={styles.listContainer}>
         <SectionList
           sections={DATA}
@@ -196,11 +199,11 @@ const Setting = ({navigation}) => {
         />
       </View>
 
-      {/* {!isPremiumUser && (
+      {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )} */}
+      )}
     </View>
   );
 };
@@ -208,6 +211,7 @@ const Setting = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical: 0,
     backgroundColor: appStyles.backgroundColor,
   },
   sectionHeader: {
@@ -226,14 +230,15 @@ const styles = StyleSheet.create({
   },
   sectionItemText: {
     fontSize: 18,
+    color: appStyles.sectionItemTextColor,
   },
   listContainer: {
     flex: 1,
   },
-  // bannerAdContainer: {
-  //   marginTop: 0,
-  //   height: BannerAdMaxHeight,
-  // },
+  bannerAdContainer: {
+    marginTop: 0,
+    height: BannerAdMaxHeight,
+  },
 });
 
 export default Setting;

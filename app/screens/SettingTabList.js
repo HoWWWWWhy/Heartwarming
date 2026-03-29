@@ -1,18 +1,21 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React, {useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Store from '../store';
 import appStyles from '../styles';
 
-//import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
+import {MyBannerAd, BannerAdMaxHeight} from '../components/GoogleAdmob';
 
 import _ from 'lodash';
 
 const SettingTabList = ({navigation}) => {
+  const insets = useSafeAreaInsets();
+
   const {categories, setCategories, isPremiumUser} = useContext(Store);
 
   const DATA = categories.map((category, idx) => ({
@@ -44,9 +47,8 @@ const SettingTabList = ({navigation}) => {
           value={categories[idx][title]['setting'].isSelected}
           onValueChange={() => {
             let newData = _.cloneDeep(categories);
-            newData[idx][title]['setting'].isSelected = !newData[idx][title][
-              'setting'
-            ].isSelected;
+            newData[idx][title]['setting'].isSelected =
+              !newData[idx][title]['setting'].isSelected;
             setCategories(newData);
             storeData(newData);
           }}
@@ -75,7 +77,7 @@ const SettingTabList = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingBottom: insets.bottom}]}>
       <View style={styles.listContainer}>
         <FlatList
           data={DATA}
@@ -84,11 +86,11 @@ const SettingTabList = ({navigation}) => {
         />
       </View>
 
-      {/* {!isPremiumUser && (
+      {!isPremiumUser && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )} */}
+      )}
     </View>
   );
 };
@@ -122,11 +124,11 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  // bannerAdContainer: {
-  //   marginTop: 0,
-  //   //width: 300,
-  //   height: BannerAdMaxHeight,
-  // },
+  bannerAdContainer: {
+    marginTop: 0,
+    //width: 300,
+    height: BannerAdMaxHeight,
+  },
 });
 
 export default SettingTabList;

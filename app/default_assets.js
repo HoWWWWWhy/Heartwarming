@@ -1,3 +1,5 @@
+const NUM_DEFAULT_IMAGE = 3;
+
 const defaultMovieBgImage = require('./assets/sky-823624_640.jpg');
 const defaultLyricsBgImage = require('./assets/kite-1666816_640.jpg');
 const defaultBookBgImage = require('./assets/maldives-2171627_640.jpg');
@@ -8,6 +10,7 @@ const defaultNewBgImage = [
 ];
 
 export default {
+  NUM_DEFAULT_IMAGE,
   defaultMovieBgImage,
   defaultLyricsBgImage,
   defaultBookBgImage,

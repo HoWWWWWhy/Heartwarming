@@ -1,4 +1,8 @@
 {
   "name": "Heartwarming",
-  "displayName": "Heartwarming"
+  "displayName": "Heartwarming",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-8684336714569726~6627730400",
+    "ios_app_id": "ca-app-pub-8684336714569726~6627730400"
+  }
 }

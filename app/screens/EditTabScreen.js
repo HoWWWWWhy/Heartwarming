@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -46,7 +46,7 @@ const EditTabScreen = ({route}) => {
 
     if (categoryIdx <= -1) {
       const newIdx = categories.findIndex(
-        (category) => Object.keys(category)[0] === screenName,
+        category => Object.keys(category)[0] === screenName,
       );
 
       setCategoryIdx(newIdx);
@@ -89,11 +89,10 @@ const EditTabScreen = ({route}) => {
     //console.log('fadeOut');
   };
 
-  const toggleSwitch = (screen_name) => {
+  const toggleSwitch = screen_name => {
     let newData = _.cloneDeep(categories);
-    newData[categoryIdx][screen_name]['setting'].useBgImage = !categories[
-      categoryIdx
-    ][screen_name]['setting'].useBgImage;
+    newData[categoryIdx][screen_name]['setting'].useBgImage =
+      !categories[categoryIdx][screen_name]['setting'].useBgImage;
     if (newData[categoryIdx][screen_name]['setting'].useBgImage) {
       pickImageButtonFadeIn();
     } else {
@@ -103,7 +102,7 @@ const EditTabScreen = ({route}) => {
     storeData(newData);
   };
 
-  const changeBgColor = (color) => {
+  const changeBgColor = color => {
     let newData = _.cloneDeep(categories);
     newData[categoryIdx][screenName]['setting'].bgColor = color;
 
@@ -112,7 +111,7 @@ const EditTabScreen = ({route}) => {
     storeData(newData);
   };
 
-  const changeTextColor = (color) => {
+  const changeTextColor = color => {
     let newData = _.cloneDeep(categories);
     newData[categoryIdx][screenName]['setting'].textColor = color;
 
@@ -121,7 +120,7 @@ const EditTabScreen = ({route}) => {
     storeData(newData);
   };
 
-  const onPickImage = async (screen_name) => {
+  const onPickImage = async screen_name => {
     try {
       const image = await ImagePicker.openPicker({
         width: 2 * constants.width,
@@ -155,7 +154,7 @@ const EditTabScreen = ({route}) => {
     }
   };
 
-  const onTakePhoto = async (screen_name) => {
+  const onTakePhoto = async screen_name => {
     try {
       const image = await ImagePicker.openCamera({
         width: 2 * constants.width,
@@ -187,7 +186,7 @@ const EditTabScreen = ({route}) => {
     }
   };
 
-  const onChangeBlur = (screen_name) => {
+  const onChangeBlur = screen_name => {
     let newData = _.cloneDeep(categories);
     const oldBlurRadius =
       newData[categoryIdx][screen_name]['setting'].bgImageBlur;
@@ -198,11 +197,11 @@ const EditTabScreen = ({route}) => {
     storeData(newData);
   };
 
-  const onInitializeImage = (screen_name) => {
+  const onInitializeImage = screen_name => {
     let newData = _.cloneDeep(categories);
 
     const bgImageNum = assets.defaultNewBgImage.findIndex(
-      (image) => image === newData[categoryIdx][screen_name]['setting'].bgImage,
+      image => image === newData[categoryIdx][screen_name]['setting'].bgImage,
     );
     newData[categoryIdx][screen_name]['setting'].bgImage =
       assets.defaultNewBgImage[
@@ -214,7 +213,7 @@ const EditTabScreen = ({route}) => {
     storeData(newData);
   };
 
-  const storeData = async (data) => {
+  const storeData = async data => {
     try {
       await AsyncStorage.setItem('@Data', JSON.stringify(data));
     } catch (e) {
@@ -223,7 +222,7 @@ const EditTabScreen = ({route}) => {
     }
   };
 
-  const renderPickImageButton = (screen_name) => {
+  const renderPickImageButton = screen_name => {
     return (
       <>
         <TouchableOpacity onPress={() => onPickImage(screen_name)}>
@@ -237,7 +236,7 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const renderCameraButton = (screen_name) => {
+  const renderCameraButton = screen_name => {
     return (
       <>
         <TouchableOpacity onPress={() => onTakePhoto(screen_name)}>
@@ -251,7 +250,7 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const renderBlurEffectButton = (screen_name) => {
+  const renderBlurEffectButton = screen_name => {
     return (
       <>
         <TouchableOpacity onPress={() => onChangeBlur(screen_name)}>
@@ -265,7 +264,7 @@ const EditTabScreen = ({route}) => {
     );
   };
 
-  const renderInitializeImageButton = (screen_name) => {
+  const renderInitializeImageButton = screen_name => {
     return (
       <>
         <TouchableOpacity onPress={() => onInitializeImage(screen_name)}>

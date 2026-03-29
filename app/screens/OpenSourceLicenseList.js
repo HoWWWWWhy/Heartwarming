@@ -37,8 +37,8 @@ const OpenSourceLicenseList = () => {
             item.homepage
               ? item.homepage
               : item.repository.url
-              ? item.repository.url
-              : '',
+                ? item.repository.url
+                : '',
           );
           setLicenseContent(item._licenseContent ? item._licenseContent : '');
           setModalVisible(true);
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   },
   listItemText: {
     //backgroundColor: 'white',
+    color: appStyles.sectionItemTextColor,
     paddingVertical: 4,
   },
   modalView: {
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
+    color: appStyles.sectionItemTextColor,
     marginVertical: 10,
   },
 });

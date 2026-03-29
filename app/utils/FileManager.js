@@ -1,7 +1,8 @@
 import {Alert, Platform, PermissionsAndroid} from 'react-native';
 import RNFS from 'react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
+import {pick, types} from '@react-native-documents/picker';
 import {RNDocumentCreator} from './NativeModules';
+import assets from '../default_assets';
 
 /* ----- saved json format start ----- */
 const APP_SYMBOL = 'heartwarming';
@@ -32,36 +33,46 @@ const checkAppData = data => {
 
 const checkReadPermission = () => {
   return new Promise(async (resolve, reject) => {
+    let granted;
     let checkResult = false;
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      );
+      if (Platform.Version <= 32) {
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+      } else if (Platform.Version <= 33) {
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        );
+      } else {
+        //Android 14 (API level 34) or higher
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VISUAL_USER_SELECTED,
+        );
+      }
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Permission Granted: READ_EXTERNAL_STORAGE');
         checkResult = true;
         resolve(checkResult);
       } else {
-        console.log('Permission Denied: READ_EXTERNAL_STORAGE');
-        reject(new Error('Permission Denied: READ_EXTERNAL_STORAGE'));
+        reject(new Error('Permission Denied'));
       }
     }
   });
 };
 
 const pickJsonFile = () => {
-  return new Promise(async (resolve, reject) => {
+  const promise = new Promise(async (resolve, reject) => {
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.json],
+      const [pickResult] = await pick({
+        type: [types.json],
       });
-      console.log('res:', res);
-      console.log('res.uri:', res[0].uri);
+      //console.log('pickResult:', pickResult);
+      //console.log('pickResult.uri:', pickResult.uri);
       try {
-        const splitUri = res[0].name.split('.');
+        const splitUri = pickResult.name.split('.');
         const checkJSON = splitUri[splitUri.length - 1] === 'json';
         if (checkJSON) {
-          resolve(res[0].uri);
+          resolve(pickResult.uri);
         } else {
           Alert.alert('확장자가 json인 파일을 선택하세요.');
           resolve(null);
@@ -81,6 +92,7 @@ const pickJsonFile = () => {
       resolve(null);
     }
   });
+  return promise;
 };
 
 const exportData = async (fileName, data) => {
@@ -112,7 +124,35 @@ const importData = async () => {
           const pickedData = await RNFS.readFile(pickedJsonFile);
           const parsedData = JSON.parse(pickedData);
           const isAppData = checkAppData(parsedData);
-          //console.log(parsedData, isAppData);
+          let bgImageNum = 1;
+          let infoAlert = false;
+          console.log(parsedData, isAppData);
+          parsedData.data.forEach((element, index) => {
+            //console.log(element['setting']);
+            for (let key in element) {
+              //console.log(element[key]);
+              //console.log(element[key]['setting']['bgImage']);
+              if (
+                element[key]['setting']['bgImage'] !== 1 &&
+                element[key]['setting']['bgImage'] !== 2 &&
+                element[key]['setting']['bgImage'] !== 3
+              ) {
+                if (!infoAlert) {
+                  Alert.alert(
+                    '이전에 배경이미지를 설정한 경우 앱의 기본이미지로 초기화됩니다.',
+                  );
+                  infoAlert = true;
+                }
+
+                parsedData['data'][index][key]['setting']['bgImage'] =
+                  bgImageNum;
+                bgImageNum = bgImageNum + 1;
+                if (bgImageNum > assets.NUM_DEFAULT_IMAGE) {
+                  bgImageNum = 1;
+                }
+              }
+            }
+          });
           if (isAppData) {
             data = parsedData['data'];
           }

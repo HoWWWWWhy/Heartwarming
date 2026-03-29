@@ -94,7 +94,7 @@ const OCR_Camera = ({
 
   const textRecognized = data => {
     if (enabledOCR) {
-      console.log('onTextRecognized', data);
+      //console.log('onTextRecognized', data);
       if (data && data.textBlocks && data.textBlocks.length > 0) {
         setCameraSetting(prevState => ({
           ...prevState,
