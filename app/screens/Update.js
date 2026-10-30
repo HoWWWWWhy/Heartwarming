@@ -11,7 +11,7 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import {TextInput, Pressable} from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -48,7 +48,7 @@ const Update = ({navigation, route}) => {
   const [category, setCategory] = useState(categoryList[0]);
 
   const [cameraOn, setCameraOn] = useState(false);
-  const [adOn, setAdOn] = useState(true);
+  //const [adOn, setAdOn] = useState(true);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   const {itemId, screenName} = route.params;
@@ -196,11 +196,11 @@ const Update = ({navigation, route}) => {
           <View style={styles.mainContainer}>
             <View style={styles.contentsContainer}>
               <Text style={styles.textTitle}>기억하고 싶은 구절</Text>
-              <TouchableOpacity
+              <Pressable
                 onPress={() => setCameraOn(true)}
                 style={styles.cameraButton}>
                 <Icon name="photo-camera" size={20} color={'#34495e'} />
-              </TouchableOpacity>
+              </Pressable>
               <Text style={{fontSize: 10}}>(베타 버전, Only English)</Text>
             </View>
             <TextInput
@@ -221,11 +221,11 @@ const Update = ({navigation, route}) => {
               onChangeText={text => setContents(text)}
             />
             <View style={styles.preposContainer}>
-              <TouchableOpacity onPress={changeList}>
+              <Pressable onPress={changeList}>
                 <Text style={[styles.textTitle, styles.textPrepos]}>
                   {prepos}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
               <Text style={styles.textComment}>
                 {`<- 누르면 바뀌어요! ( ${preposList.join(', ')}공백 )`}
               </Text>
@@ -288,9 +288,9 @@ const Update = ({navigation, route}) => {
                 ))}
               </Picker>
             </View>
-            <TouchableOpacity style={styles.updateButton} onPress={storeData}>
+            <Pressable style={styles.updateButton} onPress={storeData}>
               <Text style={styles.textButton}>수정하기</Text>
-            </TouchableOpacity>
+            </Pressable>
             {cameraOn && (
               <OcrCamera
                 cameraType={RNCameraConstants.Type.back}
@@ -311,11 +311,11 @@ const Update = ({navigation, route}) => {
         </KeyboardAwareScrollView>
       </DismissKeyboard>
 
-      {!isPremiumUser && adOn && (
+      {/* {!isPremiumUser && adOn && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -392,6 +392,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  bannerAdContainer: {
+    marginTop: 0,
+    //width: 300,
+    height: BannerAdMaxHeight,
   },
 });
 

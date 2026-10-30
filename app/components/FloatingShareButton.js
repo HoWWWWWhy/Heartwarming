@@ -100,6 +100,7 @@ const FloatingShareButton = props => {
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={props.onShareByGift}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, giftAnimatedStyle]}>
           <FontAwesome
             name="gift"
@@ -110,6 +111,7 @@ const FloatingShareButton = props => {
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={props.onShareByText}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, textAnimatedStyle]}>
           <MaterialIcons
             name="text-fields"
@@ -120,6 +122,7 @@ const FloatingShareButton = props => {
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={props.onShareByImage}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, imageAnimatedStyle]}>
           <FontAwesome
             name="picture-o"

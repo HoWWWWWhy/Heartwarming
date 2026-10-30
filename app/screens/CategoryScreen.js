@@ -8,7 +8,7 @@ import {
   Platform,
   PermissionsAndroid,
   Text,
-  //TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -163,6 +163,12 @@ ${source}`,
         );
     fetchCopiedText();
     //console.log('copyToClipboard');
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('클립보드에 복사되었습니다!', ToastAndroid.SHORT);
+    } else {
+      // iOS
+      console.log('Copied to clipboard');
+    }
   };
 
   const fetchCopiedText = async () => {

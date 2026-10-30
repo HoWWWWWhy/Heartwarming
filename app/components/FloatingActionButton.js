@@ -89,6 +89,7 @@ const FloatingActionButton = props => {
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={props.onCreate}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, addAnimatedStyle]}>
           <MaterialIcons
             name="add"
@@ -101,6 +102,7 @@ const FloatingActionButton = props => {
         disabled={props.updateDisabled}
         onPress={props.onUpdate}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, updateAnimatedStyle]}>
           <MaterialIcons
             name="create"
@@ -117,6 +119,7 @@ const FloatingActionButton = props => {
         disabled={props.deleteDisabled}
         onPress={props.onDelete}>
         <Animated.View
+          pointerEvents={menuOpen ? 'auto' : 'none'}
           style={[styles.button, styles.secondary, deleteAnimatedStyle]}>
           <MaterialIcons
             name="delete"

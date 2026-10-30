@@ -57,7 +57,7 @@ const Add = ({navigation, route}) => {
   const [screenName, setScreenName] = useState('');
 
   const [cameraOn, setCameraOn] = useState(false);
-  const [adOn, setAdOn] = useState(true);
+  //const [adOn, setAdOn] = useState(true);
   const [recognizedWordList, setRecognizedWordList] = useState([]);
 
   useEffect(() => {
@@ -151,7 +151,7 @@ const Add = ({navigation, route}) => {
       getElementTextBlocks(recogonized_text, 'BLOCK'); //"BLOCK", "LINE", "ELEMENT"
     }
     setCameraOn(false);
-    setAdOn(true);
+    //setAdOn(true);
   };
 
   const getElementTextBlocks = (data, division_type) => {
@@ -207,7 +207,7 @@ const Add = ({navigation, route}) => {
               <Pressable
                 onPress={() => {
                   setCameraOn(true);
-                  setAdOn(false);
+                  //setAdOn(false);
                 }}
                 style={styles.cameraButton}>
                 <Icon name="photo-camera" size={20} color={'#34495e'} />
@@ -324,7 +324,7 @@ const Add = ({navigation, route}) => {
                 }
                 onClose={() => {
                   setCameraOn(false);
-                  setAdOn(true);
+                  //setAdOn(true);
                 }}
               />
             )}
@@ -332,11 +332,11 @@ const Add = ({navigation, route}) => {
         </KeyboardAwareScrollView>
       </DismissKeyboard>
 
-      {!isPremiumUser && adOn && (
+      {/* {!isPremiumUser && adOn && (
         <View style={styles.bannerAdContainer}>
           <MyBannerAd />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
